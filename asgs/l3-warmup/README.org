@@ -1,0 +1,16 @@
+#+OPTIONS: toc:nil author:nil
+#+TITLE: The L₃ project
+
+Welcome to the L₃ project, composed of an L₃ compiler, a virtual machine, a library and a few example programs. The directories are laid out as follows:
+
+  - ~compiler~ :: contains the source code of the L₃ compiler,
+
+  - ~vm~ :: contains the source code of the main version of the L₃ virtual machine (written in C),
+
+  - ~vm-rust~ :: contains the source code of the Rust version of the L₃ virtual machine,
+
+  - ~library~ :: contains the source code of the L₃ library,
+
+  - ~examples~ :: contains a few example L₃ programs and benchmarks.
+
+Most of these directories contain a ~README.org~ file with further information.

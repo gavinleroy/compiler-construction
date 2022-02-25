@@ -1,0 +1,8 @@
+;; In Emacs, open this file in -*- Scheme -*- mode
+
+;; Test the @block-tag primitive
+
+(@byte-write 66)
+
+(@byte-write (@block-tag (@block-alloc-65 0))) ;A
+(@byte-write (@block-tag (@block-alloc-66 1))) ;B

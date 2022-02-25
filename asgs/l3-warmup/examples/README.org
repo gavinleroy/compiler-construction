@@ -1,0 +1,34 @@
+#+OPTIONS: toc:nil author:nil
+#+TITLE: L3 examples
+
+This directory contains several example programs written in L3. The most important ones are briefly described in the table below.
+
+| Name    | Behavior                                                  |
+|---------+-----------------------------------------------------------|
+| bignums | Compute the factorial using "big integers"                |
+| life    | Conway's "Game of Life"                                   |
+| maze    | Inefficiently compute and draw a random maze              |
+| unimaze | Like maze, but more efficient and uses Unicode characters |
+| queens  | Solve the n-queens problem                                |
+| sudoku  | Solve a few Sudoku problems                               |
+|---------+-----------------------------------------------------------|
+
+Once the L3 compiler is complete, that is once it can generate L3A files for the L3 virtual machine, the examples above can be compiled in different ways, as described below.
+
+The first, but slowest technique is to execute the compiler from sbt, using the ~run~ command. For example, to compile the "unimaze" example, enter the following command at the sbt prompt (the ~>~ below represents the sbt prompt and should not be typed):
+: > run ../library/lib.l3m ../examples/unimaze.l3
+
+The second, faster technique consists in first packaging the L3 compiler and then executing it from the shell. The packaging should be done from sbt using the ~stage~ command, as follows:
+: > stage
+This generates a launcher script called ~l3~, which can be executed from the shell. For example, to compile the "unimaze" example as above, enter the following command in your shell, while in the ~examples~ directory (the ~$~ below represents the shell prompt and should not be typed):
+: $ ../compiler/target/universal/stage/bin/l3c \
+:     ../library/lib.l3m unimaze.l3
+
+Notice that both commands above will generate an L3 assembly file called ~out.l3a~. The name of that file can be changed using the ~l3.out-asm-file~ Java property. For example, to compile the same example as above but put the assembly file in ~unimaze.l3a~, enter the following at the shell prompt:
+: $ ../compiler/target/universal/stage/bin/l3c \
+:     -Dl3.out-asm-file=unimaze.l3a ../library/lib.l3m unimaze.l3
+
+To compile all the examples of this directory in parallel (to take advantage of a multi-core machine), a tool like [[https://savannah.gnu.org/projects/parallel/][GNU parallel]] can be used as follows:
+: $ ls *.l3                                                      \
+:     | parallel ../compiler/target/universal/stage/bin/l3c      \
+:                -Dl3.out-asm-file={.}.l3a ../library/lib.l3m {}
