@@ -9,3 +9,1552 @@
 [0m2022.03.04 20:42:10 INFO  time: code lens generation in 6.2s[0m
 [0m2022.03.04 20:42:10 INFO  time: code lens generation in 5.23s[0m
 [0m2022.03.04 20:42:10 INFO  time: code lens generation in 6.2s[0m
+[0m2022.03.04 20:50:04 INFO  shutting down Metals[0m
+[0m2022.03.04 21:01:13 INFO  Started: Metals version 0.10.9 in workspace '/Users/gavinleroy/dev/uni/acc/asgs/l3' for client emacs GNU Emacs 27.2 (build 1, x86_64-apple-darwin20.6.0, Carbon Version 164 AppKit 2022.6)
+ of 2022-02-19.[0m
+[0m2022.03.04 21:01:15 INFO  time: initialize in 1.58s[0m
+[0m2022.03.04 21:01:15 WARN  Build server is not auto-connectable.[0m
+[0m2022.03.04 21:01:15 WARN  no build tool detected in workspace '/Users/gavinleroy/dev/uni/acc/asgs/l3'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. [0m
+[0m2022.03.04 21:01:16 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 21:01:18 INFO  no build target: using presentation compiler with only scala-library: 3.1.0[0m
+Mar 04, 2022 9:01:19 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3349
+Mar 04, 2022 9:01:19 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3351
+[0m2022.03.04 21:01:20 INFO  time: code lens generation in 1.35s[0m
+[0m2022.03.04 21:01:20 INFO  time: code lens generation in 1.39s[0m
+[0m2022.03.04 21:01:20 INFO  time: code lens generation in 4.53s[0m
+[0m2022.03.04 21:01:20 INFO  time: code lens generation in 4.97s[0m
+[0m2022.03.04 21:01:20 INFO  time: code lens generation in 4.97s[0m
+Mar 04, 2022 9:01:26 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3373
+Default dialect is deprecated; use explicit: [Scala211,scala212,Scala212Source3,scala213,Scala213Source3,Sbt0137,Sbt1,scala3]
+Also see https://scalameta.org/scalafmt/docs/configuration.html#scala-dialects"
+[0m2022.03.04 21:01:46 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 21:03:24 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3Tree.scala[0m
+[0m2022.03.04 21:03:32 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3NameAnalyzer.scala[0m
+[0m2022.03.04 21:03:38 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 21:03:51 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 21:09:02 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 21:09:40 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 04, 2022 9:10:06 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3549
+[0m2022.03.04 21:10:08 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Default dialect is deprecated; use explicit: [Scala211,scala212,Scala212Source3,scala213,Scala213Source3,Sbt0137,Sbt1,scala3]
+Also see https://scalameta.org/scalafmt/docs/configuration.html#scala-dialects"
+[0m2022.03.04 21:13:12 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 04, 2022 9:21:41 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3587
+Mar 04, 2022 9:21:41 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3585
+Mar 04, 2022 9:21:41 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3590
+[0m2022.03.04 21:22:14 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 04, 2022 9:22:29 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3703
+Mar 04, 2022 9:22:29 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3702
+[0m2022.03.04 21:22:30 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 04, 2022 9:27:06 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3780
+[0m2022.03.04 21:28:53 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3Literal.scala[0m
+Mar 04, 2022 9:28:53 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3817
+[0m2022.03.04 21:29:27 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 21:30:08 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CPSTree.scala[0m
+Mar 04, 2022 9:30:08 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 3904
+[0m2022.03.04 21:31:50 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 04, 2022 9:36:02 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 4040
+[0m2022.03.04 21:36:13 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 04, 2022 9:54:21 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 4189
+Mar 04, 2022 9:54:21 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 4188
+[0m2022.03.04 21:54:30 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 21:56:16 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 21:56:26 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 21:56:29 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 21:56:53 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3Literal.scala[0m
+Mar 04, 2022 9:56:53 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 4248
+Mar 04, 2022 9:56:53 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 4249
+[0m2022.03.04 21:59:04 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 04, 2022 10:00:32 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 4336
+[0m2022.03.04 22:00:32 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 22:01:22 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 22:08:07 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/L3Primitive.scala[0m
+Mar 04, 2022 10:08:08 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 4491
+[0m2022.03.04 22:11:28 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 22:23:13 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/L3Primitive.scala[0m
+Mar 04, 2022 10:23:13 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 4689
+Mar 04, 2022 10:23:13 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 4690
+[0m2022.03.04 22:23:31 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 04, 2022 10:24:20 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 4805
+[0m2022.03.04 22:24:32 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 22:26:22 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 04, 2022 10:28:01 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 4900
+Mar 04, 2022 10:28:12 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 4932
+Mar 04, 2022 10:28:12 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 4931
+[0m2022.03.04 22:28:15 ERROR scalafmt: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala:26: error: [dialect default] illegal start of definition case
+  case S.LetRec(???, body) =>
+  ^[0m
+[0m2022.03.04 22:28:15 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 22:28:25 ERROR scalafmt: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala:26: error: [dialect default] illegal start of definition case
+  case S.LetRec(Seq(), body) =>
+  ^[0m
+[0m2022.03.04 22:28:25 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 22:28:31 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 22:52:30 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 04, 2022 11:10:23 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5130
+Mar 04, 2022 11:10:23 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5129
+[0m2022.03.04 23:13:21 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 04, 2022 11:14:56 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5185
+[0m2022.03.04 23:15:15 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/Symbol.scala[0m
+Mar 04, 2022 11:15:15 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5193
+Mar 04, 2022 11:15:39 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5227
+Mar 04, 2022 11:16:24 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5289
+Mar 04, 2022 11:16:24 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5288
+Mar 04, 2022 11:16:24 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5287
+Mar 04, 2022 11:16:24 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5286
+[0m2022.03.04 23:16:38 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 04, 2022 11:20:08 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5373
+[0m2022.03.04 23:20:41 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 23:22:45 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 23:22:54 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 04, 2022 11:24:47 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5520
+[0m2022.03.04 23:26:40 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 04, 2022 11:26:52 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5552
+Mar 04, 2022 11:26:52 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5551
+Mar 04, 2022 11:27:30 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5581
+[0m2022.03.04 23:28:04 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 23:28:16 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 23:28:20 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 04, 2022 11:28:59 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5693
+Mar 04, 2022 11:29:00 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5696
+Mar 04, 2022 11:29:00 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5695
+Mar 04, 2022 11:29:00 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5694
+Mar 04, 2022 11:29:08 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5709
+Mar 04, 2022 11:29:17 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5723
+Mar 04, 2022 11:37:29 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5815
+[0m2022.03.04 23:37:37 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 04, 2022 11:37:44 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5829
+Mar 04, 2022 11:37:51 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5843
+Mar 04, 2022 11:37:51 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5842
+Mar 04, 2022 11:37:51 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5841
+Mar 04, 2022 11:37:51 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5840
+[0m2022.03.04 23:37:54 ERROR scalafmt: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala:48: error: [dialect default] ; expected but => found
+        S.Halt(arg) =>
+                    ^[0m
+[0m2022.03.04 23:37:54 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 23:37:59 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 04, 2022 11:40:15 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5885
+Mar 04, 2022 11:40:19 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5898
+Mar 04, 2022 11:40:19 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5897
+Mar 04, 2022 11:40:33 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5915
+Mar 04, 2022 11:40:33 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5914
+Mar 04, 2022 11:40:35 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5925
+Mar 04, 2022 11:40:35 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5924
+Mar 04, 2022 11:40:37 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5939
+Mar 04, 2022 11:40:37 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5938
+Mar 04, 2022 11:40:38 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5943
+Mar 04, 2022 11:40:38 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5942
+Mar 04, 2022 11:40:38 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5941
+Mar 04, 2022 11:40:38 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 5940
+[0m2022.03.04 23:40:47 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 23:41:15 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 04, 2022 11:41:30 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6010
+Mar 04, 2022 11:42:00 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6060
+[0m2022.03.04 23:42:06 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/L3Primitive.scala[0m
+Mar 04, 2022 11:42:06 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6068
+Mar 04, 2022 11:42:07 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6069
+Mar 04, 2022 11:42:14 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6091
+Mar 04, 2022 11:42:14 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6090
+Mar 04, 2022 11:42:21 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6105
+Mar 04, 2022 11:42:21 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6104
+Mar 04, 2022 11:42:21 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6103
+Mar 04, 2022 11:42:21 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6102
+Mar 04, 2022 11:42:22 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6108
+Mar 04, 2022 11:42:22 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6107
+Mar 04, 2022 11:42:22 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6106
+Mar 04, 2022 11:42:28 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6121
+Mar 04, 2022 11:42:28 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6122
+[0m2022.03.04 23:43:05 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 04, 2022 11:43:38 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6203
+[0m2022.03.04 23:43:46 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 23:43:58 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 23:45:17 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 23:47:52 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 23:48:07 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 04, 2022 11:53:21 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6414
+Mar 04, 2022 11:53:21 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6413
+Mar 04, 2022 11:53:54 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6454
+[0m2022.03.04 23:53:56 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 23:54:07 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 23:54:38 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 23:55:26 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 23:56:00 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 23:56:46 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.04 23:58:28 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/L3Parser.scala[0m
+Mar 04, 2022 11:58:28 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6574
+[0m2022.03.04 23:58:55 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 12:00:23 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6638
+Mar 05, 2022 12:00:23 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6637
+Mar 05, 2022 12:00:27 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6654
+[0m2022.03.05 00:00:56 ERROR scalafmt: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala:18: error: [dialect default] ; expected but => found
+        bndgs.foldRight(transform(body)(ctx(_))) { ((n, e), acc) =>
+                                                                 ^[0m
+[0m2022.03.05 00:00:56 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 00:01:13 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 00:02:08 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 12:02:28 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6763
+Mar 05, 2022 12:02:28 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6762
+Mar 05, 2022 12:02:35 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6784
+[0m2022.03.05 00:02:44 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 12:03:32 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6841
+Mar 05, 2022 12:03:32 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6840
+Mar 05, 2022 12:03:32 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6839
+Mar 05, 2022 12:03:32 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6838
+Mar 05, 2022 12:03:39 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6858
+Mar 05, 2022 12:03:39 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6857
+[0m2022.03.05 00:03:46 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 12:03:54 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 6879
+[0m2022.03.05 00:03:55 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 00:04:42 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 12:17:45 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 12:18:06 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 12:24:52 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7162
+Mar 05, 2022 12:25:08 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7211
+Mar 05, 2022 12:26:38 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7343
+Mar 05, 2022 12:27:21 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7388
+Mar 05, 2022 12:27:21 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7387
+Mar 05, 2022 12:27:21 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7386
+Mar 05, 2022 12:27:21 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7385
+Mar 05, 2022 12:27:42 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7428
+Mar 05, 2022 12:27:42 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7429
+[0m2022.03.05 12:27:43 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 12:27:57 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 12:28:18 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/Main.scala[0m
+Mar 05, 2022 12:28:18 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7456
+Mar 05, 2022 12:28:59 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7483
+[0m2022.03.05 12:29:00 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 12:29:33 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 12:30:38 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 12:30:49 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 12:31:45 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7585
+Mar 05, 2022 12:31:45 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7584
+Mar 05, 2022 12:31:52 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7598
+Mar 05, 2022 12:31:52 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7597
+Mar 05, 2022 12:31:52 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7596
+Mar 05, 2022 12:31:52 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7595
+[0m2022.03.05 12:31:55 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 12:32:03 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7615
+[0m2022.03.05 12:32:30 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 12:37:55 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7754
+Mar 05, 2022 12:37:55 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7753
+Mar 05, 2022 12:37:55 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7752
+Mar 05, 2022 12:37:55 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7751
+Mar 05, 2022 12:42:45 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7800
+Mar 05, 2022 12:42:45 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7799
+Mar 05, 2022 12:42:45 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7798
+Mar 05, 2022 12:42:45 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 7797
+[0m2022.03.05 12:43:19 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 12:43:35 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 12:45:21 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 12:47:36 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 12:47:45 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8035
+[0m2022.03.05 12:47:47 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 12:48:39 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8058
+Mar 05, 2022 12:48:41 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8064
+Mar 05, 2022 12:49:04 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8140
+Mar 05, 2022 12:49:05 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8146
+Mar 05, 2022 12:49:13 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8169
+Mar 05, 2022 12:49:13 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8168
+Mar 05, 2022 12:49:14 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8175
+[0m2022.03.05 12:49:19 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 12:50:10 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8250
+Mar 05, 2022 12:50:35 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8308
+Mar 05, 2022 12:50:42 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8344
+Mar 05, 2022 12:50:42 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8347
+Mar 05, 2022 12:50:45 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8357
+Mar 05, 2022 12:50:46 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8360
+Mar 05, 2022 12:52:11 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8544
+Mar 05, 2022 12:52:12 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8545
+[0m2022.03.05 12:52:14 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 12:53:42 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8603
+Mar 05, 2022 12:53:42 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8602
+Mar 05, 2022 12:53:42 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8601
+Mar 05, 2022 12:53:42 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8600
+Mar 05, 2022 12:53:46 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8622
+Mar 05, 2022 12:53:46 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8625
+Mar 05, 2022 12:53:58 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8673
+[0m2022.03.05 12:53:58 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 12:54:59 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8700
+Mar 05, 2022 12:55:36 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8792
+Mar 05, 2022 12:55:36 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8793
+Mar 05, 2022 12:55:39 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8797
+[0m2022.03.05 12:56:28 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 12:57:38 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 12:57:41 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 12:57:49 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8888
+Mar 05, 2022 12:57:49 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8887
+Mar 05, 2022 12:58:08 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8919
+Mar 05, 2022 12:58:15 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 8935
+[0m2022.03.05 12:58:17 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 12:59:49 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 13:00:43 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 13:00:49 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 13:01:28 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 1:01:48 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9062
+Mar 05, 2022 1:01:48 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9061
+[0m2022.03.05 13:01:57 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 13:03:26 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 13:03:29 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 13:03:30 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 13:03:55 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 13:52:52 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 1:53:42 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9163
+Mar 05, 2022 1:53:44 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9165
+Mar 05, 2022 1:53:44 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9164
+[0m2022.03.05 13:54:55 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3Literal.scala[0m
+Mar 05, 2022 1:54:55 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9296
+Mar 05, 2022 1:54:55 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9297
+Mar 05, 2022 1:55:07 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9318
+Mar 05, 2022 1:55:08 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9323
+Mar 05, 2022 1:55:08 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9322
+Mar 05, 2022 1:55:08 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9321
+Mar 05, 2022 1:55:09 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9329
+Mar 05, 2022 1:55:09 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9328
+Mar 05, 2022 1:55:09 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9327
+Mar 05, 2022 1:55:09 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9326
+Mar 05, 2022 1:55:27 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9382
+Mar 05, 2022 1:55:27 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9381
+[0m2022.03.05 13:55:30 ERROR scalafmt: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala:45: error: [dialect default] ) expected but . found
+        S.Prim(L3Primitive.Eq, Seq(cnd S.Lit(BooleanLit(false))), ef et) transform(_)(ctx)
+                                        ^[0m
+[0m2022.03.05 13:55:30 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 13:56:48 ERROR scalafmt: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala:46: error: [dialect default] ) expected but . found
+        S.Prim(L3Primitive.Eq, Seq(cnd S.Lit(BooleanLit(false))), ef et)
+                                        ^[0m
+[0m2022.03.05 13:56:48 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 13:56:55 ERROR scalafmt: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala:45: error: [dialect default] ; expected but . found
+        transform(_)(ctx) S.Prim(L3Primitive.Eq, Seq(cnd S.Lit(BooleanLit(false))), ef et)
+                           ^[0m
+[0m2022.03.05 13:56:55 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 1:57:02 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9435
+Mar 05, 2022 1:57:23 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9461
+Mar 05, 2022 1:57:24 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9464
+Mar 05, 2022 1:57:25 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9467
+Mar 05, 2022 1:57:30 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9476
+Mar 05, 2022 1:57:36 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9486
+[0m2022.03.05 13:57:36 ERROR scalafmt: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala:45: error: [dialect default] ) expected but . found
+        val ite_with_prim = S.Prim(L3Primitive.Eq, Seq(cnd S.Lit(BooleanLit(false))), ef et)
+                                                            ^[0m
+[0m2022.03.05 13:57:36 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 13:57:46 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 13:57:59 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 13:58:03 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 13:58:42 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 13:59:02 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 1:59:15 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9589
+Mar 05, 2022 1:59:20 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9601
+Mar 05, 2022 1:59:20 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9600
+[0m2022.03.05 13:59:21 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 14:00:09 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 14:00:20 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 14:00:58 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 2:01:34 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9688
+Mar 05, 2022 2:01:34 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9687
+Mar 05, 2022 2:01:34 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9686
+Mar 05, 2022 2:01:34 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9685
+[0m2022.03.05 14:01:35 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 14:01:45 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 14:01:57 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 14:03:12 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 14:03:51 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 14:04:07 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 14:18:43 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 2:20:44 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9997
+Mar 05, 2022 2:20:44 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 9996
+Mar 05, 2022 2:20:49 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10013
+Mar 05, 2022 2:20:49 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10012
+Mar 05, 2022 2:20:49 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10011
+Mar 05, 2022 2:20:49 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10010
+Mar 05, 2022 2:28:46 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10176
+Exception in thread "pool-4-thread-1" java.lang.AssertionError: assertion failed
+	at scala.runtime.Scala3RunTime$.assertFailed(Scala3RunTime.scala:11)
+	at dotty.tools.dotc.util.Spans$Span$.start$extension(Spans.scala:44)
+	at dotty.tools.dotc.parsing.Parsers$Parser.matchClause(Parsers.scala:2114)
+	at dotty.tools.dotc.parsing.Parsers$Parser.recur$4(Parsers.scala:955)
+	at dotty.tools.dotc.parsing.Parsers$Parser.infixOps(Parsers.scala:964)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExprRest(Parsers.scala:2209)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExpr(Parsers.scala:2199)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr1(Parsers.scala:2044)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr(Parsers.scala:1937)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$init$$$anonfun$5(Parsers.scala:1903)
+	at dotty.tools.dotc.parsing.Parsers$Parser.subPart(Parsers.scala:600)
+	at dotty.tools.dotc.parsing.Parsers$Parser.subExpr(Parsers.scala:1905)
+	at dotty.tools.dotc.parsing.Parsers$Parser.defDefOrDcl(Parsers.scala:3358)
+	at dotty.tools.dotc.parsing.Parsers$Parser.defOrDcl(Parsers.scala:3249)
+	at dotty.tools.dotc.parsing.Parsers$Parser.localDef(Parsers.scala:3930)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq$$anonfun$1(Parsers.scala:3954)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq(Parsers.scala:3960)
+	at dotty.tools.dotc.parsing.Parsers$Parser.block(Parsers.scala:2449)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr$$anonfun$1(Parsers.scala:2441)
+	at dotty.tools.dotc.parsing.Parsers$Parser.enclosed(Parsers.scala:533)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBraces(Parsers.scala:536)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBracesOrIndented(Parsers.scala:547)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inDefScopeBraces(Parsers.scala:550)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr(Parsers.scala:2439)
+	at dotty.tools.dotc.parsing.Parsers$Parser.simpleExpr(Parsers.scala:2268)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$init$$$anonfun$6(Parsers.scala:2224)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExpr(Parsers.scala:2199)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr1(Parsers.scala:2044)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr(Parsers.scala:1937)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq$$anonfun$1(Parsers.scala:3948)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq(Parsers.scala:3960)
+	at dotty.tools.dotc.parsing.Parsers$Parser.block(Parsers.scala:2449)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr$$anonfun$1(Parsers.scala:2441)
+	at dotty.tools.dotc.parsing.Parsers$Parser.enclosed(Parsers.scala:533)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBracesOrIndented(Parsers.scala:544)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inDefScopeBraces(Parsers.scala:550)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr(Parsers.scala:2439)
+	at dotty.tools.dotc.parsing.Parsers$Parser.simpleExpr(Parsers.scala:2268)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$init$$$anonfun$6(Parsers.scala:2224)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExpr(Parsers.scala:2199)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr1(Parsers.scala:2044)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr(Parsers.scala:1937)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq$$anonfun$1(Parsers.scala:3948)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq(Parsers.scala:3960)
+	at dotty.tools.dotc.parsing.Parsers$Parser.block(Parsers.scala:2449)
+	at dotty.tools.dotc.parsing.Parsers$Parser.caseClause(Parsers.scala:2606)
+	at dotty.tools.dotc.parsing.Parsers$Parser.matchClause$$anonfun$2$$anonfun$1(Parsers.scala:2115)
+	at dotty.tools.dotc.parsing.Parsers$Parser.caseClauses(Parsers.scala:2593)
+	at dotty.tools.dotc.parsing.Parsers$Parser.matchClause$$anonfun$1(Parsers.scala:2115)
+	at dotty.tools.dotc.parsing.Parsers$Parser.enclosed(Parsers.scala:533)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBraces(Parsers.scala:536)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBracesOrIndented(Parsers.scala:547)
+	at dotty.tools.dotc.parsing.Parsers$Parser.matchClause(Parsers.scala:2115)
+	at dotty.tools.dotc.parsing.Parsers$Parser.recur$4(Parsers.scala:955)
+	at dotty.tools.dotc.parsing.Parsers$Parser.infixOps(Parsers.scala:964)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExprRest(Parsers.scala:2209)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExpr(Parsers.scala:2199)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr1(Parsers.scala:2044)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr(Parsers.scala:1937)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq$$anonfun$1(Parsers.scala:3948)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq(Parsers.scala:3960)
+	at dotty.tools.dotc.parsing.Parsers$Parser.block(Parsers.scala:2449)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr$$anonfun$1(Parsers.scala:2441)
+	at dotty.tools.dotc.parsing.Parsers$Parser.enclosed(Parsers.scala:533)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBracesOrIndented(Parsers.scala:544)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inDefScopeBraces(Parsers.scala:550)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr(Parsers.scala:2439)
+	at dotty.tools.dotc.parsing.Parsers$Parser.simpleExpr(Parsers.scala:2268)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$init$$$anonfun$6(Parsers.scala:2224)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExpr(Parsers.scala:2199)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr1(Parsers.scala:2044)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr(Parsers.scala:1937)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$init$$$anonfun$5(Parsers.scala:1903)
+	at dotty.tools.dotc.parsing.Parsers$Parser.subPart(Parsers.scala:600)
+	at dotty.tools.dotc.parsing.Parsers$Parser.subExpr(Parsers.scala:1905)
+	at dotty.tools.dotc.parsing.Parsers$Parser.defDefOrDcl(Parsers.scala:3358)
+	at dotty.tools.dotc.parsing.Parsers$Parser.defOrDcl(Parsers.scala:3249)
+	at dotty.tools.dotc.parsing.Parsers$Parser.templateStatSeq$$anonfun$1(Parsers.scala:3877)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.templateStatSeq(Parsers.scala:3885)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$anonfun$33(Parsers.scala:3772)
+	at dotty.tools.dotc.parsing.Parsers$Parser.enclosed(Parsers.scala:533)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBraces(Parsers.scala:536)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBracesOrIndented(Parsers.scala:547)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inDefScopeBraces(Parsers.scala:550)
+	at dotty.tools.dotc.parsing.Parsers$Parser.templateBody(Parsers.scala:3772)
+	at dotty.tools.dotc.parsing.Parsers$Parser.templateBodyOpt(Parsers.scala:3765)
+	at dotty.tools.dotc.parsing.Parsers$Parser.template(Parsers.scala:3742)
+	at dotty.tools.dotc.parsing.Parsers$Parser.templateOpt(Parsers.scala:3750)
+	at dotty.tools.dotc.parsing.Parsers$Parser.objectDef(Parsers.scala:3504)
+	at dotty.tools.dotc.parsing.Parsers$Parser.tmplDef(Parsers.scala:3463)
+	at dotty.tools.dotc.parsing.Parsers$Parser.defOrDcl(Parsers.scala:3255)
+	at dotty.tools.dotc.parsing.Parsers$Parser.topStatSeq(Parsers.scala:3829)
+	at dotty.tools.dotc.parsing.Parsers$Parser.topstats$2(Parsers.scala:3996)
+	at dotty.tools.dotc.parsing.Parsers$Parser.topstats$2(Parsers.scala:3990)
+	at dotty.tools.dotc.parsing.Parsers$Parser.compilationUnit$$anonfun$1(Parsers.scala:4001)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.compilationUnit(Parsers.scala:4006)
+	at dotty.tools.dotc.parsing.Parsers$Parser.parse(Parsers.scala:177)
+	at dotty.tools.dotc.parsing.Parser.parse$$anonfun$1(ParserPhase.scala:34)
+	at dotty.tools.dotc.core.Phases$Phase.monitor(Phases.scala:411)
+	at dotty.tools.dotc.parsing.Parser.parse(ParserPhase.scala:41)
+	at dotty.tools.dotc.parsing.Parser.runOn$$anonfun$1(ParserPhase.scala:50)
+	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:15)
+	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:10)
+	at scala.collection.immutable.List.foreach(List.scala:333)
+	at dotty.tools.dotc.parsing.Parser.runOn(ParserPhase.scala:50)
+	at dotty.tools.dotc.Run.runPhases$4$$anonfun$4(Run.scala:261)
+	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:15)
+	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:10)
+	at scala.collection.ArrayOps$.foreach$extension(ArrayOps.scala:1328)
+	at dotty.tools.dotc.Run.runPhases$5(Run.scala:272)
+	at dotty.tools.dotc.Run.compileUnits$$anonfun$1(Run.scala:280)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at dotty.tools.dotc.util.Stats$.maybeMonitored(Stats.scala:68)
+	at dotty.tools.dotc.Run.compileUnits(Run.scala:289)
+	at dotty.tools.dotc.Run.compileSources(Run.scala:222)
+	at dotty.tools.dotc.interactive.InteractiveDriver.run(InteractiveDriver.scala:163)
+	at scala.meta.internal.pc.ScalaPresentationCompiler.complete$$anonfun$1(ScalaPresentationCompiler.scala:139)
+	at scala.meta.internal.pc.CompilerAccess.withSharedCompiler(CompilerAccess.scala:137)
+	at scala.meta.internal.pc.CompilerAccess.$anonfun$1(CompilerAccess.scala:87)
+	at scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:197)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:139)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+Exception in thread "pool-4-thread-2" java.lang.AssertionError: assertion failed
+	at scala.runtime.Scala3RunTime$.assertFailed(Scala3RunTime.scala:11)
+	at dotty.tools.dotc.util.Spans$Span$.start$extension(Spans.scala:44)
+	at dotty.tools.dotc.parsing.Parsers$Parser.matchClause(Parsers.scala:2114)
+	at dotty.tools.dotc.parsing.Parsers$Parser.recur$4(Parsers.scala:955)
+	at dotty.tools.dotc.parsing.Parsers$Parser.infixOps(Parsers.scala:964)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExprRest(Parsers.scala:2209)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExpr(Parsers.scala:2199)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr1(Parsers.scala:2044)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr(Parsers.scala:1937)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$init$$$anonfun$5(Parsers.scala:1903)
+	at dotty.tools.dotc.parsing.Parsers$Parser.subPart(Parsers.scala:600)
+	at dotty.tools.dotc.parsing.Parsers$Parser.subExpr(Parsers.scala:1905)
+	at dotty.tools.dotc.parsing.Parsers$Parser.defDefOrDcl(Parsers.scala:3358)
+	at dotty.tools.dotc.parsing.Parsers$Parser.defOrDcl(Parsers.scala:3249)
+	at dotty.tools.dotc.parsing.Parsers$Parser.localDef(Parsers.scala:3930)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq$$anonfun$1(Parsers.scala:3954)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq(Parsers.scala:3960)
+	at dotty.tools.dotc.parsing.Parsers$Parser.block(Parsers.scala:2449)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr$$anonfun$1(Parsers.scala:2441)
+	at dotty.tools.dotc.parsing.Parsers$Parser.enclosed(Parsers.scala:533)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBraces(Parsers.scala:536)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBracesOrIndented(Parsers.scala:547)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inDefScopeBraces(Parsers.scala:550)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr(Parsers.scala:2439)
+	at dotty.tools.dotc.parsing.Parsers$Parser.simpleExpr(Parsers.scala:2268)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$init$$$anonfun$6(Parsers.scala:2224)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExpr(Parsers.scala:2199)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr1(Parsers.scala:2044)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr(Parsers.scala:1937)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq$$anonfun$1(Parsers.scala:3948)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq(Parsers.scala:3960)
+	at dotty.tools.dotc.parsing.Parsers$Parser.block(Parsers.scala:2449)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr$$anonfun$1(Parsers.scala:2441)
+	at dotty.tools.dotc.parsing.Parsers$Parser.enclosed(Parsers.scala:533)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBracesOrIndented(Parsers.scala:544)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inDefScopeBraces(Parsers.scala:550)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr(Parsers.scala:2439)
+	at dotty.tools.dotc.parsing.Parsers$Parser.simpleExpr(Parsers.scala:2268)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$init$$$anonfun$6(Parsers.scala:2224)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExpr(Parsers.scala:2199)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr1(Parsers.scala:2044)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr(Parsers.scala:1937)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq$$anonfun$1(Parsers.scala:3948)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq(Parsers.scala:3960)
+	at dotty.tools.dotc.parsing.Parsers$Parser.block(Parsers.scala:2449)
+	at dotty.tools.dotc.parsing.Parsers$Parser.caseClause(Parsers.scala:2606)
+	at dotty.tools.dotc.parsing.Parsers$Parser.matchClause$$anonfun$2$$anonfun$1(Parsers.scala:2115)
+	at dotty.tools.dotc.parsing.Parsers$Parser.caseClauses(Parsers.scala:2593)
+	at dotty.tools.dotc.parsing.Parsers$Parser.matchClause$$anonfun$1(Parsers.scala:2115)
+	at dotty.tools.dotc.parsing.Parsers$Parser.enclosed(Parsers.scala:533)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBraces(Parsers.scala:536)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBracesOrIndented(Parsers.scala:547)
+	at dotty.tools.dotc.parsing.Parsers$Parser.matchClause(Parsers.scala:2115)
+	at dotty.tools.dotc.parsing.Parsers$Parser.recur$4(Parsers.scala:955)
+	at dotty.tools.dotc.parsing.Parsers$Parser.infixOps(Parsers.scala:964)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExprRest(Parsers.scala:2209)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExpr(Parsers.scala:2199)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr1(Parsers.scala:2044)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr(Parsers.scala:1937)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq$$anonfun$1(Parsers.scala:3948)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq(Parsers.scala:3960)
+	at dotty.tools.dotc.parsing.Parsers$Parser.block(Parsers.scala:2449)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr$$anonfun$1(Parsers.scala:2441)
+	at dotty.tools.dotc.parsing.Parsers$Parser.enclosed(Parsers.scala:533)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBracesOrIndented(Parsers.scala:544)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inDefScopeBraces(Parsers.scala:550)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr(Parsers.scala:2439)
+	at dotty.tools.dotc.parsing.Parsers$Parser.simpleExpr(Parsers.scala:2268)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$init$$$anonfun$6(Parsers.scala:2224)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExpr(Parsers.scala:2199)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr1(Parsers.scala:2044)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr(Parsers.scala:1937)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$init$$$anonfun$5(Parsers.scala:1903)
+	at dotty.tools.dotc.parsing.Parsers$Parser.subPart(Parsers.scala:600)
+	at dotty.tools.dotc.parsing.Parsers$Parser.subExpr(Parsers.scala:1905)
+	at dotty.tools.dotc.parsing.Parsers$Parser.defDefOrDcl(Parsers.scala:3358)
+	at dotty.tools.dotc.parsing.Parsers$Parser.defOrDcl(Parsers.scala:3249)
+	at dotty.tools.dotc.parsing.Parsers$Parser.templateStatSeq$$anonfun$1(Parsers.scala:3877)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.templateStatSeq(Parsers.scala:3885)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$anonfun$33(Parsers.scala:3772)
+	at dotty.tools.dotc.parsing.Parsers$Parser.enclosed(Parsers.scala:533)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBraces(Parsers.scala:536)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBracesOrIndented(Parsers.scala:547)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inDefScopeBraces(Parsers.scala:550)
+	at dotty.tools.dotc.parsing.Parsers$Parser.templateBody(Parsers.scala:3772)
+	at dotty.tools.dotc.parsing.Parsers$Parser.templateBodyOpt(Parsers.scala:3765)
+	at dotty.tools.dotc.parsing.Parsers$Parser.template(Parsers.scala:3742)
+	at dotty.tools.dotc.parsing.Parsers$Parser.templateOpt(Parsers.scala:3750)
+	at dotty.tools.dotc.parsing.Parsers$Parser.objectDef(Parsers.scala:3504)
+	at dotty.tools.dotc.parsing.Parsers$Parser.tmplDef(Parsers.scala:3463)
+	at dotty.tools.dotc.parsing.Parsers$Parser.defOrDcl(Parsers.scala:3255)
+	at dotty.tools.dotc.parsing.Parsers$Parser.topStatSeq(Parsers.scala:3829)
+	at dotty.tools.dotc.parsing.Parsers$Parser.topstats$2(Parsers.scala:3996)
+	at dotty.tools.dotc.parsing.Parsers$Parser.topstats$2(Parsers.scala:3990)
+	at dotty.tools.dotc.parsing.Parsers$Parser.compilationUnit$$anonfun$1(Parsers.scala:4001)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.compilationUnit(Parsers.scala:4006)
+	at dotty.tools.dotc.parsing.Parsers$Parser.parse(Parsers.scala:177)
+	at dotty.tools.dotc.parsing.Parser.parse$$anonfun$1(ParserPhase.scala:34)
+	at dotty.tools.dotc.core.Phases$Phase.monitor(Phases.scala:411)
+	at dotty.tools.dotc.parsing.Parser.parse(ParserPhase.scala:41)
+	at dotty.tools.dotc.parsing.Parser.runOn$$anonfun$1(ParserPhase.scala:50)
+	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:15)
+	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:10)
+	at scala.collection.immutable.List.foreach(List.scala:333)
+	at dotty.tools.dotc.parsing.Parser.runOn(ParserPhase.scala:50)
+	at dotty.tools.dotc.Run.runPhases$4$$anonfun$4(Run.scala:261)
+	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:15)
+	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:10)
+	at scala.collection.ArrayOps$.foreach$extension(ArrayOps.scala:1328)
+	at dotty.tools.dotc.Run.runPhases$5(Run.scala:272)
+	at dotty.tools.dotc.Run.compileUnits$$anonfun$1(Run.scala:280)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at dotty.tools.dotc.util.Stats$.maybeMonitored(Stats.scala:68)
+	at dotty.tools.dotc.Run.compileUnits(Run.scala:289)
+	at dotty.tools.dotc.Run.compileSources(Run.scala:222)
+	at dotty.tools.dotc.interactive.InteractiveDriver.run(InteractiveDriver.scala:163)
+	at scala.meta.internal.pc.ScalaPresentationCompiler.complete$$anonfun$1(ScalaPresentationCompiler.scala:139)
+	at scala.meta.internal.pc.CompilerAccess.withSharedCompiler(CompilerAccess.scala:137)
+	at scala.meta.internal.pc.CompilerAccess.$anonfun$1(CompilerAccess.scala:87)
+	at scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:197)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:139)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+Exception in thread "pool-4-thread-3" java.lang.InterruptedException
+	at scala.meta.internal.metals.FutureCancelToken.checkCanceled(FutureCancelToken.scala:29)
+	at scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:195)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:139)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+Exception in thread "pool-4-thread-4" java.lang.InterruptedException
+	at scala.meta.internal.metals.FutureCancelToken.checkCanceled(FutureCancelToken.scala:29)
+	at scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:195)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:139)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+Exception in thread "pool-4-thread-5" java.lang.AssertionError: assertion failed
+	at scala.runtime.Scala3RunTime$.assertFailed(Scala3RunTime.scala:11)
+	at dotty.tools.dotc.util.Spans$Span$.start$extension(Spans.scala:44)
+	at dotty.tools.dotc.parsing.Parsers$Parser.matchClause(Parsers.scala:2114)
+	at dotty.tools.dotc.parsing.Parsers$Parser.recur$4(Parsers.scala:955)
+	at dotty.tools.dotc.parsing.Parsers$Parser.infixOps(Parsers.scala:964)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExprRest(Parsers.scala:2209)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExpr(Parsers.scala:2199)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr1(Parsers.scala:2044)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr(Parsers.scala:1937)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$init$$$anonfun$5(Parsers.scala:1903)
+	at dotty.tools.dotc.parsing.Parsers$Parser.subPart(Parsers.scala:600)
+	at dotty.tools.dotc.parsing.Parsers$Parser.subExpr(Parsers.scala:1905)
+	at dotty.tools.dotc.parsing.Parsers$Parser.defDefOrDcl(Parsers.scala:3358)
+	at dotty.tools.dotc.parsing.Parsers$Parser.defOrDcl(Parsers.scala:3249)
+	at dotty.tools.dotc.parsing.Parsers$Parser.localDef(Parsers.scala:3930)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq$$anonfun$1(Parsers.scala:3954)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq(Parsers.scala:3960)
+	at dotty.tools.dotc.parsing.Parsers$Parser.block(Parsers.scala:2449)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr$$anonfun$1(Parsers.scala:2441)
+	at dotty.tools.dotc.parsing.Parsers$Parser.enclosed(Parsers.scala:533)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBraces(Parsers.scala:536)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBracesOrIndented(Parsers.scala:547)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inDefScopeBraces(Parsers.scala:550)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr(Parsers.scala:2439)
+	at dotty.tools.dotc.parsing.Parsers$Parser.simpleExpr(Parsers.scala:2268)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$init$$$anonfun$6(Parsers.scala:2224)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExpr(Parsers.scala:2199)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr1(Parsers.scala:2044)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr(Parsers.scala:1937)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq$$anonfun$1(Parsers.scala:3948)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq(Parsers.scala:3960)
+	at dotty.tools.dotc.parsing.Parsers$Parser.block(Parsers.scala:2449)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr$$anonfun$1(Parsers.scala:2441)
+	at dotty.tools.dotc.parsing.Parsers$Parser.enclosed(Parsers.scala:533)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBracesOrIndented(Parsers.scala:544)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inDefScopeBraces(Parsers.scala:550)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr(Parsers.scala:2439)
+	at dotty.tools.dotc.parsing.Parsers$Parser.simpleExpr(Parsers.scala:2268)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$init$$$anonfun$6(Parsers.scala:2224)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExpr(Parsers.scala:2199)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr1(Parsers.scala:2044)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr(Parsers.scala:1937)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq$$anonfun$1(Parsers.scala:3948)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq(Parsers.scala:3960)
+	at dotty.tools.dotc.parsing.Parsers$Parser.block(Parsers.scala:2449)
+	at dotty.tools.dotc.parsing.Parsers$Parser.caseClause(Parsers.scala:2606)
+	at dotty.tools.dotc.parsing.Parsers$Parser.matchClause$$anonfun$2$$anonfun$1(Parsers.scala:2115)
+	at dotty.tools.dotc.parsing.Parsers$Parser.caseClauses(Parsers.scala:2593)
+	at dotty.tools.dotc.parsing.Parsers$Parser.matchClause$$anonfun$1(Parsers.scala:2115)
+	at dotty.tools.dotc.parsing.Parsers$Parser.enclosed(Parsers.scala:533)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBraces(Parsers.scala:536)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBracesOrIndented(Parsers.scala:547)
+	at dotty.tools.dotc.parsing.Parsers$Parser.matchClause(Parsers.scala:2115)
+	at dotty.tools.dotc.parsing.Parsers$Parser.recur$4(Parsers.scala:955)
+	at dotty.tools.dotc.parsing.Parsers$Parser.infixOps(Parsers.scala:964)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExprRest(Parsers.scala:2209)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExpr(Parsers.scala:2199)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr1(Parsers.scala:2044)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr(Parsers.scala:1937)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq$$anonfun$1(Parsers.scala:3948)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq(Parsers.scala:3960)
+	at dotty.tools.dotc.parsing.Parsers$Parser.block(Parsers.scala:2449)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr$$anonfun$1(Parsers.scala:2441)
+	at dotty.tools.dotc.parsing.Parsers$Parser.enclosed(Parsers.scala:533)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBracesOrIndented(Parsers.scala:544)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inDefScopeBraces(Parsers.scala:550)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr(Parsers.scala:2439)
+	at dotty.tools.dotc.parsing.Parsers$Parser.simpleExpr(Parsers.scala:2268)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$init$$$anonfun$6(Parsers.scala:2224)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExpr(Parsers.scala:2199)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr1(Parsers.scala:2044)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr(Parsers.scala:1937)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$init$$$anonfun$5(Parsers.scala:1903)
+	at dotty.tools.dotc.parsing.Parsers$Parser.subPart(Parsers.scala:600)
+	at dotty.tools.dotc.parsing.Parsers$Parser.subExpr(Parsers.scala:1905)
+	at dotty.tools.dotc.parsing.Parsers$Parser.defDefOrDcl(Parsers.scala:3358)
+	at dotty.tools.dotc.parsing.Parsers$Parser.defOrDcl(Parsers.scala:3249)
+	at dotty.tools.dotc.parsing.Parsers$Parser.templateStatSeq$$anonfun$1(Parsers.scala:3877)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.templateStatSeq(Parsers.scala:3885)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$anonfun$33(Parsers.scala:3772)
+	at dotty.tools.dotc.parsing.Parsers$Parser.enclosed(Parsers.scala:533)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBraces(Parsers.scala:536)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBracesOrIndented(Parsers.scala:547)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inDefScopeBraces(Parsers.scala:550)
+	at dotty.tools.dotc.parsing.Parsers$Parser.templateBody(Parsers.scala:3772)
+	at dotty.tools.dotc.parsing.Parsers$Parser.templateBodyOpt(Parsers.scala:3765)
+	at dotty.tools.dotc.parsing.Parsers$Parser.template(Parsers.scala:3742)
+	at dotty.tools.dotc.parsing.Parsers$Parser.templateOpt(Parsers.scala:3750)
+	at dotty.tools.dotc.parsing.Parsers$Parser.objectDef(Parsers.scala:3504)
+	at dotty.tools.dotc.parsing.Parsers$Parser.tmplDef(Parsers.scala:3463)
+	at dotty.tools.dotc.parsing.Parsers$Parser.defOrDcl(Parsers.scala:3255)
+	at dotty.tools.dotc.parsing.Parsers$Parser.topStatSeq(Parsers.scala:3829)
+	at dotty.tools.dotc.parsing.Parsers$Parser.topstats$2(Parsers.scala:3996)
+	at dotty.tools.dotc.parsing.Parsers$Parser.topstats$2(Parsers.scala:3990)
+	at dotty.tools.dotc.parsing.Parsers$Parser.compilationUnit$$anonfun$1(Parsers.scala:4001)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.compilationUnit(Parsers.scala:4006)
+	at dotty.tools.dotc.parsing.Parsers$Parser.parse(Parsers.scala:177)
+	at dotty.tools.dotc.parsing.Parser.parse$$anonfun$1(ParserPhase.scala:34)
+	at dotty.tools.dotc.core.Phases$Phase.monitor(Phases.scala:411)
+	at dotty.tools.dotc.parsing.Parser.parse(ParserPhase.scala:41)
+	at dotty.tools.dotc.parsing.Parser.runOn$$anonfun$1(ParserPhase.scala:50)
+	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:15)
+	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:10)
+	at scala.collection.immutable.List.foreach(List.scala:333)
+	at dotty.tools.dotc.parsing.Parser.runOn(ParserPhase.scala:50)
+	at dotty.tools.dotc.Run.runPhases$4$$anonfun$4(Run.scala:261)
+	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:15)
+	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:10)
+	at scala.collection.ArrayOps$.foreach$extension(ArrayOps.scala:1328)
+	at dotty.tools.dotc.Run.runPhases$5(Run.scala:272)
+	at dotty.tools.dotc.Run.compileUnits$$anonfun$1(Run.scala:280)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at dotty.tools.dotc.util.Stats$.maybeMonitored(Stats.scala:68)
+	at dotty.tools.dotc.Run.compileUnits(Run.scala:289)
+	at dotty.tools.dotc.Run.compileSources(Run.scala:222)
+	at dotty.tools.dotc.interactive.InteractiveDriver.run(InteractiveDriver.scala:163)
+	at scala.meta.internal.pc.ScalaPresentationCompiler.complete$$anonfun$1(ScalaPresentationCompiler.scala:139)
+	at scala.meta.internal.pc.CompilerAccess.withSharedCompiler(CompilerAccess.scala:137)
+	at scala.meta.internal.pc.CompilerAccess.$anonfun$1(CompilerAccess.scala:87)
+	at scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:197)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:139)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+Exception in thread "pool-4-thread-6" java.lang.AssertionError: assertion failed
+	at scala.runtime.Scala3RunTime$.assertFailed(Scala3RunTime.scala:11)
+	at dotty.tools.dotc.util.Spans$Span$.start$extension(Spans.scala:44)
+	at dotty.tools.dotc.parsing.Parsers$Parser.matchClause(Parsers.scala:2114)
+	at dotty.tools.dotc.parsing.Parsers$Parser.recur$4(Parsers.scala:955)
+	at dotty.tools.dotc.parsing.Parsers$Parser.infixOps(Parsers.scala:964)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExprRest(Parsers.scala:2209)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExpr(Parsers.scala:2199)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr1(Parsers.scala:2044)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr(Parsers.scala:1937)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$init$$$anonfun$5(Parsers.scala:1903)
+	at dotty.tools.dotc.parsing.Parsers$Parser.subPart(Parsers.scala:600)
+	at dotty.tools.dotc.parsing.Parsers$Parser.subExpr(Parsers.scala:1905)
+	at dotty.tools.dotc.parsing.Parsers$Parser.defDefOrDcl(Parsers.scala:3358)
+	at dotty.tools.dotc.parsing.Parsers$Parser.defOrDcl(Parsers.scala:3249)
+	at dotty.tools.dotc.parsing.Parsers$Parser.localDef(Parsers.scala:3930)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq$$anonfun$1(Parsers.scala:3954)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq(Parsers.scala:3960)
+	at dotty.tools.dotc.parsing.Parsers$Parser.block(Parsers.scala:2449)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr$$anonfun$1(Parsers.scala:2441)
+	at dotty.tools.dotc.parsing.Parsers$Parser.enclosed(Parsers.scala:533)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBraces(Parsers.scala:536)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBracesOrIndented(Parsers.scala:547)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inDefScopeBraces(Parsers.scala:550)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr(Parsers.scala:2439)
+	at dotty.tools.dotc.parsing.Parsers$Parser.simpleExpr(Parsers.scala:2268)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$init$$$anonfun$6(Parsers.scala:2224)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExpr(Parsers.scala:2199)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr1(Parsers.scala:2044)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr(Parsers.scala:1937)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq$$anonfun$1(Parsers.scala:3948)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq(Parsers.scala:3960)
+	at dotty.tools.dotc.parsing.Parsers$Parser.block(Parsers.scala:2449)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr$$anonfun$1(Parsers.scala:2441)
+	at dotty.tools.dotc.parsing.Parsers$Parser.enclosed(Parsers.scala:533)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBracesOrIndented(Parsers.scala:544)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inDefScopeBraces(Parsers.scala:550)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr(Parsers.scala:2439)
+	at dotty.tools.dotc.parsing.Parsers$Parser.simpleExpr(Parsers.scala:2268)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$init$$$anonfun$6(Parsers.scala:2224)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExpr(Parsers.scala:2199)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr1(Parsers.scala:2044)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr(Parsers.scala:1937)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq$$anonfun$1(Parsers.scala:3948)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq(Parsers.scala:3960)
+	at dotty.tools.dotc.parsing.Parsers$Parser.block(Parsers.scala:2449)
+	at dotty.tools.dotc.parsing.Parsers$Parser.caseClause(Parsers.scala:2606)
+	at dotty.tools.dotc.parsing.Parsers$Parser.matchClause$$anonfun$2$$anonfun$1(Parsers.scala:2115)
+	at dotty.tools.dotc.parsing.Parsers$Parser.caseClauses(Parsers.scala:2593)
+	at dotty.tools.dotc.parsing.Parsers$Parser.matchClause$$anonfun$1(Parsers.scala:2115)
+	at dotty.tools.dotc.parsing.Parsers$Parser.enclosed(Parsers.scala:533)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBraces(Parsers.scala:536)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBracesOrIndented(Parsers.scala:547)
+	at dotty.tools.dotc.parsing.Parsers$Parser.matchClause(Parsers.scala:2115)
+	at dotty.tools.dotc.parsing.Parsers$Parser.recur$4(Parsers.scala:955)
+	at dotty.tools.dotc.parsing.Parsers$Parser.infixOps(Parsers.scala:964)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExprRest(Parsers.scala:2209)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExpr(Parsers.scala:2199)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr1(Parsers.scala:2044)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr(Parsers.scala:1937)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq$$anonfun$1(Parsers.scala:3948)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockStatSeq(Parsers.scala:3960)
+	at dotty.tools.dotc.parsing.Parsers$Parser.block(Parsers.scala:2449)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr$$anonfun$1(Parsers.scala:2441)
+	at dotty.tools.dotc.parsing.Parsers$Parser.enclosed(Parsers.scala:533)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBracesOrIndented(Parsers.scala:544)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inDefScopeBraces(Parsers.scala:550)
+	at dotty.tools.dotc.parsing.Parsers$Parser.blockExpr(Parsers.scala:2439)
+	at dotty.tools.dotc.parsing.Parsers$Parser.simpleExpr(Parsers.scala:2268)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$init$$$anonfun$6(Parsers.scala:2224)
+	at dotty.tools.dotc.parsing.Parsers$Parser.postfixExpr(Parsers.scala:2199)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr1(Parsers.scala:2044)
+	at dotty.tools.dotc.parsing.Parsers$Parser.expr(Parsers.scala:1937)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$init$$$anonfun$5(Parsers.scala:1903)
+	at dotty.tools.dotc.parsing.Parsers$Parser.subPart(Parsers.scala:600)
+	at dotty.tools.dotc.parsing.Parsers$Parser.subExpr(Parsers.scala:1905)
+	at dotty.tools.dotc.parsing.Parsers$Parser.defDefOrDcl(Parsers.scala:3358)
+	at dotty.tools.dotc.parsing.Parsers$Parser.defOrDcl(Parsers.scala:3249)
+	at dotty.tools.dotc.parsing.Parsers$Parser.templateStatSeq$$anonfun$1(Parsers.scala:3877)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.templateStatSeq(Parsers.scala:3885)
+	at dotty.tools.dotc.parsing.Parsers$Parser.$anonfun$33(Parsers.scala:3772)
+	at dotty.tools.dotc.parsing.Parsers$Parser.enclosed(Parsers.scala:533)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBraces(Parsers.scala:536)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inBracesOrIndented(Parsers.scala:547)
+	at dotty.tools.dotc.parsing.Parsers$Parser.inDefScopeBraces(Parsers.scala:550)
+	at dotty.tools.dotc.parsing.Parsers$Parser.templateBody(Parsers.scala:3772)
+	at dotty.tools.dotc.parsing.Parsers$Parser.templateBodyOpt(Parsers.scala:3765)
+	at dotty.tools.dotc.parsing.Parsers$Parser.template(Parsers.scala:3742)
+	at dotty.tools.dotc.parsing.Parsers$Parser.templateOpt(Parsers.scala:3750)
+	at dotty.tools.dotc.parsing.Parsers$Parser.objectDef(Parsers.scala:3504)
+	at dotty.tools.dotc.parsing.Parsers$Parser.tmplDef(Parsers.scala:3463)
+	at dotty.tools.dotc.parsing.Parsers$Parser.defOrDcl(Parsers.scala:3255)
+	at dotty.tools.dotc.parsing.Parsers$Parser.topStatSeq(Parsers.scala:3829)
+	at dotty.tools.dotc.parsing.Parsers$Parser.topstats$2(Parsers.scala:3996)
+	at dotty.tools.dotc.parsing.Parsers$Parser.topstats$2(Parsers.scala:3990)
+	at dotty.tools.dotc.parsing.Parsers$Parser.compilationUnit$$anonfun$1(Parsers.scala:4001)
+	at dotty.tools.dotc.parsing.Parsers$Parser.checkNoEscapingPlaceholders(Parsers.scala:477)
+	at dotty.tools.dotc.parsing.Parsers$Parser.compilationUnit(Parsers.scala:4006)
+	at dotty.tools.dotc.parsing.Parsers$Parser.parse(Parsers.scala:177)
+	at dotty.tools.dotc.parsing.Parser.parse$$anonfun$1(ParserPhase.scala:34)
+	at dotty.tools.dotc.core.Phases$Phase.monitor(Phases.scala:411)
+	at dotty.tools.dotc.parsing.Parser.parse(ParserPhase.scala:41)
+	at dotty.tools.dotc.parsing.Parser.runOn$$anonfun$1(ParserPhase.scala:50)
+	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:15)
+	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:10)
+	at scala.collection.immutable.List.foreach(List.scala:333)
+	at dotty.tools.dotc.parsing.Parser.runOn(ParserPhase.scala:50)
+	at dotty.tools.dotc.Run.runPhases$4$$anonfun$4(Run.scala:261)
+	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:15)
+	at scala.runtime.function.JProcedure1.apply(JProcedure1.java:10)
+	at scala.collection.ArrayOps$.foreach$extension(ArrayOps.scala:1328)
+	at dotty.tools.dotc.Run.runPhases$5(Run.scala:272)
+	at dotty.tools.dotc.Run.compileUnits$$anonfun$1(Run.scala:280)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at dotty.tools.dotc.util.Stats$.maybeMonitored(Stats.scala:68)
+	at dotty.tools.dotc.Run.compileUnits(Run.scala:289)
+	at dotty.tools.dotc.Run.compileSources(Run.scala:222)
+	at dotty.tools.dotc.interactive.InteractiveDriver.run(InteractiveDriver.scala:163)
+	at scala.meta.internal.pc.ScalaPresentationCompiler.complete$$anonfun$1(ScalaPresentationCompiler.scala:139)
+	at scala.meta.internal.pc.CompilerAccess.withSharedCompiler(CompilerAccess.scala:137)
+	at scala.meta.internal.pc.CompilerAccess.$anonfun$1(CompilerAccess.scala:87)
+	at scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:197)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:139)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+Mar 05, 2022 2:29:15 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10219
+Mar 05, 2022 2:29:17 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10223
+[0m2022.03.05 14:29:27 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 2:31:11 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10281
+Mar 05, 2022 2:31:11 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10280
+Mar 05, 2022 2:31:14 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10288
+Mar 05, 2022 2:31:14 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10287
+Mar 05, 2022 2:31:23 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10312
+Mar 05, 2022 2:31:23 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10311
+Mar 05, 2022 2:31:23 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10310
+Mar 05, 2022 2:31:23 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10309
+Mar 05, 2022 2:31:27 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10320
+Mar 05, 2022 2:31:27 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10319
+Mar 05, 2022 2:31:27 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10318
+Mar 05, 2022 2:31:27 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10317
+Mar 05, 2022 2:31:27 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10322
+[0m2022.03.05 14:31:36 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 2:33:59 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10343
+Mar 05, 2022 2:33:59 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10342
+Mar 05, 2022 2:34:06 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10357
+Mar 05, 2022 2:34:39 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10381
+Mar 05, 2022 2:34:43 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10403
+Mar 05, 2022 2:34:43 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10402
+Mar 05, 2022 2:34:46 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10419
+Mar 05, 2022 2:34:56 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10456
+Mar 05, 2022 2:34:56 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10455
+Mar 05, 2022 2:35:12 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10482
+Mar 05, 2022 2:35:53 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10574
+[0m2022.03.05 14:36:45 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 2:37:02 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10650
+Mar 05, 2022 2:37:02 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10652
+[0m2022.03.05 14:37:04 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 14:37:48 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 14:38:17 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 2:38:33 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10702
+Mar 05, 2022 2:38:33 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10701
+Mar 05, 2022 2:38:34 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10705
+Mar 05, 2022 2:38:34 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10706
+[0m2022.03.05 14:38:36 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 14:42:14 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 14:42:24 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 14:42:45 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 14:42:50 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 2:44:50 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10823
+Mar 05, 2022 2:44:56 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10837
+Mar 05, 2022 2:44:57 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10839
+Mar 05, 2022 2:44:57 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10842
+Mar 05, 2022 2:44:57 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10843
+Mar 05, 2022 2:44:59 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10850
+Mar 05, 2022 2:45:02 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10858
+Mar 05, 2022 2:45:02 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10857
+Mar 05, 2022 2:45:03 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10859
+Mar 05, 2022 2:45:03 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10863
+Mar 05, 2022 2:45:10 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10886
+Mar 05, 2022 2:45:10 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10890
+Mar 05, 2022 2:45:10 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10894
+Mar 05, 2022 2:45:10 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10898
+Mar 05, 2022 2:45:16 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10917
+Mar 05, 2022 2:45:16 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10918
+Mar 05, 2022 2:45:18 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10926
+Mar 05, 2022 2:45:25 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10953
+Mar 05, 2022 2:45:25 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10954
+Mar 05, 2022 2:45:25 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10955
+Mar 05, 2022 2:45:25 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 10956
+Mar 05, 2022 2:47:31 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11010
+Mar 05, 2022 2:47:47 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11030
+[0m2022.03.05 14:47:48 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 2:48:02 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11050
+Mar 05, 2022 2:48:02 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11055
+[0m2022.03.05 14:48:03 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 2:48:48 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11105
+Mar 05, 2022 2:48:49 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11107
+[0m2022.03.05 14:49:42 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 2:49:51 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11176
+Mar 05, 2022 2:49:51 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11175
+Mar 05, 2022 2:49:57 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11193
+Mar 05, 2022 2:49:57 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11192
+Mar 05, 2022 2:49:57 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11191
+Mar 05, 2022 2:49:57 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11190
+Mar 05, 2022 2:50:09 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11239
+Mar 05, 2022 2:50:11 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11250
+[0m2022.03.05 14:50:12 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 14:50:51 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3Tree.scala[0m
+Mar 05, 2022 2:50:51 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11279
+Mar 05, 2022 2:50:51 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11280
+[0m2022.03.05 14:51:09 ERROR scalafmt: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala:54: error: [dialect default] ) expected but : found
+      case S.If(S.Prim(p, args): L3TestPrimitive, et, ef) =>
+                               ^[0m
+[0m2022.03.05 14:51:09 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 14:51:28 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 2:52:16 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11344
+Mar 05, 2022 2:52:16 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11343
+Mar 05, 2022 2:52:16 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11342
+Mar 05, 2022 2:52:28 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11382
+Mar 05, 2022 2:53:13 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11473
+Mar 05, 2022 2:53:16 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11477
+[0m2022.03.05 14:53:20 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 2:55:36 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11544
+Mar 05, 2022 2:55:37 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11548
+[0m2022.03.05 14:55:48 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 2:55:56 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11585
+Mar 05, 2022 2:56:04 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11603
+[0m2022.03.05 14:56:05 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 14:56:09 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 3:01:13 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11685
+Mar 05, 2022 3:01:30 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11728
+Mar 05, 2022 3:01:30 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11727
+Mar 05, 2022 3:01:32 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11733
+Mar 05, 2022 3:01:39 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11751
+Mar 05, 2022 3:01:39 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11750
+[0m2022.03.05 15:01:41 ERROR scalafmt: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala:101: error: [dialect default] illegal start of simple pattern
+      case S.Prim(()p: L3TestPrimitive, args) =>
+                     ^[0m
+[0m2022.03.05 15:01:41 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 15:01:55 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 3:02:17 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11850
+Mar 05, 2022 3:02:17 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11859
+Mar 05, 2022 3:02:18 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11872
+[0m2022.03.05 15:02:22 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 3:02:43 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11947
+[0m2022.03.05 15:02:43 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 3:04:12 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11988
+[0m2022.03.05 15:05:13 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 3:05:34 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12042
+Mar 05, 2022 3:05:38 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12053
+Mar 05, 2022 3:05:43 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12071
+Mar 05, 2022 3:05:43 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12070
+Mar 05, 2022 3:05:43 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12069
+Mar 05, 2022 3:05:52 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12103
+Mar 05, 2022 3:05:53 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12107
+Mar 05, 2022 3:06:05 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12116
+Mar 05, 2022 3:06:05 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12118
+Mar 05, 2022 3:06:10 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12126
+Mar 05, 2022 3:06:10 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12134
+[0m2022.03.05 15:06:21 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 3:07:03 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12177
+Exception in thread "pool-4-thread-7" java.lang.InterruptedException
+	at scala.meta.internal.metals.FutureCancelToken.checkCanceled(FutureCancelToken.scala:29)
+	at scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:195)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:139)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+Mar 05, 2022 3:07:07 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12187
+Mar 05, 2022 3:07:07 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12186
+Mar 05, 2022 3:07:07 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12185
+Mar 05, 2022 3:07:07 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12184
+Mar 05, 2022 3:07:08 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12191
+Mar 05, 2022 3:07:08 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12192
+Mar 05, 2022 3:07:12 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12200
+Mar 05, 2022 3:07:18 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12214
+Mar 05, 2022 3:07:20 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12216
+Mar 05, 2022 3:07:22 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12219
+Mar 05, 2022 3:07:23 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12221
+[0m2022.03.05 15:07:23 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 3:09:42 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12255
+Mar 05, 2022 3:09:43 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12258
+Mar 05, 2022 3:09:46 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12269
+Mar 05, 2022 3:09:46 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12270
+Mar 05, 2022 3:09:47 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12272
+Mar 05, 2022 3:10:03 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12302
+Mar 05, 2022 3:10:03 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12304
+Mar 05, 2022 3:10:30 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12341
+[0m2022.03.05 15:10:30 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 3:10:45 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12352
+Mar 05, 2022 3:10:53 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12354
+Mar 05, 2022 3:10:55 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12362
+Mar 05, 2022 3:10:56 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12366
+[0m2022.03.05 15:10:57 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 3:11:36 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12372
+[0m2022.03.05 15:11:36 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 3:23:16 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12433
+Mar 05, 2022 3:25:16 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12549
+[0m2022.03.05 15:25:17 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 3:33:00 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12601
+Mar 05, 2022 3:35:41 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12630
+Mar 05, 2022 3:35:57 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12638
+Mar 05, 2022 3:36:06 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12669
+Mar 05, 2022 3:36:08 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12681
+Mar 05, 2022 3:36:31 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12720
+[0m2022.03.05 15:36:43 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 3:37:44 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12773
+Mar 05, 2022 3:37:44 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12775
+Mar 05, 2022 3:37:44 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12776
+[0m2022.03.05 15:37:49 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 15:53:25 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 16:14:01 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/Main.scala[0m
+Mar 05, 2022 4:14:01 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12876
+Mar 05, 2022 4:14:01 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12877
+Mar 05, 2022 4:24:02 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12983
+Mar 05, 2022 4:24:02 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12981
+Mar 05, 2022 4:24:02 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 12980
+[0m2022.03.05 16:24:03 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 16:25:21 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 16:28:39 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 4:31:21 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13176
+Mar 05, 2022 4:31:33 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13195
+Mar 05, 2022 4:31:45 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13224
+Mar 05, 2022 4:31:45 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13223
+Mar 05, 2022 4:31:46 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13227
+Mar 05, 2022 4:31:51 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13236
+Mar 05, 2022 4:32:03 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13255
+Mar 05, 2022 4:32:09 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13271
+[0m2022.03.05 16:32:09 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 4:33:36 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13331
+Mar 05, 2022 4:33:36 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13330
+Mar 05, 2022 4:33:57 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13345
+Mar 05, 2022 4:33:57 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13346
+[0m2022.03.05 16:33:58 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 16:34:00 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 4:36:45 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13367
+Mar 05, 2022 4:36:52 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13374
+Mar 05, 2022 4:36:52 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13373
+Mar 05, 2022 4:36:53 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13378
+Mar 05, 2022 4:36:53 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13377
+Mar 05, 2022 4:36:53 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13376
+Mar 05, 2022 4:36:53 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13375
+Mar 05, 2022 4:36:55 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13384
+Mar 05, 2022 4:36:58 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13394
+[0m2022.03.05 16:37:12 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 16:38:48 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 4:39:05 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13472
+Mar 05, 2022 4:39:05 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13471
+[0m2022.03.05 16:39:23 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 4:39:43 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13506
+Mar 05, 2022 4:39:43 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13505
+Mar 05, 2022 4:39:48 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13520
+[0m2022.03.05 16:40:06 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 4:40:21 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13556
+Mar 05, 2022 4:40:21 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13555
+Mar 05, 2022 4:40:31 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13567
+[0m2022.03.05 16:40:38 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 16:40:40 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 16:41:10 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 16:41:41 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 4:42:06 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13659
+Mar 05, 2022 4:42:15 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13679
+Mar 05, 2022 4:42:27 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13694
+Mar 05, 2022 4:42:55 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13735
+Mar 05, 2022 4:42:56 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13740
+Mar 05, 2022 4:42:56 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13739
+Mar 05, 2022 4:42:56 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13741
+Mar 05, 2022 4:42:59 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13749
+Mar 05, 2022 4:43:14 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13762
+Mar 05, 2022 4:43:22 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13775
+Mar 05, 2022 4:43:24 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13781
+Mar 05, 2022 4:43:57 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13837
+Mar 05, 2022 4:44:06 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13863
+[0m2022.03.05 16:44:15 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 16:45:23 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 16:45:59 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 16:46:11 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 16:46:25 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 16:47:15 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 4:47:18 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13977
+Mar 05, 2022 4:47:33 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 13986
+[0m2022.03.05 16:47:37 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 16:47:54 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 16:49:48 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 4:50:04 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 14035
+Mar 05, 2022 4:50:05 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 14040
+Mar 05, 2022 4:50:05 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 14041
+Mar 05, 2022 4:50:26 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 14089
+Mar 05, 2022 4:50:26 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 14088
+Mar 05, 2022 4:50:26 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 14087
+Mar 05, 2022 4:50:26 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 14086
+[0m2022.03.05 16:50:47 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 4:51:03 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 14143
+[0m2022.03.05 16:51:07 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
