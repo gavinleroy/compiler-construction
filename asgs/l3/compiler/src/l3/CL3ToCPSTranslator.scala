@@ -101,7 +101,7 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
           )
         }
       // Logical primitive application
-      case prim @ S.Prim(p: L3TestPrimitive, args) =>
+      case S.Prim(p: L3TestPrimitive, args) =>
         // NOTE by calling fresh before the recursive `transform` calls the IR is easier to read.
         val c = Symbol.fresh("kont")
         val ct = Symbol.fresh("kont")
@@ -140,7 +140,7 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
 
   /** Transform a sequence of arguments collecting the result before passing
     * into a continuation. This is usefull when doing transformation of the form
-    * `(f e1 e2 ...) => (let ((v (f e1 e2 ...))) v)' when the matched expression
+    * `(f e1 e2 ...) => (let ((v (f e1 e2 ...))) v)` when the matched expression
     * template is internally represented as a Seq[E].
     */
   private def transform_seq(from: Seq[S.Tree], to: Seq[C.Atom] = Seq())(implicit

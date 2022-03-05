@@ -1558,3 +1558,7 @@ WARNING: Unmatched cancel notification for request id 14086
 Mar 05, 2022 4:51:03 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
 WARNING: Unmatched cancel notification for request id 14143
 [0m2022.03.05 16:51:07 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+[0m2022.03.05 16:59:40 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
+Mar 05, 2022 4:59:59 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 14245
+[0m2022.03.05 17:00:00 WARN  no build target for: /Users/gavinleroy/dev/uni/acc/asgs/l3/compiler/src/l3/CL3ToCPSTranslator.scala[0m
