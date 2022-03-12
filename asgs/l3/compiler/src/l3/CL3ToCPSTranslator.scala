@@ -22,10 +22,9 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
       case S.Let(bndgs, body) =>
         bndgs.foldRight(transform(body)) { case ((n, e), acc) =>
           transform(e) { v =>
-            C.LetP(n, L3Primitive.Id, Seq(v), acc)
+            C.LetP(n, L3.Id, Seq(v), acc)
           }
         }
-
       case S.LetRec(fs, body) =>
         C.LetF(
           fs map { case S.Fun(n, args, body) =>
@@ -148,7 +147,7 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
     * continuation when one of the branches has a literal value in it.
     *
     * NOTE: if `tree` is not itself an S.If node then transformation occurs as
-    * usual.
+    * usual, comparing against false and swapping the branches.
     */
   private def transform_cond(tree: S.Tree, kt: Symbol, kf: Symbol): C.Tree =
     tree match {
@@ -176,7 +175,7 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
       case tree =>
         transform(tree) { cnd_arg =>
           C.If(
-            L3Primitive.Eq,
+            L3.Eq,
             Seq(cnd_arg, C.AtomL(BooleanLit(false))),
             kf,
             kt
@@ -188,10 +187,6 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
     * continuation `k`. This is used when the context of a transformation would
     * simply apply the result to a continuation and this will bypass an
     * unnecessary binding.
-    *
-    * NOTE: a node can be transformed if internally `transform` doesn't need to
-    * be called. The continuation expects a *single* parameter. This would
-    * include literal values, ... TODO
     */
   private def transform_tailrec(tree: S.Tree, k: Symbol): C.Tree = {
     implicit val pos = tree.pos
@@ -207,7 +202,7 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
       case S.Let(bndgs, body) =>
         bndgs.foldRight(transform_tailrec(body, k)) { case ((n, e), acc) =>
           transform(e) { v =>
-            C.LetP(n, L3Primitive.Id, Seq(v), acc)
+            C.LetP(n, L3.Id, Seq(v), acc)
           }
         }
       case S.LetRec(fs, body) =>
