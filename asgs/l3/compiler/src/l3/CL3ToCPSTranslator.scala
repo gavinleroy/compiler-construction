@@ -12,63 +12,60 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
     * is *not* in tail position. Specific optimization cases are found later in
     * the file, see below.
     */
-  private def transform(tree: S.Tree)(implicit ctx: C.Atom => C.Tree): C.Tree =
-    tree match {
-      // Trivial cases
+  private def transform(
+      tree: S.Tree
+  )(implicit ctx: C.Atom => C.Tree): C.Tree = {
+    implicit val pos = tree.pos
+    (tree: @unchecked) match {
       case S.Ident(n) => ctx(C.AtomN(n))
       case S.Lit(l)   => ctx(C.AtomL(l))
-      // Let cases
       case S.Let(bndgs, body) =>
         bndgs.foldRight(transform(body)) { case ((n, e), acc) =>
           transform(e) { v =>
             C.LetP(n, L3Primitive.Id, Seq(v), acc)
           }
         }
-      // Letrec cases
+
       case S.LetRec(fs, body) =>
         C.LetF(
           fs map { case S.Fun(n, args, body) =>
-            val k = Symbol.fresh("kont")
+            val k = Symbol.fresh("k")
             C.Fun(
               n,
               k,
               args,
-              transform_tailrec(body, k) // XXX tail position
-              // transform(body) { v => C.AppC(k, Seq(v)) }
+              transform_tailrec(body, k)
             )
           },
           transform(body)
         )
-      // Application
       case S.App(f, args) =>
-        transform_seq(args) { c_args =>
-          transform(f) { vf =>
-            val c = Symbol.fresh("kont")
-            val r = Symbol.fresh("kont")
+        transform(f) { vf =>
+          transform_seq(args) { c_args =>
+            val k = Symbol.fresh("k")
+            val r = Symbol.fresh("atom")
             C.LetC(
-              Seq(C.Cnt(c, Seq(r), ctx(C.AtomN(r)))),
-              C.AppF(vf, c, c_args)
+              Seq(C.Cnt(k, Seq(r), ctx(C.AtomN(r)))),
+              C.AppF(vf, k, c_args)
             )
           }
         }
       // If with logical primitive
       case S.If(S.Prim(p: L3TestPrimitive, args), et, ef) =>
         // NOTE by calling fresh before the recursive `transform` calls the IR is easier to read.
-        val k = Symbol.fresh("kont")
-        val kt = Symbol.fresh("kont")
-        val kf = Symbol.fresh("kont")
+        val k = Symbol.fresh("k")
+        val kt = Symbol.fresh("k")
+        val kf = Symbol.fresh("k")
         val r = Symbol.fresh("atom")
         transform_seq(args) { c_args =>
           C.LetC(
             Seq(C.Cnt(k, Seq(r), ctx(C.AtomN(r)))),
             C.LetC(
               Seq(
-                // XXX tail call
                 C.Cnt(
                   kt,
                   Seq(),
                   transform_tailrec(et, k)
-                  // transform(et) { vt => C.AppC(c, Seq(vt)) }
                 )
               ),
               C.LetC(
@@ -76,8 +73,7 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
                   C.Cnt(
                     kf,
                     Seq(),
-                    transform_tailrec(ef, k) // XXX tail call
-                    // transform(ef) { vf => C.AppC(c, Seq(vf)) }
+                    transform_tailrec(ef, k)
                   )
                 ),
                 C.If(p, c_args, kt, kf)
@@ -85,12 +81,11 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
             )
           )
         }
-      // If with other expression
+      // If with "other" expression
       case S.If(cnd, et, ef) =>
-        // NOTE by calling fresh before the recursive `transform` calls the IR is easier to read.
-        val k = Symbol.fresh("kont")
-        val kt = Symbol.fresh("kont")
-        val kf = Symbol.fresh("kont")
+        val k = Symbol.fresh("k")
+        val kt = Symbol.fresh("k")
+        val kf = Symbol.fresh("k")
         val r = Symbol.fresh("atom")
         C.LetC(
           Seq(C.Cnt(k, Seq(r), ctx(C.AtomN(r)))),
@@ -99,8 +94,7 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
               C.Cnt(
                 kt,
                 Seq(),
-                transform_tailrec(et, k) // XXX tail rec
-                // transform(et) { vt => C.AppC(c, Seq(vt)) }
+                transform_tailrec(et, k)
               )
             ),
             C.LetC(
@@ -108,42 +102,18 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
                 C.Cnt(
                   kf,
                   Seq(),
-                  transform_tailrec(ef, k) // XXX tail rec
-                  // transform(ef) { vf => C.AppC(c, Seq(vf)) }
+                  transform_tailrec(ef, k)
                 )
               ),
-              transform_cond(cnd, kt, kf) // XXX possible nested if ctx
+              transform_cond(cnd, kt, kf)
             )
           )
         )
-
       // Logical primitive application
-      case S.Prim(p: L3TestPrimitive, args) =>
-        // NOTE by calling fresh before the recursive `transform` calls the IR is easier to read.
-        val k = Symbol.fresh("kont")
-        val kt = Symbol.fresh("kont")
-        val kf = Symbol.fresh("kont")
-        val r = Symbol.fresh("atom")
-        transform_seq(args) { c_args =>
-          C.LetC(
-            Seq(C.Cnt(k, Seq(r), ctx(C.AtomN(r)))),
-            C.LetC(
-              Seq(
-                C.Cnt(kt, Seq(), C.AppC(k, Seq(C.AtomL(BooleanLit(true)))))
-              ),
-              C.LetC(
-                Seq(
-                  C.Cnt(
-                    kf,
-                    Seq(),
-                    C.AppC(k, Seq(C.AtomL(BooleanLit(false))))
-                  )
-                ),
-                C.If(p, c_args, kt, kf)
-              )
-            )
-          )
-        }
+      case prim_app @ S.Prim(p: L3TestPrimitive, args) =>
+        transform(
+          S.If(prim_app, S.Lit(BooleanLit(true)), S.Lit(BooleanLit(false)))
+        )
       // Other primitive application
       case S.Prim(p: L3ValuePrimitive, args) =>
         transform_seq(args) { c_args =>
@@ -154,6 +124,7 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
       case S.Halt(arg) =>
         transform(arg) { C.Halt(_) }
     }
+  }
 
   /** Transform a sequence of arguments collecting the result before passing
     * into a continuation. This is usefull when doing transformation of the form
@@ -172,15 +143,6 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
         }
     }
 
-  /** Transform a SymbolicCL3Tree `tree` and immediatly give the result to the
-    * continuation `k`. This is used when the context of a transformation would
-    * simply apply the result to a continuation and this will bypass an
-    * unnecessary binding.
-    */
-  private def transform_tailrec(tree: S.Tree, k: Symbol): C.Tree =
-    // TODO FIXME make this actually apply continuation directly
-    transform(tree) { v => C.AppC(k, Seq(v)) }
-
   /** Transform a SymbolicCL3Tree `tree` **that appeared in the conditional of
     * an if node**. This case can then be specialized to jump to the direct
     * continuation when one of the branches has a literal value in it.
@@ -193,21 +155,24 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
       // IF AST when both branches are BooleanLit
       case S.If(cnd, S.Lit(BooleanLit(b1)), S.Lit(BooleanLit(b2))) =>
         transform_cond(cnd, if (b1) kt else kf, if (b2) kt else kf)
-      // IF AST when both left branche is a BooleanLit
+      // IF AST when left branch is a BooleanLit
       case S.If(cnd, S.Lit(BooleanLit(b1)), ef) =>
-        val kkf = Symbol.fresh("kont")
+        val kkf = Symbol.fresh("k")
         C.LetC(
           Seq(C.Cnt(kkf, Seq(), transform_cond(ef, kt, kf))),
           transform_cond(cnd, if (b1) kt else kf, kkf)
         )
-      // IF AST when both right branche is a BooleanLit
+      // IF AST when right branch is a BooleanLit
       case S.If(cnd, et, S.Lit(BooleanLit(b1))) =>
-        val kkt = Symbol.fresh("kont")
+        val kkt = Symbol.fresh("k")
         C.LetC(
           Seq(C.Cnt(kkt, Seq(), transform_cond(et, kt, kf))),
           transform_cond(cnd, kkt, if (b1) kt else kf)
         )
-      // Not an S.If node so we transform as before
+      // Primitives can be directly translated into an C.If
+      case S.If(S.Prim(p: L3TestPrimitive, args), et, ef) =>
+        transform_seq(args) { C.If(p, _, kt, kf) }
+      // XXX Anything else can be handled normally
       case tree =>
         transform(tree) { cnd_arg =>
           C.If(
@@ -218,4 +183,82 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
           )
         }
     }
+
+  /** Transform a SymbolicCL3Tree `tree` and immediatly give the result to the
+    * continuation `k`. This is used when the context of a transformation would
+    * simply apply the result to a continuation and this will bypass an
+    * unnecessary binding.
+    *
+    * NOTE: a node can be transformed if internally `transform` doesn't need to
+    * be called. The continuation expects a *single* parameter. This would
+    * include literal values, ... TODO
+    */
+  private def transform_tailrec(tree: S.Tree, k: Symbol): C.Tree = {
+    implicit val pos = tree.pos
+    (tree: @unchecked) match {
+      case S.Ident(n) => C.AppC(k, Seq(C.AtomN(n)))
+      case S.Lit(l)   => C.AppC(k, Seq(C.AtomL(l)))
+      case S.App(f, args) =>
+        transform(f) { vf =>
+          transform_seq(args) { c_args =>
+            C.AppF(vf, k, c_args)
+          }
+        }
+      case S.Let(bndgs, body) =>
+        bndgs.foldRight(transform_tailrec(body, k)) { case ((n, e), acc) =>
+          transform(e) { v =>
+            C.LetP(n, L3Primitive.Id, Seq(v), acc)
+          }
+        }
+      case S.LetRec(fs, body) =>
+        C.LetF(
+          fs map { case S.Fun(n, args, body) =>
+            val j = Symbol.fresh("k")
+            C.Fun(
+              n,
+              j,
+              args,
+              transform_tailrec(body, j)
+            )
+          },
+          transform_tailrec(body, k)
+        )
+      // NOTE: Ifs with both a TestPrimitive and other expression
+      // can be handled by the 'transform_cond' function.
+      case S.If(cnd, et, ef) =>
+        val kt = Symbol.fresh("k")
+        val kf = Symbol.fresh("k")
+        C.LetC(
+          Seq(
+            C.Cnt(
+              kt,
+              Seq(),
+              transform_tailrec(et, k)
+            )
+          ),
+          C.LetC(
+            Seq(
+              C.Cnt(
+                kf,
+                Seq(),
+                transform_tailrec(ef, k)
+              )
+            ),
+            transform_cond(cnd, kt, kf)
+          )
+        )
+      case prim @ S.Prim(p: L3TestPrimitive, args) =>
+        transform_tailrec(
+          S.If(prim, S.Lit(BooleanLit(true)), S.Lit(BooleanLit(false))),
+          k
+        )
+      case S.Prim(p: L3ValuePrimitive, args) =>
+        transform_seq(args) { c_args =>
+          val n = Symbol.fresh("prim")
+          C.LetP(n, p, c_args, C.AppC(k, Seq(C.AtomN(n))))
+        }
+      case S.Halt(arg) =>
+        transform(arg) { C.Halt(_) }
+    }
+  }
 }

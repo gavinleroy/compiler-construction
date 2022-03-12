@@ -7,7 +7,7 @@ import l3.SymbolicCL3TreeModule.Tree
 
 import CL3TreeFormatter._ // Implicits required for CL3 tree printing
 import CPSTreeFormatter._ // Implicits required for CPS tree printing
-import CPSTreeChecker._   // Implicits required for CPS tree checking
+import CPSTreeChecker._ // Implicits required for CPS tree checking
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -19,18 +19,19 @@ object Main {
     )
 
     val basePath = Paths.get(".").toAbsolutePath
-    Either.cond(! args.isEmpty, args.toIndexedSeq, "no input file given")
+    Either
+      .cond(!args.isEmpty, args.toIndexedSeq, "no input file given")
       .flatMap(L3FileReader.readFilesExpandingModules(basePath, _))
       .flatMap(p => L3Parser.parse(p._1, p._2))
       .flatMap(CL3NameAnalyzer)
       .flatMap(backEnd) match {
-        case Right((retCode, maybeMsg)) =>
-          maybeMsg foreach println
-          sys.exit(retCode)
-        case Left(errMsg) =>
-          println(s"Error: $errMsg")
-          sys.exit(1)
-      }
+      case Right((retCode, maybeMsg)) =>
+        maybeMsg foreach println
+        sys.exit(retCode)
+      case Left(errMsg) =>
+        println(s"Error: $errMsg")
+        sys.exit(1)
+    }
   }
 
   private lazy val outPrintWriter = new PrintWriter(System.out, true)
