@@ -1,0 +1,12 @@
+;; In Emacs, open this file in -*- Scheme -*- mode
+
+;; Test the "and" expression
+;; A Small file for manually testing the opt tranlations
+
+;; (letrec ((f (fun (g) (g)))) f)
+
+(let ((a #f)
+      (b #f)
+      (x #f)
+      (y #f))
+  (if (if a b #f) x y))

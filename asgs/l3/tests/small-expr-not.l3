@@ -2,4 +2,33 @@
 
 ;; Test a single "not" expression
 
-(@byte-write (if (@= #t (not #f)) 65 63))
+;; (@byte-write (if (@= #t (not #f)) 65 63))
+;; (@byte-write (if (@= #t (not #f)) 65 63))
+
+;; (letrec ((f (fun (g) (g 1))))
+;;   (halt 0))
+
+;; (int-print
+;;  (letrec ((f (fun (n a)
+;;                   (if (not (> n 1))
+;;                       a
+;;                       (* (* a n) (g (- n 1))))))
+;;           (g (fun (n)
+;;                   (if (= n 1)
+;;                       1
+;;                       (halt
+;;                        (f (- n 1) n))))))
+;;    (g 10)))
+
+
+
+(letrec ((f (fun (n a)
+                 (letrec ((g (fun (x)
+                                  (let* ((r (* n a))
+                                         (rr (* r x))
+                                         (dec (- x 1)))
+                                    (if (< x 2)
+                                        (* n a)
+                                        (f dec rr))))))
+                   (g (- n 1))))))
+  (int-print (f 10 1)))

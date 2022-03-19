@@ -16,7 +16,7 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
       tree: S.Tree
   )(implicit ctx: C.Atom => C.Tree): C.Tree = {
     implicit val pos = tree.pos
-    (tree: @unchecked) match {
+    tree match {
       case S.Ident(n) => ctx(C.AtomN(n))
       case S.Lit(l)   => ctx(C.AtomL(l))
       case S.Let(bndgs, body) =>
@@ -190,7 +190,7 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
     */
   private def transform_tailrec(tree: S.Tree, k: Symbol): C.Tree = {
     implicit val pos = tree.pos
-    (tree: @unchecked) match {
+    tree match {
       case S.Ident(n) => C.AppC(k, Seq(C.AtomN(n)))
       case S.Lit(l)   => C.AppC(k, Seq(C.AtomL(l)))
       case S.App(f, args) =>
