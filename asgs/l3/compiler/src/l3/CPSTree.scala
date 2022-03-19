@@ -52,3 +52,15 @@ object SymbolicCPSTreeModule extends CPSTreeModule {
   type ValuePrimitive = L3ValuePrimitive
   type TestPrimitive = L3TestPrimitive
 }
+
+/**
+  * Module for "low-level" CPS trees: the only literal values are
+  * integers, and the primitives work on integers and/or pointers to
+  * heap-allocated blocks.
+  */
+object SymbolicCPSTreeModuleLow extends CPSTreeModule {
+  type Name = Symbol
+  type Literal = Bits32
+  type ValuePrimitive = CPSValuePrimitive
+  type TestPrimitive = CPSTestPrimitive
+}

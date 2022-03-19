@@ -50,4 +50,6 @@ class CPSTreeFormatter[T <: CPSTreeModule](treeModule: T)
 object CPSTreeFormatter {
   implicit object SymbolicCPSTreeFormatter
       extends CPSTreeFormatter(SymbolicCPSTreeModule)
+  implicit object SymbolicCPSTreeLowFormatter
+      extends CPSTreeFormatter(SymbolicCPSTreeModuleLow)
 }

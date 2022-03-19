@@ -165,3 +165,84 @@ object CPSInterpreterHigh extends CPSInterpreter(SymbolicCPSTreeModule)
       case (Eq, Seq(v1, v2)) => v1 == v2
     }
 }
+
+class CPSInterpreterLow(log: SymbolicCPSTreeModuleLow.Tree => Unit)
+    extends CPSInterpreter(SymbolicCPSTreeModuleLow, log)
+    with (SymbolicCPSTreeModuleLow.Tree => TerminalPhaseResult) {
+  import treeModule._
+  import CPSValuePrimitive._
+  import CPSTestPrimitive._
+  import scala.language.implicitConversions
+
+  protected case class BlockV(addr: Bits32,
+                              tag: L3BlockTag,
+                              contents: Array[Value])
+      extends Value
+  protected case class BitsV(value: Bits32) extends Value
+
+  private var nextBlockAddr = 0
+  protected def allocBlock(tag: L3BlockTag, contents: Array[Value]): BlockV = {
+    val block = BlockV(nextBlockAddr, tag, contents)
+    nextBlockAddr += 4
+    block
+  }
+
+  private implicit def valueToBits(v: Value): Bits32 = v match {
+    case BlockV(addr, _, _) => addr
+    case BitsV(value)       => value
+    case _: FunV | _: CntV  => sys.error(s"cannot convert $v to bits")
+  }
+
+  protected def extractInt(v: Value): Int = v match { case BitsV(i) => i }
+
+  protected def wrapFunV(funV: FunV): Value = funV
+  protected def unwrapFunV(v: Value): FunV = v.asInstanceOf[FunV]
+
+  protected def evalLit(l: Literal): Value = BitsV(l)
+
+  protected def evalValuePrim(p: ValuePrimitive, args: Seq[Value]): Value =
+    (p, args) match {
+      case (Add, Seq(v1, v2)) => BitsV(v1 + v2)
+      case (Sub, Seq(v1, v2)) => BitsV(v1 - v2)
+      case (Mul, Seq(v1, v2)) => BitsV(v1 * v2)
+      case (Div, Seq(v1, v2)) => BitsV(v1 / v2)
+      case (Mod, Seq(v1, v2)) => BitsV(v1 % v2)
+
+      case (ShiftLeft, Seq(v1, v2)) => BitsV(v1 << v2)
+      case (ShiftRight, Seq(v1, v2)) => BitsV(v1 >> v2)
+      case (And, Seq(v1, v2)) => BitsV(v1 & v2)
+      case (Or, Seq(v1, v2)) => BitsV(v1 | v2)
+      case (XOr, Seq(v1, v2)) => BitsV(v1 ^ v2)
+
+      case (ByteRead, Seq()) => BitsV(readByte())
+      case (ByteWrite, Seq(c)) => writeByte(c); BitsV(0)
+
+      case (BlockAlloc(t), Seq(BitsV(s))) =>
+        allocBlock(t, Array.fill(s)(BitsV(0)))
+      case (BlockTag, Seq(BlockV(_, t, _))) => BitsV(t)
+      case (BlockLength, Seq(BlockV(_, _, c))) => BitsV(c.length)
+      case (BlockGet, Seq(BlockV(_, _, c), BitsV(i))) => c(i)
+      case (BlockSet, Seq(BlockV(_, _, c), BitsV(i), v)) =>
+        c(i) = v; BitsV(0)
+
+      case (Id, Seq(o)) => o
+    }
+
+  protected def evalTestPrim(p: TestPrimitive, args: Seq[Value]): Boolean =
+    (p, args) match {
+      case (Lt, Seq(v1, v2)) => v1 < v2
+      case (Le, Seq(v1, v2)) => v1 <= v2
+      case (Eq, Seq(v1, v2)) => v1 == v2
+    }
+}
+
+object CPSInterpreterLow extends CPSInterpreterLow(_ => ())
+
+object CPSInterpreterLowNoCC extends CPSInterpreterLow(_ => ()) {
+  override protected def wrapFunV(funV: FunV): Value =
+    allocBlock(BlockTag.Function.id, Array(funV))
+
+  override protected def unwrapFunV(v: Value): FunV = v match {
+    case BlockV(_, _, Array(funV: FunV)) => funV
+  }
+}
