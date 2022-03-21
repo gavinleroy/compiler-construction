@@ -130,7 +130,7 @@ object CPSValueRepresenter extends (H.Tree => L.Tree) {
             }
           }
         }
-      // FIXME can this be optimized?
+      // NOTE `a % b` cannot be optimized when using tagged integers.
       case H.LetP(name, L3.IntMod, Seq(a, b), body) =>
         templateP(CPSV.ShiftRight, Seq(rewrite(a), L.AtomL(intTagShift))) {
           aa =>
