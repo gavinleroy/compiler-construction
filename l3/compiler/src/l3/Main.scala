@@ -16,7 +16,8 @@ object Main {
         andThen CPSValueRepresenter
         andThen treePrinter("---------- After value representation")
         andThen treeChecker
-        andThen CPSInterpreterLowNoCC
+        andThen CPSHoister
+        andThen CPSInterpreterLow
     )
 
     val basePath = Paths.get(".").toAbsolutePath
