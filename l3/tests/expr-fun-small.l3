@@ -1,0 +1,7 @@
+;; In Emacs, open this file in -*- Scheme -*- mode
+
+;; Test the "fun" expression
+
+(@byte-write 73)
+
+((fun (b) (@byte-write b)) 65)

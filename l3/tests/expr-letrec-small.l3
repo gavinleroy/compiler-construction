@@ -1,0 +1,9 @@
+;; In Emacs, open this file in -*- Scheme -*- mode
+
+;; Test the "letrec" expression
+
+(letrec ((even? (fun (x) (if (@= x 0) #t (odd?  (@- x 1)))))
+         (odd?  (fun (x) (if (@= x 0) #f (even? (@- x 1))))))
+  (if (even? 66)
+      (@byte-write 66)
+      (@byte-write 63)))

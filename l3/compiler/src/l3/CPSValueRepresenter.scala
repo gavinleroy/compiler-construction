@@ -26,17 +26,88 @@ object CPSValueRepresenter extends (H.Tree => L.Tree) {
           cnts map { case H.Cnt(n, args, body) => L.Cnt(n, args, apply(body)) },
           apply(body)
         )
-      case H.LetF(funs, body) =>
+
+      // NOTE FIXME give me an illustrative comment
+      case H.LetF(funs, body) => {
+        val (fns, fNsSzs, iBody) = funs.foldRight(
+          (Seq(): Seq[L.Fun], Seq(): Seq[(Symbol, Int)], apply(body): L.Tree)
+        ) {
+          case (
+                hfun @ H.Fun(fname, retC, args, fBody),
+                (fccs, fNsSzs, innerBody)
+              ) => {
+            // FIXME how can I turn this into an ml style |> composition?
+            val substApp =
+              (t: Tuple2[Seq[Symbol], Seq[Symbol]]) => subst(t._1, t._2)
+            val FVSubst: Subst[Symbol] =
+              substApp(
+                getFreeVars(hfun).toSeq
+                  .map((_, Symbol.fresh("fv")))
+                  .unzip
+              )
+            val w1 = Symbol.fresh("w")
+            val env1 = Symbol.fresh("env")
+            val fBodyPrime =
+              substitute(apply(fBody), FVSubst ++ subst(fname, env1))
+
+            val FViViLocs: Seq[((Symbol, Symbol), Int)] =
+              FVSubst.toSeq.zipWithIndex
+                .map { case (fst, cnt) => (fst, cnt + 1) }
+
+            val newFun = L.Fun(
+              w1,
+              retC,
+              env1 +: args,
+              FViViLocs.foldRight(fBodyPrime) { case (((_, vi), loc), iBody) =>
+                L.LetP(
+                  vi,
+                  CPSV.BlockGet,
+                  Seq(L.AtomN(env1), L.AtomL(loc)),
+                  iBody
+                )
+              }
+            )
+            (
+              newFun +: fccs,
+              (fname, FViViLocs.size + 1) +: fNsSzs,
+              templateP(
+                CPSV.BlockSet,
+                Seq(L.AtomN(fname), L.AtomL(0), L.AtomN(w1))
+              ) { _ =>
+                FViViLocs.foldRight(innerBody) {
+                  case (((fvi, _), loc), iBody) =>
+                    templateP(
+                      CPSV.BlockSet,
+                      Seq(L.AtomN(fname), L.AtomL(loc), L.AtomN(fvi))
+                    ) { _ => iBody }
+                }
+              }
+            )
+          }
+        }
         L.LetF(
-          funs map { case H.Fun(n, retc, args, body) =>
-            L.Fun(n, retc, args, apply(body))
-          },
-          apply(body)
+          fns,
+          fNsSzs.foldRight(iBody) { case ((fName, size), body) =>
+            L.LetP(
+              fName,
+              CPSV.BlockAlloc(202),
+              Seq(L.AtomL(size)),
+              body
+            )
+          }
         )
+      }
+
       case H.AppC(cnt, args) =>
         L.AppC(cnt, args map rewrite)
-      case H.AppF(fun, retc, args) =>
-        L.AppF(rewrite(fun), retc, args map rewrite)
+
+      case H.AppF(fun, retc, args) => {
+        val fv = rewrite(fun)
+        templateP(CPSV.BlockGet, Seq(fv, L.AtomL(0x00))) { fa =>
+          L.AppF(fa, retc, fv +: (args map rewrite))
+        }
+      }
+
       case H.Halt(a) =>
         templateP(CPSV.ShiftRight, Seq(rewrite(a), L.AtomL(intTagShift))) {
           aa => L.Halt(aa)
@@ -228,4 +299,95 @@ object CPSValueRepresenter extends (H.Tree => L.Tree) {
       case H.AtomL(UnitLit) =>
         L.AtomL(unitTagBits)
     }
+
+  /** Substitution of free variables to fresh symbols.
+    *
+    * Given a SymbolicTreeModuleLow.Tree and a map (FreeVariable -> Symbol)
+    * replace all of the free variables with a fresh symbol.
+    */
+  private def substitute(tree: L.Tree, s: Subst[Symbol]): L.Tree = {
+    def substT(tree: L.Tree): L.Tree =
+      tree match {
+        case L.LetP(name, prim, args, body) =>
+          L.LetP(name, prim, args map substA, substT(body))
+        case L.LetC(cnts, body) =>
+          L.LetC(cnts map substC, substT(body))
+        case L.LetF(funs, body) =>
+          L.LetF(funs map substF, substT(body))
+        case L.AppC(cnt, args) =>
+          L.AppC(cnt, args map substA)
+        case L.AppF(fun, retC, args) =>
+          L.AppF(substA(fun), retC, args map substA)
+        case L.If(cond, args, thenC, elseC) =>
+          L.If(cond, args map substA, thenC, elseC)
+        case L.Halt(arg) =>
+          L.Halt(substA(arg))
+      }
+    def substC(cnt: L.Cnt): L.Cnt =
+      L.Cnt(cnt.name, cnt.args map { n => s.getOrElse(n, n) }, substT(cnt.body))
+    def substF(fun: L.Fun): L.Fun =
+      L.Fun(
+        s.getOrElse(fun.name, fun.name),
+        fun.retC,
+        fun.args map { n => s.getOrElse(n, n) },
+        substT(fun.body)
+      )
+    def substA(atom: L.Atom): L.Atom =
+      atom match {
+        case L.AtomN(n) =>
+          L.AtomN(s.getOrElse(n, n))
+        case a => a
+      }
+    substT(tree)
+  }
+
+  /** Find the set of Free Variables in a given SymbolicCPSTreeModule.Tree
+    *
+    * NOTE A free variable represents a symbol that was captured from an
+    * enclosing closure (i.e. not defined locally).
+    */
+  private def getFreeVars(fun: H.Fun): Set[Symbol] = {
+    def getFVT(tree: H.Tree): Set[Symbol] =
+      tree match {
+        case H.LetP(name, _, args, body) =>
+          args
+            .map(getFVA _)
+            .fold(getFVT(body) - name) { _ | _ }
+        case H.LetC(cnts, body) =>
+          cnts
+            .map(getFVC _)
+            .fold(getFVT(body)) { _ | _ }
+        case H.LetF(funs, body) =>
+          funs
+            .map(getFVF _)
+            .fold(getFVT(body)) { _ | _ }
+            .removedAll((funs.map(_.name)))
+        case H.AppC(cnt, args) =>
+          args
+            .map(getFVA _)
+            .fold(Set(): Set[Symbol]) { _ | _ }
+        case H.AppF(fun, retC, args) =>
+          args
+            .map(getFVA _)
+            .fold(getFVA(fun)) { _ | _ }
+        case H.If(cond, args, thenC, elseC) =>
+          args
+            .map(getFVA _)
+            .fold(Set(): Set[Symbol]) { _ | _ }
+        case H.Halt(arg) =>
+          getFVA(arg)
+      }
+    def getFVF(fun: H.Fun): Set[Symbol] =
+      getFVT(fun.body) -- fun.args
+    def getFVC(cnt: H.Cnt): Set[Symbol] =
+      getFVT(cnt.body) -- cnt.args
+    def getFVA(atom: H.Atom): Set[Symbol] =
+      atom match {
+        case H.AtomN(name) =>
+          Set(name)
+        case H.AtomL(_) =>
+          Set()
+      }
+    getFVF(fun);
+  }
 }
