@@ -1,0 +1,31 @@
+;; In Emacs, open this file in -*- Scheme -*- mode
+
+;; Test the "and" expression
+
+(@byte-write 65)
+
+;; (def make-addr
+;;      (fun (x)
+;;           (fun (y) (@+ x y))))
+
+;; (def one (make-addr 1))
+;; (def two (make-addr 2))
+;; (def one (fun (x) (@+ x 1)))
+;; (def two (fun (x) (@+ x 2)))
+
+(def to-sub 1)
+
+(defrec fac
+  (fun (n)
+       (if (@<= n 1)
+           1
+           (@* n (fac (@- n to-sub))))))
+
+;; (if (@= (one 1)
+;;         (two 0))
+;;     (@byte-write 66)
+;;     (@byte-write 64))
+
+(if (@= (fac 5) 120)
+    (@byte-write 67)
+    (@byte-write 64))

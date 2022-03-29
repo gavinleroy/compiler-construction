@@ -1,0 +1,15 @@
+;; In Emacs, open this file in -*- Scheme -*- mode
+
+;; Test the mutually recursive functions
+
+(@byte-write 65)
+
+(def zero 0)
+(def false #f)
+(def dec (fun (n) (@- n 1)))
+
+(letrec ((even? (fun (n) (or (@= n zero) (odd? (dec n)))))
+         (odd? (fun (n) (if (@= n 0) false (even? (dec n))))))
+  (if (even? 10)
+      (@byte-write 66)
+      (@byte-write 63)))

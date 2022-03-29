@@ -2,6 +2,13 @@
 
 ;; Test the "fun" expression
 
-(@byte-write 73)
+;; (@byte-write 73)
 
-((fun (b) (@byte-write b)) 65)
+;; ((fun (b) (@byte-write b)) 65)
+
+(let* ((inc (fun (x) (@+ x 1)))
+       (compose (fun (f g)
+                     (fun (x) (f (g x)))))
+       (succ (fun (x) (inc x)))
+       (twice (fun (x) (@+ x x))))
+  (@byte-write ((compose succ twice) 34)))
