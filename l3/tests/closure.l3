@@ -1,0 +1,64 @@
+;; In Emacs, open this file in -*- Scheme -*- mode
+
+(def newline (fun () (@byte-write 10)))
+
+(def assert (fun (a b)
+                 (string-print "[assert] ")
+                 (if (not (@= a b))
+                     (string-print "fail")
+                     (string-print "pass"))
+                 (newline)))
+
+(def test (fun (f g x y)
+               (if (@= (f x y) (g x y))
+                   (string-print "ok")
+                   (string-print "incorrect implementation"))
+               (newline)))
+
+(def dec (fun (x) (@- x 1)))
+
+(def Y (fun (f)
+            ((fun (x)
+                  (x x))
+             (fun (x)
+                  (f (fun (y)
+                          ((x x) y)))))))
+
+(def %mul (Y (fun (f)
+                  (fun (x)
+                       (fun (y)
+                            (if (@= y 0)
+                                0
+                                (@+ x ((f x) (dec y)))))))))
+
+(def mul@1 (fun (a) ((%mul 1) a)))
+(def mul@2 (fun (a b) ((%mul a) (mul b))))
+(def mul@3 (fun (a b c) ((%mul a) (mul b c))))
+(def mul@4 (fun (a b c d) ((%mul a) (mul b c d))))
+(def mul@5 (fun (a b c d e) ((%mul a) (mul b c d e))))
+(def mul@6 (fun (a b c d e f) ((%mul a) (mul b c d e f))))
+(def mul@7 (fun (a b c d e f g) ((%mul a) (mul b c d e f g))))
+(def mul@8 (fun (a b c d e f g h) ((%mul a) (mul b c d e f g h))))
+(def mul@9 (fun (a b c d e f g h i) ((%mul a) (mul b c d e f g h i))))
+(def mul mul@2)
+
+;; Multiplication stuff
+(string-print "-- x * y --")
+(newline)
+(string-print "x? ")
+(def x (int-read))
+(string-print "y? ")
+(def y (int-read))
+(test mul (fun (x y) (@* x y)) x y)
+(test (fun (x y) (@* x y)) mul x y)
+(test mul (fun (x y) (mul x y)) x y)
+(test (fun (x y) (mul x y)) mul x y)
+(test mul mul x y)
+
+;; Random Multiplication
+(assert (mul 1 2 3) (mul 3 2))
+(assert (mul 23 292 018) (mul 292 23 018))
+(assert (mul 1 1 1) (mul 1))
+(assert (mul 0 1 0 1 0 1 0 1 2) (mul 2 1 1 1 1 1 1 0))
+(assert (mul 3 3 3) (mul 9 3))
+(assert (mul 2 2 2 2 2 2) (mul 32 2))
