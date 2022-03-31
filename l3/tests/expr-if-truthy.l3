@@ -1,0 +1,34 @@
+;; In Emacs, open this file in -*- Scheme -*- mode
+
+;; Test the 'truthy'iness of values
+
+;; NOTE run with library/lib.l3m
+
+(@byte-write 65)
+
+(if 0
+    (@byte-write 66)
+    (@byte-write 63))
+
+(if (not list-empty)
+    (@byte-write 63)
+    (@byte-write 67))
+
+(if (vector-make 10)
+    (@byte-write 68)
+    (@byte-write 63))
+
+(if (and (fun () #f) list-empty)
+    (@byte-write 69)
+    (@byte-write 63))
+
+(if (or #f (+ 10 #b11))
+    (@byte-write 70)
+    (@byte-write 63))
+
+(if (if #u 0 #f)
+    (@byte-write 71)
+    (@byte-write 63))
+
+(if (if (@= 0 0) #t (@= 0 0))
+    #u #u)

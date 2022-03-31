@@ -149,24 +149,29 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
     * NOTE: if `tree` is not itself an S.If node then transformation occurs as
     * usual, comparing against false and swapping the branches.
     */
-  private def transform_cond(tree: S.Tree, kt: Symbol, kf: Symbol): C.Tree =
+  private def transform_cond(tree: S.Tree, kt: Symbol, kf: Symbol): C.Tree = {
+    def lit_to_k(l: S.Lit): Symbol = l match {
+      case S.Lit(BooleanLit(false)) => kf
+      case _                        => kt
+    }
     tree match {
-      // IF AST when both branches are BooleanLit
-      case S.If(cnd, S.Lit(BooleanLit(b1)), S.Lit(BooleanLit(b2))) =>
-        transform_cond(cnd, if (b1) kt else kf, if (b2) kt else kf)
-      // IF AST when left branch is a BooleanLit
-      case S.If(cnd, S.Lit(BooleanLit(b1)), ef) =>
+      // Logical primitive application
+      case S.Prim(p: L3TestPrimitive, args) =>
+        transform_seq(args) { C.If(p, _, kt, kf) }
+      case S.If(cnd, l1: S.Lit, l2: S.Lit) =>
+        transform_cond(cnd, lit_to_k(l1), lit_to_k(l2))
+      case S.If(cnd, l1: S.Lit, ef) =>
         val kkf = Symbol.fresh("k")
         C.LetC(
           Seq(C.Cnt(kkf, Seq(), transform_cond(ef, kt, kf))),
-          transform_cond(cnd, if (b1) kt else kf, kkf)
+          transform_cond(cnd, lit_to_k(l1), kkf)
         )
       // IF AST when right branch is a BooleanLit
-      case S.If(cnd, et, S.Lit(BooleanLit(b1))) =>
+      case S.If(cnd, et, l2: S.Lit) =>
         val kkt = Symbol.fresh("k")
         C.LetC(
           Seq(C.Cnt(kkt, Seq(), transform_cond(et, kt, kf))),
-          transform_cond(cnd, kkt, if (b1) kt else kf)
+          transform_cond(cnd, kkt, lit_to_k(l2))
         )
       // Primitives can be directly translated into an C.If
       case S.If(S.Prim(p: L3TestPrimitive, args), et, ef) =>
@@ -182,6 +187,7 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
           )
         }
     }
+  }
 
   /** Transform a SymbolicCL3Tree `tree` and immediatly give the result to the
     * continuation `k`. This is used when the context of a transformation would
