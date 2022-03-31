@@ -158,6 +158,7 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
       // Logical primitive application
       case S.Prim(p: L3TestPrimitive, args) =>
         transform_seq(args) { C.If(p, _, kt, kf) }
+      // Literal applications can pick the continuations directly
       case S.If(cnd, l1: S.Lit, l2: S.Lit) =>
         transform_cond(cnd, lit_to_k(l1), lit_to_k(l2))
       case S.If(cnd, l1: S.Lit, ef) =>
@@ -166,7 +167,6 @@ object CL3ToCPSTranslator extends (S.Tree => C.Tree) {
           Seq(C.Cnt(kkf, Seq(), transform_cond(ef, kt, kf))),
           transform_cond(cnd, lit_to_k(l1), kkf)
         )
-      // IF AST when right branch is a BooleanLit
       case S.If(cnd, et, l2: S.Lit) =>
         val kkt = Symbol.fresh("k")
         C.LetC(
