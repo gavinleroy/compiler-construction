@@ -7,13 +7,21 @@ import l3.{ SymbolicCPSTreeModule => H }
 import l3.{ SymbolicCPSTreeModuleLow => L }
 
 object CPSValueRepresenter extends (H.Tree => L.Tree) {
-  private val charTagShift = 3
-  private val intTagShift = 1
-  private val charTagBits = 0x06
-  private val intTagBits = 0x01
-  private val falseTagBits = 0x0a
-  private val trueTagBits = 0x1a
-  private val unitTagBits = 0x02
+  // LitTag object used for helpfer function to tag/untag literals
+  private object LitTag extends Enumeration {
+    type LitTag = Value
+    val CharTag, IntTag = Value
+
+    val charTagShift = 3
+    val intTagShift = 1
+    val charTagBits = 0x06
+    val intTagBits = 0x01
+    val falseTagBits = 0x0a
+    val trueTagBits = 0x1a
+    val unitTagBits = 0x02
+  }
+
+  import LitTag._
 
   // A relation for a given free variable, which associates
   // the block position in the closure and the cooresponding
@@ -48,7 +56,6 @@ object CPSValueRepresenter extends (H.Tree => L.Tree) {
           },
           transform(body)
         )
-
       // NOTE Closure Conversion
       //
       // Functions are converted into flat closures using the following outline:
@@ -61,22 +68,17 @@ object CPSValueRepresenter extends (H.Tree => L.Tree) {
       //   resulting expression. Block declarations are collected and nested before
       //   all inner block-set!s.
       case H.LetF(funs, body) => {
-
         val freeRelations: FunRelation =
           knownFuns ++ getFreeRelations(knownFuns, funs)
-
         val (fns, iBody) = funs.foldRight(
-          (
-            Seq(): Seq[L.Fun],
-            transform(body)(freeRelations): L.Tree
-          )
+          (Seq(): Seq[L.Fun], transform(body)(freeRelations): L.Tree)
         ) {
           case (
                 H.Fun(fname, retC, args, fBody),
                 (fccs, innerBody)
               ) => {
 
-            // NOTE unsafe get should never fail
+            // NOTE if unsafe get fails, there is a much larger problem
             val (wi, rels) = freeRelations.get(fname).get
             val FVSubst: Subst[Symbol] = relationsToSubst(rels)
             val si = Symbol.fresh("s") // wrapper name
@@ -163,12 +165,8 @@ object CPSValueRepresenter extends (H.Tree => L.Tree) {
       }
       case H.AppC(cnt, args) =>
         L.AppC(cnt, args map rewrite)
-
       case H.Halt(a) =>
-        templateP(CPSV.ShiftRight, Seq(rewrite(a), L.AtomL(intTagShift))) {
-          aa =>
-            L.Halt(aa)
-        }
+        untagLiteral(rewrite(a), IntTag) { L.Halt(_) }
       // Cases involving a TestPrimitive
       case H.If(L3.BlockP, Seq(x), tc, fc) =>
         templateP(CPSV.And, Seq(rewrite(x), L.AtomL(0x03))) { xa =>
@@ -201,46 +199,29 @@ object CPSValueRepresenter extends (H.Tree => L.Tree) {
       // -----------------------------
       // Cases involving a ValuePrimitive
       case H.LetP(name, L3.BlockAlloc(tag), Seq(v), body) =>
-        templateP(CPSV.ShiftRight, Seq(rewrite(v), L.AtomL(intTagShift))) {
-          va =>
-            L.LetP(name, CPSV.BlockAlloc(tag), Seq(va), transform(body))
+        untagLiteral(rewrite(v), IntTag) { va =>
+          L.LetP(name, CPSV.BlockAlloc(tag), Seq(va), transform(body))
         }
       case H.LetP(name, L3.BlockTag, Seq(v), body) =>
         templateP(CPSV.BlockTag, Seq(rewrite(v))) { va =>
-          templateP(CPSV.ShiftLeft, Seq(va, L.AtomL(intTagShift))) { sva =>
-            L.LetP(
-              name,
-              CPSV.Or,
-              Seq(sva, L.AtomL(intTagBits)),
-              transform(body)
-            )
-          }
+          tagLiteral(va, name, transform(body), IntTag)
         }
       case H.LetP(name, L3.BlockLength, Seq(v), body) =>
         templateP(CPSV.BlockLength, Seq(rewrite(v))) { va =>
-          templateP(CPSV.ShiftLeft, Seq(va, L.AtomL(intTagShift))) { sva =>
-            L.LetP(
-              name,
-              CPSV.Or,
-              Seq(sva, L.AtomL(intTagBits)),
-              transform(body)
-            )
-          }
+          tagLiteral(va, name, transform(body), IntTag)
         }
       case H.LetP(name, L3.BlockGet, Seq(b, n), body) =>
-        templateP(CPSV.ShiftRight, Seq(rewrite(n), L.AtomL(intTagShift))) {
-          na =>
-            L.LetP(name, CPSV.BlockGet, Seq(rewrite(b), na), transform(body))
+        untagLiteral(rewrite(n), IntTag) { na =>
+          L.LetP(name, CPSV.BlockGet, Seq(rewrite(b), na), transform(body))
         }
       case H.LetP(name, L3.BlockSet, Seq(b, n, v), body) =>
-        templateP(CPSV.ShiftRight, Seq(rewrite(n), L.AtomL(intTagShift))) {
-          na =>
-            L.LetP(
-              name,
-              CPSV.BlockSet,
-              Seq(rewrite(b), na, rewrite(v)),
-              transform(body)
-            )
+        untagLiteral(rewrite(n), IntTag) { na =>
+          L.LetP(
+            name,
+            CPSV.BlockSet,
+            Seq(rewrite(b), na, rewrite(v)),
+            transform(body)
+          )
         }
       case H.LetP(name, L3.IntAdd, Seq(a, b), body) =>
         templateP(CPSV.Sub, Seq(rewrite(a), L.AtomL(0x01))) { aa =>
@@ -252,7 +233,7 @@ object CPSValueRepresenter extends (H.Tree => L.Tree) {
         }
       case H.LetP(name, L3.IntMul, Seq(a, b), body) =>
         templateP(CPSV.Sub, Seq(rewrite(a), L.AtomL(0x01))) { aa =>
-          templateP(CPSV.ShiftRight, Seq(rewrite(b), L.AtomL(0x01))) { ba =>
+          untagLiteral(rewrite(b), IntTag) { ba =>
             templateP(CPSV.Mul, Seq(aa, ba)) { va =>
               L.LetP(name, CPSV.Add, Seq(va, L.AtomL(0x01)), transform(body))
             }
@@ -262,54 +243,22 @@ object CPSValueRepresenter extends (H.Tree => L.Tree) {
         templateP(CPSV.Sub, Seq(rewrite(a), L.AtomL(0x01))) { aa =>
           templateP(CPSV.Sub, Seq(rewrite(b), L.AtomL(0x01))) { ba =>
             templateP(CPSV.Div, Seq(aa, ba)) { va =>
-              templateP(CPSV.ShiftLeft, Seq(va, L.AtomL(intTagShift))) { va =>
-                L.LetP(
-                  name,
-                  CPSV.Or,
-                  Seq(va, L.AtomL(intTagBits)),
-                  transform(body)
-                )
-              }
+              tagLiteral(va, name, transform(body), IntTag)
             }
           }
         }
-      // NOTE `a % b` cannot be optimized when using tagged integers.
       case H.LetP(name, L3.IntMod, Seq(a, b), body) =>
-        templateP(CPSV.ShiftRight, Seq(rewrite(a), L.AtomL(intTagShift))) {
-          aa =>
-            templateP(CPSV.ShiftRight, Seq(rewrite(b), L.AtomL(intTagShift))) {
-              ba =>
-                templateP(CPSV.Mod, Seq(aa, ba)) { va =>
-                  templateP(CPSV.ShiftLeft, Seq(va, L.AtomL(intTagShift))) {
-                    va =>
-                      L.LetP(
-                        name,
-                        CPSV.Or,
-                        Seq(va, L.AtomL(intTagBits)),
-                        transform(body)
-                      )
-                  }
-                }
+        templateP(CPSV.XOr, Seq(rewrite(a), L.AtomL(0x01))) { aa =>
+          templateP(CPSV.XOr, Seq(rewrite(b), L.AtomL(0x01))) { ba =>
+            templateP(CPSV.Mod, Seq(aa, ba)) { va =>
+              L.LetP(name, CPSV.XOr, Seq(va, L.AtomL(0x01)), transform(body))
             }
+          }
         }
       case H.LetP(name, L3.IntShiftLeft, Seq(a, b), body) =>
-        templateP(CPSV.ShiftRight, Seq(rewrite(b), L.AtomL(intTagShift))) {
-          sa =>
-            templateP(CPSV.Sub, Seq(rewrite(a), L.AtomL(0x01))) { va =>
-              templateP(CPSV.ShiftLeft, Seq(va, sa)) { va =>
-                L.LetP(
-                  name,
-                  CPSV.Or,
-                  Seq(va, L.AtomL(intTagBits)),
-                  transform(body)
-                )
-              }
-            }
-        }
-      case H.LetP(name, L3.IntShiftRight, Seq(a, b), body) =>
-        templateP(CPSV.ShiftRight, Seq(rewrite(b), L.AtomL(intTagShift))) {
-          sa =>
-            templateP(CPSV.ShiftRight, Seq(rewrite(a), sa)) { va =>
+        untagLiteral(rewrite(b), IntTag) { sa =>
+          templateP(CPSV.Sub, Seq(rewrite(a), L.AtomL(0x01))) { va =>
+            templateP(CPSV.ShiftLeft, Seq(va, sa)) { va =>
               L.LetP(
                 name,
                 CPSV.Or,
@@ -317,6 +266,18 @@ object CPSValueRepresenter extends (H.Tree => L.Tree) {
                 transform(body)
               )
             }
+          }
+        }
+      case H.LetP(name, L3.IntShiftRight, Seq(a, b), body) =>
+        untagLiteral(rewrite(b), IntTag) { sa =>
+          templateP(CPSV.ShiftRight, Seq(rewrite(a), sa)) { va =>
+            L.LetP(
+              name,
+              CPSV.Or, // NOTE this is only possible because the int tag is 1 bit
+              Seq(va, L.AtomL(intTagBits)),
+              transform(body)
+            )
+          }
         }
       case H.LetP(name, L3.IntBitwiseAnd, args, body) =>
         L.LetP(name, CPSV.And, args map rewrite, transform(body))
@@ -328,20 +289,20 @@ object CPSValueRepresenter extends (H.Tree => L.Tree) {
         }
       case H.LetP(name, L3.ByteRead, Seq(), body) =>
         templateP(CPSV.ByteRead, Seq()) { reada =>
-          templateP(CPSV.ShiftLeft, Seq(reada, L.AtomL(intTagShift))) { sa =>
-            L.LetP(name, CPSV.Or, Seq(sa, L.AtomL(intTagBits)), transform(body))
-          }
+          // TODO FIXME
+          tagLiteral(reada, name, transform(body), IntTag)
         }
       case H.LetP(name, L3.ByteWrite, Seq(a), body) =>
-        templateP(CPSV.ShiftRight, Seq(rewrite(a), L.AtomL(intTagShift))) {
-          aa =>
-            L.LetP(name, CPSV.ByteWrite, Seq(aa), transform(body))
+        untagLiteral(rewrite(a), IntTag) { aa =>
+          L.LetP(name, CPSV.ByteWrite, Seq(aa), transform(body))
         }
       case H.LetP(name, L3.IntToChar, Seq(a), body) =>
+        // NOTE cannot use tagLiteral because the shift is non-standard
         templateP(CPSV.ShiftLeft, Seq(rewrite(a), L.AtomL(0x02))) { aa =>
           L.LetP(name, CPSV.Or, Seq(aa, L.AtomL(0x02)), transform(body))
         }
       case H.LetP(name, L3.CharToInt, Seq(a), body) =>
+        // NOTE cannot use untagLiteral because the shift is non-standard
         L.LetP(
           name,
           CPSV.ShiftRight,
@@ -367,6 +328,33 @@ object CPSValueRepresenter extends (H.Tree => L.Tree) {
             L.LetP(name, CPSV.Id, Seq(aa), transform(body))
         }
       }
+    }
+
+  private def tagLiteral(
+      l: L.Atom,
+      name: Symbol,
+      body: L.Tree,
+      t: LitTag
+  ): L.Tree =
+    t match {
+      case CharTag =>
+        templateP(CPSV.ShiftLeft, Seq(l, L.AtomL(charTagShift))) { sa =>
+          L.LetP(name, CPSV.Or, Seq(sa, L.AtomL(charTagBits)), body)
+        }
+      case IntTag =>
+        templateP(CPSV.ShiftLeft, Seq(l, L.AtomL(intTagShift))) { sa =>
+          L.LetP(name, CPSV.Or, Seq(sa, L.AtomL(intTagBits)), body)
+        }
+    }
+
+  private def untagLiteral(l: L.Atom, t: LitTag)(
+      innerF: L.Atom => L.Tree
+  ): L.Tree =
+    t match {
+      case CharTag =>
+        templateP(CPSV.ShiftRight, Seq(l, L.AtomL(charTagShift))) { innerF(_) }
+      case IntTag =>
+        templateP(CPSV.ShiftRight, Seq(l, L.AtomL(intTagShift))) { innerF(_) }
     }
 
   private def templateP(vPrim: CPSV, args: Seq[L.Atom])(
@@ -463,6 +451,33 @@ object CPSValueRepresenter extends (H.Tree => L.Tree) {
       funs: Seq[H.Fun]
   ): FunRelation = {
 
+    // Helper utilities
+    object UsePosition extends Enumeration {
+      type UsePosition = Value
+      val A, V = Value
+    }
+
+    import UsePosition._
+
+    // Shorthands
+    type UPS = (UsePosition, Symbol)
+    val emptySet: Set[UPS] = Set()
+
+    implicit class SeqSetUtil[T](s: Seq[Set[T]]) {
+      def unionAll(b: Set[T] = Set(): Set[T]) =
+        s.fold(b) { _ | _ }
+    }
+
+    implicit class SetUtil(s: Set[UPS]) {
+      def exclAV(that: Symbol) = s.excl((A, that)).excl((V, that))
+      def removedAllA(that: IterableOnce[Symbol]) =
+        s.removedAll(that.iterator map { (A, _) })
+      def removedAllV(that: IterableOnce[Symbol]) =
+          s.removedAll(that.iterator map { (V, _) })
+      def removedAllAV(that: IterableOnce[Symbol]) =
+        s.removedAllA(that).removedAllV(that)
+    }
+
     /** GetFreeVars
       *
       * Returns a set of free variables for a single function, in the context of
@@ -473,33 +488,18 @@ object CPSValueRepresenter extends (H.Tree => L.Tree) {
       * is applied this will happen directly through the worker and the closure
       * is not needed -- the free variables of a known function are still
       * considered free for the caller. All symbols in value position are
-      * considered free, even those locally bound.
+      * considered free.
       *
       * All remaining symbols (fun args, LetP lhs, etc ...) are not considered
       * free regardless of position.
       */
-    def getFreeVars(fun: H.Fun): Set[Symbol] = {
-
-      object UsePosition extends Enumeration {
-        type UsePosition = Value
-        val A, V = Value
-      }
-
-      import UsePosition._
-
-      val emptySet: Set[(UsePosition, Symbol)] = Set()
-
-      implicit class SeqSetUtil[T](s: Seq[Set[T]]) {
-        def unionAll() = s.fold(Set(): Set[T]) { _ | _ }
-        def unionAll(b: Set[T]) = s.fold(b) { _ | _ }
-      }
-
-      def getFVT(tree: H.Tree): Set[(UsePosition, Symbol)] =
+    def getFreeVars(fun: H.Fun): Set[UPS] = {
+      def getFVT(tree: H.Tree): Set[UPS] =
         tree match {
           case H.LetP(name, _, args, body) =>
             args
               .map { getFVA _ }
-              .unionAll(getFVT(body) - ((A, name)) - ((V, name)))
+              .unionAll(getFVT(body).exclAV(name))
           case H.LetC(cnts, body) =>
             cnts
               .map { getFVC _ }
@@ -508,8 +508,7 @@ object CPSValueRepresenter extends (H.Tree => L.Tree) {
             funs
               .map { getFVF _ }
               .unionAll(getFVT(body))
-              .removedAll((funs.map { f => (A, f.name) }))
-              .removedAll((funs.map { f => (V, f.name) }))
+              .removedAllAV(funs map { _.name })
           case H.AppC(cnt, args) =>
             args
               .map { getFVA _ }
@@ -520,8 +519,6 @@ object CPSValueRepresenter extends (H.Tree => L.Tree) {
               .unionAll(
                 fun match {
                   case H.AtomN(name) if knownFuns contains name =>
-                    // NOTE values in knownFuns are already closed, thus none of them
-                    // can be inlined hence the 'V' is used to ensure they remain free.
                     knownFuns
                       .fRSUnchecked(name)
                       .map { t => (V, t.freeVar) }
@@ -540,18 +537,16 @@ object CPSValueRepresenter extends (H.Tree => L.Tree) {
             getFVA(arg)
         }
 
-      def getFVF(fun: H.Fun): Set[(UsePosition, Symbol)] =
+      def getFVF(fun: H.Fun): Set[UPS] =
         getFVT(fun.body)
           .excl((A, fun.name))
-          .removedAll(fun.args map { (A, _) })
-          .removedAll(fun.args map { (V, _) })
+          .removedAllAV(fun.args)
 
-      def getFVC(cnt: H.Cnt): Set[(UsePosition, Symbol)] =
+      def getFVC(cnt: H.Cnt): Set[UPS] =
         getFVT(cnt.body)
-          .removedAll(cnt.args map { (A, _) })
-          .removedAll(cnt.args map { (V, _) })
+          .removedAllAV(cnt.args)
 
-      def getFVA(atom: H.Atom): Set[(UsePosition, Symbol)] =
+      def getFVA(atom: H.Atom): Set[UPS] =
         atom match {
           case H.AtomN(name) =>
             Set((V, name))
@@ -559,33 +554,34 @@ object CPSValueRepresenter extends (H.Tree => L.Tree) {
             emptySet
         }
 
-      getFVF(fun) map { _._2 };
+      getFVF(fun)
     }
 
-    // NOTE I believe that a single pass is sufficient and the fixpoint
-    // is not necessary, however, I did not have sufficient  time to prove
-    // this and the fixpoint computation remained for safety.
-    def transitiveFreeVars(
-        m: Map[Symbol, Set[Symbol]]
-    ): Map[Symbol, Set[Symbol]] =
+    def transitiveFreeVars[S, T](m: Map[S, Set[(T, S)]]): Map[S, Set[(T, S)]] =
       fixedPoint(m) { mp =>
         mp.foldLeft(mp) { case (nm, (k, v)) =>
-          nm + (k -> v.foldLeft(v) { _ | nm.getOrElse(_, v.empty) })
+          nm + (k -> v.foldLeft(v) { case (acc, (_, vv)) =>
+                  acc | nm.getOrElse(vv, v.empty) })
         }
       }
 
-    val freeVars = transitiveFreeVars(
-      funs.foldLeft(Map(): Map[Symbol, Set[Symbol]]) { (map, fun) =>
-        map + (fun.name -> getFreeVars(fun))
+    val freeVars =
+      transitiveFreeVars(
+        funs.foldLeft(Map(): Map[Symbol, Set[UPS]]) { (map, fun) =>
+          map + (fun.name -> getFreeVars(fun))
+        }
+      ).map{ case (k, v) =>
+        // remove all application position known functions
+        // and strip the UsePosition tag
+        (k, v.removedAllA(funs.map{ _.name } ++ knownFuns.keys).map { _._2 })
       }
-    )
 
     freeVars.map { case (fname, vs) =>
       (
         fname,
         (
           Symbol.fresh("w"),
-          // Give free variables an ordered with block position
+          // Give free variables an order with block position
           vs.toSeq.zipWithIndex.map { case (fv, pos) =>
             // NOTE increment the position by 1 because position 0
             // is reserved for the code pointer.

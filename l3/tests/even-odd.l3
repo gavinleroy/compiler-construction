@@ -8,8 +8,30 @@
 (def false #f)
 (def dec (fun (n) (@- n 1)))
 
+;; Each closure needs to capture the free vars of the other
+;; but *not* the other closure
 (letrec ((even? (fun (n) (or (@= n zero) (odd? (dec n)))))
          (odd? (fun (n) (if (@= n 0) false (even? (dec n))))))
   (if (even? 10)
       (@byte-write 66)
       (@byte-write 63)))
+
+;; Each closure does not capture anything
+(letrec ((even? (fun (n) (or (@= n 0) (odd? (@- n 1)))))
+         (odd? (fun (n) (if (@= n 0) #f (even? (@- n 1))))))
+  (if (even? 10)
+      (@byte-write 67)
+      (@byte-write 63)))
+
+;; Each closure must capture the other
+(letrec ((even? (fun (o n) (or (@= n 0) (o even? (@- n 1)))))
+         (odd? (fun (e n) (if (@= n 0) #f (e odd? (@- n 1))))))
+  (if (even? odd? 10)
+      (@byte-write 68)
+      (@byte-write 63)))
+
+;; Testing whether one transitive FV gets transferred
+;; (letrec ((test1 (fun (n) (test2 (test3 n))))
+;;          (test2 (fun (n) (test1 (test3 zero))))
+;;          (test3 (fun (n) (test1 (test2 n)))))
+;;   #u)
