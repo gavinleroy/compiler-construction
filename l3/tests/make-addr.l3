@@ -1,7 +1,5 @@
 ;; In Emacs, open this file in -*- Scheme -*- mode
 
-;; Test the "and" expression
-
 (@byte-write 65)
 
 (def make-addr
@@ -30,6 +28,10 @@
 (if (@= (one 1)
         (two 0))
     (@byte-write 66)
+    (@byte-write 64))
+
+(if (@= (fac 5) 120)
+    (@byte-write 67)
     (@byte-write 64))
 
 (if (@= (fac-ho dec 5) (fac 5))

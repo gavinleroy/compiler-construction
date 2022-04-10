@@ -13,8 +13,9 @@ object Main {
   def main(args: Array[String]): Unit = {
     val backEnd: Tree => TerminalPhaseResult = (
       CL3ToCPSTranslator
-        andThen CPSValueRepresenter
+        andThen CPSOptimizerHigh
         andThen treePrinter("---------- After value representation")
+        andThen CPSValueRepresenter
         andThen treeChecker
         andThen CPSHoister
         andThen CPSInterpreterLow

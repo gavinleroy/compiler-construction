@@ -1,89 +1,95 @@
+;; ;; In Emacs, open this file in -*- Scheme -*- mode
+
+;; ;; Test the "letrec" expression
+
+;; (def * (fun (x y) (@* x y)))
+;; (def + (fun (x y) (@+ x y)))
+;; (def - (fun (x y) (@- x y)))
+
+;; (def char-digit?
+;;      (let ((int-0 (@char->int '0'))
+;;            (int-9 (@char->int '9')))
+;;        (fun (c)
+;;             (let ((int-c (@char->int c)))
+;;               (and (@<= int-0 int-c) (@<= int-c int-9))))))
+
+;; (def char-digit->int
+;;      (let ((int-0 (@char->int '0')))
+;;        (fun (c)
+;;             (@- (@char->int c) int-0))))
+
+;; (def int->char-digit
+;;      (let ((int-0 (@char->int '0')))
+;;        (fun (i)
+;;             (@int->char (@+ i int-0)))))
+
+;; (def char-read
+;;      (let ((read-cont-byte (fun () (@and (@byte-read) #b00111111)))
+;;            (<< (fun (x y) (@shift-left x y)))
+;;            (b-and (fun (x y) (@and x y)))
+;;            (b-or@2 (fun (x y) (@or x y)))
+;;            (b-or@3 (fun (x y z) (@or (@or x y) z)))
+;;            (b-or@4 (fun (x y z t) (@or (@or x y) (@or z t))))
+;;            (= (fun (x y) (@= x y))))
+;;        (fun ()
+;;             (let ((b0 (@byte-read)))
+;;               (cond
+;;                ((= -1 b0)                            ;EOF
+;;                 #f)
+;;                ((= 0 (b-and #b10000000 b0))          ;1 byte
+;;                 (@int->char b0))
+;;                ((= #b11000000 (b-and #b11100000 b0)) ;2 bytes
+;;                 (let ((b1 (read-cont-byte)))
+;;                   (@int->char (b-or (<< (b-and #b11111 b0) 6)
+;;                                     b1))))
+;;                ((= #b11100000 (b-and #b11110000 b0)) ;3 bytes
+;;                 (let ((b1 (read-cont-byte))
+;;                       (b2 (read-cont-byte)))
+;;                   (@int->char (b-or (<< (b-and #b1111 b0) 12)
+;;                                     (<< b1 6)
+;;                                     b2))))
+;;                (#t                                   ;4 bytes
+;;                 (let ((b1 (read-cont-byte))
+;;                       (b2 (read-cont-byte))
+;;                       (b3 (read-cont-byte)))
+;;                   (@int->char (b-or (<< (b-and #b111 b0) 18)
+;;                                     (<< b1 12)
+;;                                     (<< b2 6)
+;;                                     b3)))))))))
+;; (def int-read
+;;      (letrec ((loop
+;;                (fun (acc-f acc)
+;;                     (let ((c (char-read)))
+;;                       (if (char-digit? c)
+;;                           (loop acc-f (acc-f (* acc 10) (char-digit->int c)))
+;;                           acc)))))
+;;        (fun ()
+;;             (let ((c (char-read)))
+;;               (cond ((@= c '-') (loop - 0))
+;;                     ((char-digit? c) (loop + (char-digit->int c)))
+;;                     (#t 0))))))
+
+;; (def i 100)
+;; (def i1 (int-read))
+
+;; (@byte-write 65)
+
+;; (if (@= i i1)
+;;     (@byte-write 66)
+;;     (@byte-write 63))
+
 ;; In Emacs, open this file in -*- Scheme -*- mode
 
 ;; Test the "letrec" expression
 
-(def * (fun (x y) (@* x y)))
-(def + (fun (x y) (@+ x y)))
-(def - (fun (x y) (@- x y)))
+(@byte-write 66)
 
-(def char-digit?
-     (let ((int-0 (@char->int '0'))
-           (int-9 (@char->int '9')))
-       (fun (c)
-            (let ((int-c (@char->int c)))
-              (and (@<= int-0 int-c) (@<= int-c int-9))))))
+(def dec (fun (x) (@- x 1)))
 
-(def char-digit->int
-     (let ((int-0 (@char->int '0')))
-       (fun (c)
-            (@- (@char->int c) int-0))))
-
-(def int->char-digit
-     (let ((int-0 (@char->int '0')))
-       (fun (i)
-            (@int->char (@+ i int-0)))))
-
-(def char-read
-     (let ((read-cont-byte (fun () (@and (@byte-read) #b00111111)))
-           (<< (fun (x y) (@shift-left x y)))
-           (b-and (fun (x y) (@and x y)))
-           (b-or@2 (fun (x y) (@or x y)))
-           (b-or@3 (fun (x y z) (@or (@or x y) z)))
-           (b-or@4 (fun (x y z t) (@or (@or x y) (@or z t))))
-           (= (fun (x y) (@= x y))))
-       (fun ()
-            (let ((b0 (@byte-read)))
-              (cond
-               ((= -1 b0)                            ;EOF
-                #f)
-               ((= 0 (b-and #b10000000 b0))          ;1 byte
-                (@int->char b0))
-               ((= #b11000000 (b-and #b11100000 b0)) ;2 bytes
-                (let ((b1 (read-cont-byte)))
-                  (@int->char (b-or (<< (b-and #b11111 b0) 6)
-                                    b1))))
-               ((= #b11100000 (b-and #b11110000 b0)) ;3 bytes
-                (let ((b1 (read-cont-byte))
-                      (b2 (read-cont-byte)))
-                  (@int->char (b-or (<< (b-and #b1111 b0) 12)
-                                    (<< b1 6)
-                                    b2))))
-               (#t                                   ;4 bytes
-                (let ((b1 (read-cont-byte))
-                      (b2 (read-cont-byte))
-                      (b3 (read-cont-byte)))
-                  (@int->char (b-or (<< (b-and #b111 b0) 18)
-                                    (<< b1 12)
-                                    (<< b2 6)
-                                    b3)))))))))
-(def int-read
-     (letrec ((loop
-               (fun (acc-f acc)
-                    (let ((c (char-read)))
-                      (if (char-digit? c)
-                          (loop acc-f (acc-f (* acc 10) (char-digit->int c)))
-                          acc)))))
-       (fun ()
-            (let ((c (char-read)))
-              (cond ((@= c '-') (loop - 0))
-                    ((char-digit? c) (loop + (char-digit->int c)))
-                    (#t 0))))))
-
-(def i 100)
-(def i1 (int-read))
-
-(@byte-write 65)
-
-(if (@= i i1)
-    (@byte-write 66)
-    (@byte-write 63))
-
-;; (if (char-digit? c)
-;;     (@byte-write (char-digit->int (int->char-digit (char-digit->int c))))
-;;     (@byte-write 63))
-
-;; (letrec ((even? (fun (x) (if (@= x 0) #t (odd?  (@- x 1)))))
-;;          (odd?  (fun (x) (if (@= x 0) #f (even? (@- x 1))))))
-;;   (if (even? 66)
-;;       (@byte-write 66)
-;;       (@byte-write 63)))
+(letrec ((fact (fun (x) (if (@= 0 x) 1 (@* x (fact (dec x)))))))
+  (@byte-write (@- (fact 5) 55)))
+(letrec ((even? (fun (x) (if (@= x 0) #t (odd?  (@- x 1)))))
+         (odd?  (fun (x) (if (@= x 0) #f (even? (@- x 1))))))
+  (if (even? 66)
+      (@byte-write 66)
+      (@byte-write 63)))

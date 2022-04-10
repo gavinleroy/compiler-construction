@@ -1,0 +1,25 @@
+;; In Emacs, open this file in -*- Scheme -*- mode
+
+;; Test the DCE translation
+
+
+;; (letrec ((inc (fun (x) (dec x)))
+;;          (dec (fun (x) (inc x))))
+;;   (let* ((inc (fun (x) (@+ x 1)))
+;;          (v (@+ 10 4))
+;;          (q (@byte-write (@+ 60 5)))
+;;          (q2 (@byte-write (@+ 60 5)))
+;;          (ret (inc -1)))
+;;     (halt ret)))
+
+;; (@byte-write (if (@= "bla" "bla") 63 65))
+
+(def incr (fun (x) (@+ x 1)))
+
+;; (if (@= #t #t)
+;;     (@byte-write 65)
+;;     (@byte-write 63))
+
+(let* ((v (incr -1))
+       (v1 v))
+  (halt v1))
