@@ -10,13 +10,14 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
   protected def rewrite(tree: Tree): Tree = {
     val simplifiedTree = fixedPoint(tree)(shrink)
     fixedPoint(simplifiedTree)(shrink)
-    // FIXME
-    simplifiedTree
-    // val maxSize = size(simplifiedTree) * 3 / 2
-    // fixedPoint(simplifiedTree, 8) { t => inline(t, maxSize) }
+    val maxSize = size(simplifiedTree) * 3 / 2
+    fixedPoint(simplifiedTree, 8) { t => inline(t, maxSize) }
   }
 
   private case class Count(applied: Int = 0, asValue: Int = 0)
+
+  def sameLen[T, U](formalArgs: Seq[T], actualArgs: Seq[U]): Boolean =
+    formalArgs.length == actualArgs.length
 
   private case class State(
       census: Map[Name, Count],
@@ -64,16 +65,14 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
   // [-] constant folding,
   // [-] simplifications due to neutral/absorbing elements,
   // [-] shrinking inlining,
-  //
-  // TODO for later
-  // [ ] general inlining, using the heuristic described below,
+  // [-] general inlining, using the heuristic described below,
   // [ ] additional optimizations if you wish, e.g. those related to blocks.
   // ------------------------------
 
   private def shrink(tree: Tree): Tree =
     shrink(tree, State(census(tree)))
 
-  private def shrink(tree: Tree, s: State): Tree = tree match {
+  private def shrink(tree: Tree, s: State): Tree = (tree: @unchecked) match {
     case LetP(name, prim, argsPrev, body) => {
       (prim, argsPrev map s.aSubst) match {
         // IFF name is dead and function isn't impure
@@ -114,7 +113,6 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
           LetP(name, prim, args, shrink(body, s))
       }
     }
-
     case LetC(cnts, body) => {
       val (toInline: Seq[Cnt], oths: Seq[Cnt]) =
         cnts.partition { k => s.appliedOnce(k.name) }
@@ -126,7 +124,6 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
       }
       LetC(shrunkCnts, shrink(body, s.withCnts(toInline)))
     }
-
     case LetF(funs, body) => {
       val censi = funs map { f => census(f.body) }
       val (toInline: Seq[Fun], oths: Seq[Fun]) =
@@ -144,7 +141,6 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
       }
       LetF(shrunkFuns, shrink(body, s.withFuns(toInline)))
     }
-
     case AppC(cntPrev, argsPrev) =>
       (s.aSubst(AtomN(cntPrev)), argsPrev map s.aSubst) match {
         case (AtomN(cnt), args: Seq[Atom]) if s.cEnv contains cnt =>
@@ -153,11 +149,12 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
         case (AtomN(cnt), args) =>
           AppC(cnt, args)
       }
-
     case AppF(fun, retCPrev, argsPrev) =>
       val AtomN(retC) = s.aSubst(AtomN(retCPrev))
       (s.aSubst(fun), argsPrev map s.aSubst) match {
-        case (AtomN(f), args: Seq[Atom]) if s.fEnv contains f =>
+        case (AtomN(f), args: Seq[Atom])
+            // TODO FIXME how to handle an incorrect number of arguments
+            if (s.fEnv contains f) /* && sameLen(s.fEnv(f).args, args) */ =>
           val fun = s.fEnv(f)
           shrink(
             fun.body,
@@ -166,7 +163,6 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
         case (f, args) =>
           AppF(f, retC, args)
       }
-
     case If(condPrim, argsPrev, thenC, elseC) =>
       val args = argsPrev map s.aSubst
       args match {
@@ -182,10 +178,8 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
         case _ =>
           If(condPrim, args, thenC, elseC)
       }
-
     case Halt(arg) =>
       Halt(s.aSubst(arg))
-
   }
 
   // (Non-shrinking) inlining
@@ -244,10 +238,71 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
         val funLimit = fibonacci(i)
         val cntLimit = i
 
-        def sameLen[T, U](formalArgs: Seq[T], actualArgs: Seq[U]): Boolean =
-          formalArgs.length == actualArgs.length
+        def inlineT(tree: Tree)(implicit s: State): Tree = tree match {
+          case LetP(name, prim, args, body) =>
+            LetP(name, prim, args map s.aSubst, inlineT(body))
+          case LetC(cnts, body) =>
+            val zipped: Seq[(Cnt, Option[Cnt])] = cnts map {
+              case Cnt(name, args, body) =>
+                val newK = Cnt(name, args, inlineT(body))
+                // Can continuations be recursive? FIXME
+                val dont = census(body).contains(name) || size(body) > cntLimit
+                (newK, if (dont) None else Some(newK))
+            }
+            val (iKs, toInline) = zipped.unzip
+            LetC(iKs, inlineT(body)(s.withCnts(toInline.flatten)))
+          // NOTE when we see a function/cnt, it should be inlined iff:
+          // - It is not recursive.
+          // - It's size is less than (fun|cnt)Limit.
+          case LetF(funs, body) =>
+            val zipped: Seq[(Fun, Option[Fun])] = funs map {
+              case (Fun(name, retC, args, body)) =>
+                val newF = Fun(name, retC, args, inlineT(body))
+                val dont = census(body).contains(name) || size(body) > funLimit
+                (newF, if (dont) None else Some(newF))
+            }
+            val (iFs, toInline) = zipped.unzip
+            LetF(iFs, inlineT(body)(s.withFuns(toInline.flatten)))
+          // IFF a continuation or function exists in the state,
+          // copy the body and inline
+          case AppC(cnt, args) =>
+            (s.aSubst(AtomN(cnt)), args map s.aSubst) match {
+              case (AtomN(k), args) if s.cEnv contains cnt =>
+                val cnt = s.cEnv(k)
+                val bdy =
+                  copyT(
+                    cnt.body,
+                    subst(cnt.args map { AtomN }, args),
+                    emptySubst
+                  )
+                // bdy
+                inlineT(bdy) // FIXME should this happen?
+              case (AtomN(cnt), args) =>
+                AppC(cnt, args)
+            }
 
-        def inlineT(tree: Tree)(implicit s: State): Tree = ???
+          case AppF(fun, retCP, args) =>
+            val AtomN(retC) = s.aSubst(AtomN(retCP))
+            (s.aSubst(fun), args map s.aSubst) match {
+              case (AtomN(f), args)
+                  if (s.fEnv contains f) && sameLen(s.fEnv(f).args, args) =>
+                val fun = s.fEnv(f)
+                val bdy =
+                  copyT(
+                    fun.body,
+                    subst(fun.args map { AtomN }, args),
+                    subst(fun.retC, retC)
+                  )
+                bdy
+              // inlineT(bdy) // FIXME causes stack overflow? something's probably wrong
+              case (fun, args) =>
+                AppF(fun, retC, args map s.aSubst)
+            }
+          case If(cond, args, thenC, elseC) =>
+            If(cond, args map s.aSubst, thenC, elseC)
+          case Halt(arg) =>
+            Halt(s.aSubst(arg))
+        }
 
         (i + 1, fixedPoint(inlineT(tree)(State(census(tree))))(shrink))
     }
@@ -437,10 +492,8 @@ object CPSOptimizerHigh
     case (IntLt, Seq(IntLit(x), IntLit(y))) => x < y
     case (IntLe, Seq(IntLit(x), IntLit(y))) => x <= y
 
-    case (Eq, Seq(IntLit(x), IntLit(y)))         => x == y
-    case (Eq, Seq(CharLit(x), CharLit(y)))       => x == y
-    case (Eq, Seq(BooleanLit(x), BooleanLit(y))) => x == y
-    case (Eq, Seq(UnitLit, UnitLit))             => true
+    // NOTE Eq works for all literals only if they are equivalent.
+    case (Eq, Seq(x, y)) => x == y
   }
 }
 

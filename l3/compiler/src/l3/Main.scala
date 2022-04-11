@@ -11,14 +11,18 @@ import CPSTreeChecker._   // Implicits required for CPS tree checking
 
 object Main {
   def main(args: Array[String]): Unit = {
+    val stats = new Statistics()
     val backEnd: Tree => TerminalPhaseResult = (
       CL3ToCPSTranslator
         andThen CPSOptimizerHigh
-        andThen treePrinter("---------- After value representation")
+        andThen treePrinter("---------- Before value representation")
         andThen CPSValueRepresenter
         andThen treeChecker
         andThen CPSHoister
-        andThen CPSInterpreterLow
+        andThen CPSOptimizerLow
+        andThen treePrinter("---------- After value representation")
+        // FIXME remove
+        andThen (new CPSInterpreterLow(stats.log _))
     )
 
     val basePath = Paths.get(".").toAbsolutePath
@@ -29,6 +33,7 @@ object Main {
       .flatMap(backEnd) match {
         case Right((retCode, maybeMsg)) =>
           maybeMsg foreach println
+          println(stats) // FIXME remove
           sys.exit(retCode)
         case Left(errMsg) =>
           println(s"Error: $errMsg")
