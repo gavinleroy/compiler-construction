@@ -7,16 +7,17 @@ import l3.SymbolicCL3TreeModule.Tree
 
 import CL3TreeFormatter._ // Implicits required for CL3 tree printing
 import CPSTreeFormatter._ // Implicits required for CPS tree printing
-import CPSTreeChecker._ // Implicits required for CPS tree checking
+import CPSTreeChecker._   // Implicits required for CPS tree checking
 
 object Main {
   def main(args: Array[String]): Unit = {
     val stats = new Statistics()
     val backEnd: Tree => TerminalPhaseResult = (
       CL3ToCPSTranslator
-        // andThen treePrinter("---------- Before Optimization High")
+        andThen treePrinter("---------- Before Optimization High")
+        // andThen CPSContifier // TODO
         andThen CPSOptimizerHigh
-        // andThen treePrinter("---------- Before value representation")
+        andThen treePrinter("---------- Before value representation")
         andThen CPSValueRepresenter
         andThen treeChecker
         andThen CPSHoister

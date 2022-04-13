@@ -65,7 +65,10 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
   // [-] simplifications due to neutral/absorbing elements,
   // [-] shrinking inlining,
   // [-] general inlining, using the heuristic described below,
+  //
   // [ ] additional optimizations if you wish, e.g. those related to blocks.
+  // [ ] Eta-Reduction
+  // [ ] ...
   // ------------------------------
 
   /** ShrinkException
@@ -138,37 +141,59 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
           shrink(body, s, { b => continue(LetP(name, prim, args, b)) })
       }
     }
-    case LetC(cnts, body) => {
+    case LetC(Seq(), body) =>
+      shrink(body, s, continue)
+    case LetC(cntsPrev, body) =>
+      // Experimental ETA-Reduction
+      // FIXME Eta-Reduction is not working
+      // val etaRed = cntsPrev map {
+      //   case Cnt(nameC, argsC, AppC(nameA, argsA)) if argsC == argsA =>
+      //     Some(nameC, s.cSubst(nameA))
+      //   case _ =>
+      //     None
+      // }
+
+      // val ns = etaRed.flatten.foldLeft(s) { case (st, (from, to)) =>
+      //   st.withCSubst(from, to)
+      // }
+      // val cnts = cntsPrev
+      //   .zip(etaRed)
+      //   .filter { _._2.isEmpty }
+      //   .map { _._1 }
+
+      val ns = s
+      val cnts = cntsPrev
+
       def shrink_seq(from: Seq[Cnt], to: Seq[Cnt] = Seq())(implicit
           cont: Seq[Cnt] => Tree
       ): Tree = from match {
         case Seq() =>
           cont(to)
         case Cnt(name, args, body) +: tl =>
-          if (s.dead(name))
+          if (ns.dead(name))
             shrink_seq(tl, to)
           else
             shrink(
               body,
-              s,
+              ns,
               { b =>
                 shrink_seq(tl, to :+ Cnt(name, args, b))
               }
             )
       }
-
       shrink_seq(cnts) { shrunkCnts =>
         val censi = shrunkCnts map { k => census(k.body) }
         val (toInline: Seq[Cnt], oths: Seq[Cnt]) =
-          shrunkCnts.partition { k => s.appliedOnce(k.name) }
+          shrunkCnts.partition { k => ns.appliedOnce(k.name) }
         shrink(
           body,
-          s.withCnts(toInline),
+          ns.withCnts(toInline),
           { b => continue(LetC(oths, b)) }
         )
       }
-    }
-    case LetF(funs, body) => {
+    case LetF(Seq(), body) =>
+      shrink(body, s, continue)
+    case LetF(funs, body) =>
       def shrink_seq(from: Seq[Fun], to: Seq[Fun] = Seq())(implicit
           cont: Seq[Fun] => Tree
       ): Tree = from match {
@@ -186,7 +211,6 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
               }
             )
       }
-
       shrink_seq(funs) { shrunkFuns =>
         val censi = shrunkFuns map { f => census(f.body) }
         val (toInline: Seq[Fun], oths: Seq[Fun]) =
@@ -223,28 +247,31 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
           body,
           s.withFuns(mInline.values.toSeq),
           { b =>
-            continue(LetF(mFuns.values.toSeq, b))
+            continue(
+              if (mFuns.isEmpty)
+                b
+              else LetF(mFuns.values.toSeq, b)
+            )
           }
         )(failK(mInline, mFuns))
       }
-    }
     case AppC(cntPrev, argsPrev) =>
-      (s.aSubst(AtomN(cntPrev)), argsPrev map s.aSubst) match {
-        case (AtomN(cnt), args: Seq[Atom]) if s.cEnv contains cnt =>
+      (s.cSubst(cntPrev), argsPrev map s.aSubst) match {
+        case (cnt, args: Seq[Atom]) if s.cEnv contains cnt =>
           val k = s.cEnv(cnt)
           shrink(k.body, s.withASubst(k.args, args), continue)
-        case (AtomN(cnt), args) =>
+        case (cnt, args) =>
           continue(AppC(cnt, args))
       }
     case AppF(fun, retCPrev, argsPrev) =>
-      val AtomN(retC) = s.aSubst(AtomN(retCPrev))
+      val retC = s.cSubst(retCPrev)
       (s.aSubst(fun), argsPrev map s.aSubst) match {
         case (AtomN(f), args: Seq[Atom]) if (s.fEnv contains f) =>
           val fun = s.fEnv(f)
           if (sameLen(fun.args, args))
             shrink(
               fun.body,
-              s.withASubst(fun.retC +: fun.args, AtomN(retC) +: args),
+              s.withASubst(fun.args, args).withCSubst(fun.retC, retC),
               continue
             )
           // do not inline on an application with incorrect arity
@@ -252,8 +279,10 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
         case (f, args) =>
           continue(AppF(f, retC, args))
       }
-    case If(condPrim, argsPrev, thenC, elseC) =>
+    case If(condPrim, argsPrev, thenCP, elseCP) =>
       val args = argsPrev map s.aSubst
+      val thenC = s.cSubst(thenCP)
+      val elseC = s.cSubst(elseCP)
       args match {
         case Seq(AtomL(x), AtomL(y))
             if cEvaluator.isDefinedAt((condPrim, Seq(x, y))) =>
@@ -356,8 +385,8 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
           // IFF a continuation or function exists in the state,
           // copy the body and inline
           case AppC(cnt, args) =>
-            (s.aSubst(AtomN(cnt)), args map s.aSubst) match {
-              case (AtomN(k), args) if s.cEnv contains cnt =>
+            (s.cSubst(cnt), args map s.aSubst) match {
+              case (k, args) if s.cEnv contains cnt =>
                 val cnt = s.cEnv(k)
                 val bdy =
                   copyT(
@@ -367,12 +396,12 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
                   )
                 bdy
               // inlineT(bdy) // FIXME should this happen?
-              case (AtomN(cnt), args) =>
+              case (cnt, args) =>
                 AppC(cnt, args)
             }
 
           case AppF(fun, retCP, args) =>
-            val AtomN(retC) = s.aSubst(AtomN(retCP))
+            val retC = s.cSubst(retCP)
             (s.aSubst(fun), args map s.aSubst) match {
               case (AtomN(f), args) if (s.fEnv contains f) =>
                 val fun = s.fEnv(f)
@@ -387,7 +416,9 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
               case (fun, args) =>
                 AppF(fun, retC, args)
             }
-          case If(cond, args, thenC, elseC) =>
+          case If(cond, args, thenCP, elseCP) =>
+            val thenC = s.cSubst(thenCP)
+            val elseC = s.cSubst(elseCP)
             If(cond, args map s.aSubst, thenC, elseC)
           case Halt(arg) =>
             Halt(s.aSubst(arg))
