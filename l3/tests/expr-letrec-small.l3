@@ -78,15 +78,16 @@
 ;;     (@byte-write 66)
 ;;     (@byte-write 63))
 
-;; In Emacs, open this file in -*- Scheme -*- mode
-
-;; Test the "letrec" expression
+(def dec (fun (x) (@- x 1)))
+(def inc (fun (x) (@+ x 1)))
 
 (@byte-write 66)
 
-(def dec (fun (x) (@- x 1)))
-(if (dec 1)
-    (@byte-write (dec 68))
+;; (@byte-write (dec 68))
+;; (@byte-write (dec))
+
+(if (inc (@byte-read)) ;; (dec)
+    (@byte-write (dec))
     (@byte-write 63))
 
 ;; (letrec ((fact (fun (x) (if (@= 0 x) 1 (@* x (fact (dec x)))))))
