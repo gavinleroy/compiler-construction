@@ -8,10 +8,13 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
   import treeModule._
 
   protected def rewrite(tree: Tree): Tree = {
-    val simplifiedTree = fixedPoint(tree)(shrink)
-    fixedPoint(simplifiedTree)(shrink)
-    val maxSize = size(simplifiedTree) * 3 / 2
-    fixedPoint(simplifiedTree, 8) { t => inline(t, maxSize) }
+    // val simplifiedTree = fixedPoint(tree)(shrink)
+
+    // FIXME REMOVE
+    fixedPoint(tree, 4)(shrink)
+
+    // val maxSize = size(simplifiedTree) * 3 / 2
+    // fixedPoint(simplifiedTree, 8) { t => inline(t, maxSize) }
   }
 
   private case class Count(applied: Int = 0, asValue: Int = 0)
@@ -142,27 +145,33 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
         }
       }
       case LetC(cnts, body) => {
-        val (toInline: Seq[Cnt], oths: Seq[Cnt]) =
-          cnts.partition { k => s.appliedOnce(k.name) }
-        val shrunkCnts = oths.foldRight(cnts.empty) {
+
+        val shrunkCnts = cnts.foldRight(cnts.empty) {
           case (Cnt(name, args, body), ks) =>
             if (s.dead(name))
               ks
             else Cnt(name, args, shrink(body, s, t => t)) +: ks
         }
+        val censi = shrunkCnts map { k => census(k.body) }
+        val (toInline: Seq[Cnt], oths: Seq[Cnt]) =
+          shrunkCnts.partition { k => s.appliedOnce(k.name) }
         shrink(
           body,
           s.withCnts(toInline),
-          { b => continue(LetC(shrunkCnts, b)) }
+          { b => continue(LetC(oths, b)) }
         )
       }
-      case LetF(funs, body) => {
+      case lf @ LetF(funs, body) => {
+
+        println(s"CURRENT LETF\n $lf \n")
+
         val shrunkFuns = funs.foldRight(funs.empty) {
           case (Fun(name, retC, args, body), fs) =>
             if (s.dead(name))
               fs
             else Fun(name, retC, args, shrink(body, s, t => t)) +: fs
         }
+
         val censi = shrunkFuns map { f => census(f.body) }
         val (toInline: Seq[Fun], oths: Seq[Fun]) =
           // NOTE a function can get inlined (shrinking) if
@@ -182,6 +191,7 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
               println(s"failing on: $fname")
               println("current functions to inline are: ")
               mInline.keys.foreach(println)
+              println()
 
               val fun = mInline(fname)
               val newInlines = mInline - fname
@@ -189,21 +199,36 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
 
               assert(newInlines.size < mInline.size)
               assert(newFuns.size > mFuns.size)
-              assert(false)
+              println("New inlines are:")
+              newInlines.foreach(println)
+              println("New funs are:")
+              newFuns.foreach(println)
+              // assert(false)
 
+              println(s"CONTINUING: $newInlines $newFuns $body \n\n")
               shrink(
                 body,
                 s.withFuns(newInlines.values.toSeq),
                 { b => continue(LetF(newFuns.values.toSeq, b)) }
               )(failK(newInlines, newFuns))
+            case BadApp(fname) if mFuns contains fname =>
+              println(s"Bad assumption $fname is in mFuns")
+              assert(false)
+              ???
             case exc =>
+              println(s"Failing again with: $exc \n\n")
               fail(exc)
           }
         }
 
         val mInline: Map[Name, Fun] = (toInline map { f => (f.name, f) }).toMap
         val mFuns: Map[Name, Fun] = (oths map { f => (f.name, f) }).toMap
-        println(s"STARTING: $mInline $mFuns $body")
+        println(s"STARTING: $mInline $mFuns $body \n\n")
+
+        // assert(
+        //   funs.size == (mInline.values.toSeq.size) + (mFuns.values.toSeq.size)
+        // )
+
         shrink(
           body,
           s.withFuns(mInline.values.toSeq),
@@ -214,7 +239,7 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
         (s.aSubst(AtomN(cntPrev)), argsPrev map s.aSubst) match {
           case (AtomN(cnt), args: Seq[Atom]) if s.cEnv contains cnt =>
             val k = s.cEnv(cnt)
-            shrink(k.body, s.withASubst(k.args, args), t => continue(t))
+            shrink(k.body, s.withASubst(k.args, args), continue)
           case (AtomN(cnt), args) =>
             continue(AppC(cnt, args))
         }
@@ -223,15 +248,14 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
         (s.aSubst(fun), argsPrev map s.aSubst) match {
           case (AtomN(f), args: Seq[Atom]) if (s.fEnv contains f) =>
             val fun = s.fEnv(f)
-            // do not inline on an application with incorrect arity
-            if (!sameLen(fun.args, args))
-              fail(BadApp(f))
-            else
+            if (sameLen(fun.args, args))
               shrink(
                 fun.body,
                 s.withASubst(fun.retC +: fun.args, AtomN(retC) +: args),
-                t => continue(t)
+                continue
               )
+            // do not inline on an application with incorrect arity
+            else fail(BadApp(f))
           case (f, args) =>
             continue(AppF(f, retC, args))
         }
@@ -247,7 +271,7 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
             if (sameArgReduceC(condPrim))
               continue(AppC(thenC, Seq()))
             else continue(AppC(elseC, Seq()))
-          case _ =>
+          case args =>
             continue(If(condPrim, args, thenC, elseC))
         }
       case Halt(arg) =>
@@ -319,19 +343,19 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
               case Cnt(name, args, body) =>
                 val newK = Cnt(name, args, inlineT(body))
                 // Can continuations be recursive? FIXME
-                val dont = census(body).contains(name) || size(body) > cntLimit
+                val dont = size(body) > cntLimit || census(body).contains(name)
                 (newK, if (dont) None else Some(newK))
             }
             val (iKs, toInline) = zipped.unzip
             LetC(iKs, inlineT(body)(s.withCnts(toInline.flatten)))
           // NOTE when we see a function/cnt, it should be inlined iff:
           // - It is not recursive.
-          // - It's size is less than (fun|cnt)Limit.
+          // - It's [body] size is less than (fun|cnt)Limit.
           case LetF(funs, body) =>
             val zipped: Seq[(Fun, Option[Fun])] = funs map {
               case (Fun(name, retC, args, body)) =>
                 val newF = Fun(name, retC, args, inlineT(body))
-                val dont = census(body).contains(name) || size(body) > funLimit
+                val dont = size(body) > funLimit || census(body).contains(name)
                 (newF, if (dont) None else Some(newF))
             }
             val (iFs, toInline) = zipped.unzip
@@ -348,8 +372,8 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
                     subst(cnt.args map { AtomN }, args),
                     emptySubst
                   )
-                // bdy
-                inlineT(bdy) // FIXME should this happen?
+                bdy
+              // inlineT(bdy) // FIXME should this happen?
               case (AtomN(cnt), args) =>
                 AppC(cnt, args)
             }
@@ -368,7 +392,7 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
                 else
                   AppF(AtomN(f), retC, args)
               case (fun, args) =>
-                AppF(fun, retC, args map s.aSubst)
+                AppF(fun, retC, args)
             }
           case If(cond, args, thenC, elseC) =>
             If(cond, args map s.aSubst, thenC, elseC)
