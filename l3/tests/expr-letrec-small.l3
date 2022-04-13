@@ -86,8 +86,8 @@
 ;; (@byte-write (dec 68))
 ;; (@byte-write (dec))
 
-(if (@byte-read) ;; (dec)
-    (@byte-write (dec))
+(if (dec)
+    (@byte-write (dec 68))
     (@byte-write 63))
 
 ;; (letrec ((fact (fun (x) (if (@= 0 x) 1 (@* x (fact (dec x)))))))

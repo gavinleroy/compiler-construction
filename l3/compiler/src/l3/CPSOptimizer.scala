@@ -8,13 +8,9 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
   import treeModule._
 
   protected def rewrite(tree: Tree): Tree = {
-    // val simplifiedTree = fixedPoint(tree)(shrink)
-
-    // FIXME REMOVE
-    fixedPoint(tree, 4)(shrink)
-
-    // val maxSize = size(simplifiedTree) * 3 / 2
-    // fixedPoint(simplifiedTree, 8) { t => inline(t, maxSize) }
+    val simplifiedTree = fixedPoint(tree)(shrink)
+    val maxSize = size(simplifiedTree) * 3 / 2
+    fixedPoint(simplifiedTree, 8) { t => inline(t, maxSize) }
   }
 
   private case class Count(applied: Int = 0, asValue: Int = 0)
@@ -97,61 +93,71 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
 
   private def shrink(tree: Tree, s: State, continue: Tree => Tree)(implicit
       fail: ShrinkException => Tree
-  ): Tree = {
-    // println(s"$tree \n")
-    (tree: @unchecked) match {
-      case LetP(name, prim, argsPrev, body) => {
-        (prim, argsPrev map s.aSubst) match {
-          // IFF name is dead and function isn't impure
-          case (p, _) if (!impure(p) && s.dead(name)) =>
-            shrink(body, s, continue)
-          // IFF the primitive is Id propogate atom
-          case (p, Seq(a)) if (p == identity) =>
-            shrink(body, s.withASubst(name, a), continue)
-          // IFF all args are literal we can constant fold (value)
-          case (p, Seq(AtomL(x), AtomL(y)))
-              if vEvaluator.isDefinedAt((p, Seq(x, y))) =>
-            val value: Literal = vEvaluator((p, Seq(x, y)))
-            shrink(body, s.withASubst(name, value), continue)
-          // IFF neutral/absorbing argument
-          case (p, Seq(AtomL(x), y)) if leftNeutral contains (x, p) =>
-            shrink(body, s.withASubst(name, y), continue)
-          case (p, Seq(AtomL(x), y)) if leftAbsorbing contains (x, p) =>
-            shrink(body, s.withASubst(name, AtomL(x)), continue)
-          case (p, Seq(x, AtomL(y))) if rightNeutral contains (p, y) =>
-            shrink(body, s.withASubst(name, x), continue)
-          case (p, Seq(x, AtomL(y))) if rightAbsorbing contains (p, y) =>
-            shrink(body, s.withASubst(name, AtomL(y)), continue)
-          case (p, Seq(x, y)) if x == y && sameArgReduce.isDefinedAt((p, x)) =>
-            val value = sameArgReduce((p, x))
-            shrink(body, s.withASubst(name, value), continue)
-          // IFF the prim/args pair was already seen, remove let and subst names
-          case (p, args) if s.eInvEnv contains (p, args) =>
+  ): Tree = (tree: @unchecked) match {
+    case LetP(name, prim, argsPrev, body) => {
+      (prim, argsPrev map s.aSubst) match {
+        // IFF name is dead and function isn't impure
+        case (p, _) if (!impure(p) && s.dead(name)) =>
+          shrink(body, s, continue)
+        // IFF the primitive is Id propogate atom
+        case (p, Seq(a)) if (p == identity) =>
+          shrink(body, s.withASubst(name, a), continue)
+        // IFF all args are literal we can constant fold (value)
+        case (p, Seq(AtomL(x), AtomL(y)))
+            if vEvaluator.isDefinedAt((p, Seq(x, y))) =>
+          val value: Literal = vEvaluator((p, Seq(x, y)))
+          shrink(body, s.withASubst(name, value), continue)
+        // IFF neutral/absorbing argument
+        case (p, Seq(AtomL(x), y)) if leftNeutral contains (x, p) =>
+          shrink(body, s.withASubst(name, y), continue)
+        case (p, Seq(AtomL(x), y)) if leftAbsorbing contains (x, p) =>
+          shrink(body, s.withASubst(name, AtomL(x)), continue)
+        case (p, Seq(x, AtomL(y))) if rightNeutral contains (p, y) =>
+          shrink(body, s.withASubst(name, x), continue)
+        case (p, Seq(x, AtomL(y))) if rightAbsorbing contains (p, y) =>
+          shrink(body, s.withASubst(name, AtomL(y)), continue)
+        case (p, Seq(x, y)) if x == y && sameArgReduce.isDefinedAt((p, x)) =>
+          val value = sameArgReduce((p, x))
+          shrink(body, s.withASubst(name, value), continue)
+        // IFF the prim/args pair was already seen, remove let and subst names
+        case (p, args) if s.eInvEnv contains (p, args) =>
+          shrink(
+            body,
+            s.withASubst(name, s.eInvEnv((p, args))),
+            continue
+          )
+        case (p, args) if !impure(p) && !unstable(p) =>
+          shrink(
+            body,
+            s.withExp(name, p, args),
+            { b =>
+              continue(LetP(name, prim, args, b))
+            }
+          )
+        case (p, args) =>
+          shrink(body, s, { b => continue(LetP(name, prim, args, b)) })
+      }
+    }
+    case LetC(cnts, body) => {
+      def shrink_seq(from: Seq[Cnt], to: Seq[Cnt] = Seq())(implicit
+          cont: Seq[Cnt] => Tree
+      ): Tree = from match {
+        case Seq() =>
+          cont(to)
+        case Cnt(name, args, body) +: tl =>
+          if (s.dead(name))
+            shrink_seq(tl, to)
+          else
             shrink(
               body,
-              s.withASubst(name, s.eInvEnv((p, args))),
-              continue
-            )
-          case (p, args) if !impure(p) && !unstable(p) =>
-            shrink(
-              body,
-              s.withExp(name, p, args),
+              s,
               { b =>
-                continue(LetP(name, prim, args, b))
+                shrink_seq(tl, to :+ Cnt(name, args, b))
               }
             )
-          case (p, args) =>
-            shrink(body, s, { b => continue(LetP(name, prim, args, b)) })
-        }
       }
-      case LetC(cnts, body) => {
 
-        val shrunkCnts = cnts.foldRight(cnts.empty) {
-          case (Cnt(name, args, body), ks) =>
-            if (s.dead(name))
-              ks
-            else Cnt(name, args, shrink(body, s, t => t)) +: ks
-        }
+      shrink_seq(cnts) { shrunkCnts =>
         val censi = shrunkCnts map { k => census(k.body) }
         val (toInline: Seq[Cnt], oths: Seq[Cnt]) =
           shrunkCnts.partition { k => s.appliedOnce(k.name) }
@@ -161,17 +167,27 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
           { b => continue(LetC(oths, b)) }
         )
       }
-      case lf @ LetF(funs, body) => {
+    }
+    case LetF(funs, body) => {
+      def shrink_seq(from: Seq[Fun], to: Seq[Fun] = Seq())(implicit
+          cont: Seq[Fun] => Tree
+      ): Tree = from match {
+        case Seq() =>
+          cont(to)
+        case Fun(name, retC, args, body) +: tl =>
+          if (s.dead(name))
+            shrink_seq(tl, to)
+          else
+            shrink(
+              body,
+              s,
+              { b =>
+                shrink_seq(tl, to :+ Fun(name, retC, args, b))
+              }
+            )
+      }
 
-        println(s"CURRENT LETF\n $lf \n")
-
-        val shrunkFuns = funs.foldRight(funs.empty) {
-          case (Fun(name, retC, args, body), fs) =>
-            if (s.dead(name))
-              fs
-            else Fun(name, retC, args, shrink(body, s, t => t)) +: fs
-        }
-
+      shrink_seq(funs) { shrunkFuns =>
         val censi = shrunkFuns map { f => census(f.body) }
         val (toInline: Seq[Fun], oths: Seq[Fun]) =
           // NOTE a function can get inlined (shrinking) if
@@ -183,100 +199,76 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
 
         def failK(mInline: Map[Name, Fun], mFuns: Map[Name, Fun])(
             e: ShrinkException
-        ): Tree = {
-          println(s"FailK: $e ${mInline} ${mFuns}")
-          e match {
-            case BadApp(fname) if mInline contains fname =>
-              // TODO FIXME REMOVE
-              println(s"failing on: $fname")
-              println("current functions to inline are: ")
-              mInline.keys.foreach(println)
-              println()
-
-              val fun = mInline(fname)
-              val newInlines = mInline - fname
-              val newFuns = mFuns + (fname -> fun)
-
-              assert(newInlines.size < mInline.size)
-              assert(newFuns.size > mFuns.size)
-              println("New inlines are:")
-              newInlines.foreach(println)
-              println("New funs are:")
-              newFuns.foreach(println)
-              // assert(false)
-
-              println(s"CONTINUING: $newInlines $newFuns $body \n\n")
-              shrink(
-                body,
-                s.withFuns(newInlines.values.toSeq),
-                { b => continue(LetF(newFuns.values.toSeq, b)) }
-              )(failK(newInlines, newFuns))
-            case BadApp(fname) if mFuns contains fname =>
-              println(s"Bad assumption $fname is in mFuns")
-              assert(false)
-              ???
-            case exc =>
-              println(s"Failing again with: $exc \n\n")
-              fail(exc)
-          }
+        ): Tree = e match {
+          case BadApp(fname) if mInline contains fname =>
+            val fun = mInline(fname)
+            val newInlines = mInline - fname
+            val newFuns = mFuns + (fname -> fun)
+            shrink(
+              body,
+              s.withFuns(newInlines.values.toSeq),
+              { b =>
+                continue(LetF(newFuns.values.toSeq, b))
+              }
+            )(failK(newInlines, newFuns))
+          case exc =>
+            fail(exc)
         }
 
-        val mInline: Map[Name, Fun] = (toInline map { f => (f.name, f) }).toMap
+        val mInline: Map[Name, Fun] =
+          (toInline map { f => (f.name, f) }).toMap
         val mFuns: Map[Name, Fun] = (oths map { f => (f.name, f) }).toMap
-        println(s"STARTING: $mInline $mFuns $body \n\n")
-
-        // assert(
-        //   funs.size == (mInline.values.toSeq.size) + (mFuns.values.toSeq.size)
-        // )
 
         shrink(
           body,
           s.withFuns(mInline.values.toSeq),
-          { b => continue(LetF(mFuns.values.toSeq, b)) }
+          { b =>
+            continue(LetF(mFuns.values.toSeq, b))
+          }
         )(failK(mInline, mFuns))
       }
-      case AppC(cntPrev, argsPrev) =>
-        (s.aSubst(AtomN(cntPrev)), argsPrev map s.aSubst) match {
-          case (AtomN(cnt), args: Seq[Atom]) if s.cEnv contains cnt =>
-            val k = s.cEnv(cnt)
-            shrink(k.body, s.withASubst(k.args, args), continue)
-          case (AtomN(cnt), args) =>
-            continue(AppC(cnt, args))
-        }
-      case AppF(fun, retCPrev, argsPrev) =>
-        val AtomN(retC) = s.aSubst(AtomN(retCPrev))
-        (s.aSubst(fun), argsPrev map s.aSubst) match {
-          case (AtomN(f), args: Seq[Atom]) if (s.fEnv contains f) =>
-            val fun = s.fEnv(f)
-            if (sameLen(fun.args, args))
-              shrink(
-                fun.body,
-                s.withASubst(fun.retC +: fun.args, AtomN(retC) +: args),
-                continue
-              )
-            // do not inline on an application with incorrect arity
-            else fail(BadApp(f))
-          case (f, args) =>
-            continue(AppF(f, retC, args))
-        }
-      case If(condPrim, argsPrev, thenC, elseC) =>
-        val args = argsPrev map s.aSubst
-        args match {
-          case Seq(AtomL(x), AtomL(y))
-              if cEvaluator.isDefinedAt((condPrim, Seq(x, y))) =>
-            if (cEvaluator((condPrim, Seq(x, y))))
-              continue(AppC(thenC, Seq()))
-            else continue(AppC(elseC, Seq()))
-          case Seq(x, y) if x == y =>
-            if (sameArgReduceC(condPrim))
-              continue(AppC(thenC, Seq()))
-            else continue(AppC(elseC, Seq()))
-          case args =>
-            continue(If(condPrim, args, thenC, elseC))
-        }
-      case Halt(arg) =>
-        continue(Halt(s.aSubst(arg)))
     }
+    case AppC(cntPrev, argsPrev) =>
+      (s.aSubst(AtomN(cntPrev)), argsPrev map s.aSubst) match {
+        case (AtomN(cnt), args: Seq[Atom]) if s.cEnv contains cnt =>
+          val k = s.cEnv(cnt)
+          shrink(k.body, s.withASubst(k.args, args), continue)
+        case (AtomN(cnt), args) =>
+          continue(AppC(cnt, args))
+      }
+    case AppF(fun, retCPrev, argsPrev) =>
+      val AtomN(retC) = s.aSubst(AtomN(retCPrev))
+      (s.aSubst(fun), argsPrev map s.aSubst) match {
+        case (AtomN(f), args: Seq[Atom]) if (s.fEnv contains f) =>
+          val fun = s.fEnv(f)
+          if (sameLen(fun.args, args))
+            shrink(
+              fun.body,
+              s.withASubst(fun.retC +: fun.args, AtomN(retC) +: args),
+              continue
+            )
+          // do not inline on an application with incorrect arity
+          else fail(BadApp(f))
+        case (f, args) =>
+          continue(AppF(f, retC, args))
+      }
+    case If(condPrim, argsPrev, thenC, elseC) =>
+      val args = argsPrev map s.aSubst
+      args match {
+        case Seq(AtomL(x), AtomL(y))
+            if cEvaluator.isDefinedAt((condPrim, Seq(x, y))) =>
+          if (cEvaluator((condPrim, Seq(x, y))))
+            continue(AppC(thenC, Seq()))
+          else continue(AppC(elseC, Seq()))
+        case Seq(x, y) if x == y =>
+          if (sameArgReduceC(condPrim))
+            continue(AppC(thenC, Seq()))
+          else continue(AppC(elseC, Seq()))
+        case args =>
+          continue(If(condPrim, args, thenC, elseC))
+      }
+    case Halt(arg) =>
+      continue(Halt(s.aSubst(arg)))
   }
 
   // (Non-shrinking) inlining
@@ -342,8 +334,9 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
             val zipped: Seq[(Cnt, Option[Cnt])] = cnts map {
               case Cnt(name, args, body) =>
                 val newK = Cnt(name, args, inlineT(body))
-                // Can continuations be recursive? FIXME
-                val dont = size(body) > cntLimit || census(body).contains(name)
+                val dont =
+                  // Can continuations be recursive? FIXME
+                  size(body) > cntLimit // || census(body).contains(name)
                 (newK, if (dont) None else Some(newK))
             }
             val (iKs, toInline) = zipped.unzip
