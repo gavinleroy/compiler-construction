@@ -1,0 +1,14 @@
+;; In Emacs, open this file in -*- Scheme -*- mode
+
+(def fact
+     (fun (x)
+          (rec loop ((i 1) (r 1))
+               (if (> i x)
+                   r
+                   (loop (+ i 1) (* r i))))))
+
+(@byte-write 65)
+
+(if (@= (fact 5) 120)
+    (@byte-write 66)
+    (@byte-write 63))

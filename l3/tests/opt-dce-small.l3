@@ -2,24 +2,18 @@
 
 ;; Test the DCE translation
 
+;; (letrec ( ;; (even? (fun (x) (if (@= x 0) #t (odd? (@- x 1)))))
+;;          ;; (odd? (fun (x) (if (@= x 0) #f (even? (@- x 1)))))
+;;          (z (@byte-read))
+;;          (incr-by (fun (x) (@+ x z)))
+;;          (p (incr-by 10)))
+;;   (@byte-write p))
 
-;; (letrec ((inc (fun (x) (dec x)))
-;;          (dec (fun (x) (inc x))))
-;;   (let* ((inc (fun (x) (@+ x 1)))
-;;          (v (@+ 10 4))
-;;          (q (@byte-write (@+ 60 5)))
-;;          (q2 (@byte-write (@+ 60 5)))
-;;          (ret (inc -1)))
-;;     (halt ret)))
+(letrec ((fact (fun (x) (if (@= 0 x) 1 (@* x (fact (@- x 1)))))))
+  (@byte-write (@- (fact 5) 55)))
 
-;; (@byte-write (if (@= "bla" "bla") 63 65))
-
-(def incr (fun (x) (@+ x 1)))
-
-;; (if (@= #t #t)
-;;     (@byte-write 65)
-;;     (@byte-write 63))
-
-(let* ((v (incr -1))
-       (v1 v))
-  (halt v1))
+(letrec ((even? (fun (x) (if (@= x 0) #t (odd?  (@- x 1)))))
+         (odd?  (fun (x) (if (@= x 0) #f (even? (@- x 1))))))
+  (if (even? 66)
+      (@byte-write 66)
+      (@byte-write 63)))

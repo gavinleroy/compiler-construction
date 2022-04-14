@@ -5,8 +5,23 @@
 
 ;; (letrec ((f (fun (g) (g)))) f)
 
-(let ((a #f)
-      (b #f)
-      (x #f)
-      (y #f))
-  (if (if a b #f) x y))
+(def min-int -1073741824)
+(def max-int 1073741823)
+
+;; (string-print "Max Int: ")
+
+(@byte-write 65)
+
+(if (@= min-int (+ max-int 1))
+    (@byte-write 66)
+    (@byte-write 63))
+
+(if (not (@= max-int (- min-int 1)))
+    (@byte-write 63)
+    (@byte-write 67))
+
+;; (let ((a #f)
+;;       (b #f)
+;;       (x #f)
+;;       (y #f))
+;;   (if (if a b #f) x y))
