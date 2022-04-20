@@ -25,8 +25,6 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
       eInvEnv: Map[(ValuePrimitive, Seq[Atom]), Atom] = Map.empty,
       cEnv: Map[Name, Cnt] = Map.empty,
       fEnv: Map[Name, Fun] = Map.empty
-      // Map block names to (Tag, Size)
-      // bEnv: Map[Name, (Literal, Literal)]
   ) {
 
     def dead(s: Name): Boolean =
