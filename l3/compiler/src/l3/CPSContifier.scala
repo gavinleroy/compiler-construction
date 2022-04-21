@@ -8,8 +8,6 @@ import scala.collection.mutable.{ Set => MutableSet }
 
 object CPSContifier extends (Tree => Tree) {
 
-  type MultiMap[K, V] = Map[K, Set[V]]
-
   def apply(tree: Tree): Tree = {
     val pt = PropIdentities.apply(tree)
     val analysis = analyze(pt)
@@ -18,6 +16,7 @@ object CPSContifier extends (Tree => Tree) {
 
   // -----------------------------------
   // Pre-contification rewrites
+  //
   // NOTE this includes id propogation
   // to make contifaction effecive.
 
@@ -74,33 +73,14 @@ object CPSContifier extends (Tree => Tree) {
   // Contification analysis
 
   sealed trait CNode
-  case class Root() extends CNode
+  case object Root extends CNode
   case class Cont(k: Name) extends CNode
-  case class Func(f: Name) extends CNode
-
-  case class CFGraph(
-      outEdges: MultiMap[CNode, CNode],
-      inEdges: MultiMap[CNode, CNode],
-      funRetCs: Map[Name, Name],
-      // TODO strongly connected components
-      cSubst: Subst[Name] = emptySubst,
-      fEnv: Map[Name, Fun] = Map()
-  ) {
-    def used(f: Name): Boolean =
-      (inEdges contains Cont(funRetCs(f)))
-    def contRewritable(f: Name): Boolean =
-      inEdges.getOrElse(Cont(funRetCs(f)), Set()).size == 1
-    def withFun(fun: Fun): CFGraph =
-      copy(fEnv = fEnv + (fun.name -> fun))
-    def withFuns(funs: Seq[Fun]): CFGraph =
-      copy(fEnv = fEnv ++ (funs.map(_.name) zip funs))
-  }
 
   private def analyze(tree: Tree): CFGraph = {
     val outEdges =
-      MutableMap[CNode, Set[CNode]]().withDefault(_ => Set[CNode]())
+      MutableMap[CNode, Set[CNode]]().withDefault(_ => Set.empty)
     val inEdges =
-      MutableMap[CNode, Set[CNode]]().withDefault(_ => Set[CNode]())
+      MutableMap[CNode, Set[CNode]]().withDefault(_ => Set.empty)
     val funRetCs = MutableMap[Name, Name]()
     val funBodies = MutableMap[Name, Tree]()
     val cntBodies = MutableMap[Name, Tree]()
@@ -115,58 +95,95 @@ object CPSContifier extends (Tree => Tree) {
       inEdges += (to -> (setIn + from))
     }
     def usedAsValue(a: Atom): Unit = a match {
-      case AtomN(n) =>
-        if (funRetCs contains n)
-          withEdge(Root(), Cont(funRetCs(n)))
-      case AtomL(_) => ()
+      case AtomN(n) if (funRetCs contains n) =>
+        // Assume that the function will be called
+        withEdge(Root, Cont(funRetCs(n))); buildGraph(funBodies(n))
+      case _ => ()
     }
     def doUnseen(mapper: MutableMap[Name, Tree], n: Name): Unit =
-      if (!(seen contains n)) {
-        seen += n
-        buildGraph(mapper(n))
+      if ((mapper contains n) && !(seen contains n)) {
+        seen += n; buildGraph(mapper(n))
       }
-
-    // Logic for Tree -> DomTree
 
     def buildGraph(tree: Tree): Unit = tree match {
       case LetP(_, _, args, body) =>
-        args map usedAsValue; buildGraph(body)
+        args foreach usedAsValue; buildGraph(body)
       case LetC(cnts, body) =>
-        cnts map { case Cnt(name, _, body) =>
-          cntBodies += (name -> body); withEdge(Root(), Cont(name))
+        cnts foreach { case Cnt(name, _, body) =>
+          cntBodies += (name -> body); withEdge(Root, Cont(name))
         }
         buildGraph(body)
       case LetF(funs, body) =>
-        funs map { case Fun(name, retC, _, body) =>
+        funs foreach { case Fun(name, retC, _, body) =>
           funRetCs += (name -> retC); funBodies += (name -> body)
         }
         buildGraph(body)
       case AppC(cnt, args) =>
-        args map usedAsValue;
-        if (cntBodies contains cnt)
-          doUnseen(cntBodies, cnt)
+        args foreach usedAsValue; doUnseen(cntBodies, cnt)
       case AppF(AtomN(f), retC, args) =>
-        args map usedAsValue;
-        if (funRetCs contains f) { // Non-free functions
-          withEdge(Cont(retC), Cont(funRetCs(f)));
-          doUnseen(funBodies, f)
-        }
+        if (funRetCs contains f)
+          withEdge(Cont(retC), Cont(funRetCs(f)))
+        args map usedAsValue; doUnseen(funBodies, f); doUnseen(cntBodies, retC)
       case AppF(_, _, args) =>
         args map usedAsValue
       case If(_, args, tK, fK) =>
-        args map usedAsValue;
-        doUnseen(cntBodies, tK);
-        doUnseen(cntBodies, fK)
+        args map usedAsValue; doUnseen(cntBodies, tK); doUnseen(cntBodies, fK)
       case Halt(a) =>
         usedAsValue(a)
     }
+
     buildGraph(tree) // ! State
-    // TODO strongly connected components
-    CFGraph(outEdges.toMap, inEdges.toMap, funRetCs.toMap)
+    val g = Graph(outEdges.toMap, inEdges.toMap)
+
+    val sccs = stronglyConnectedComponents(g)
+    // TODO filter out single sets
+    // TODO filter out sets that contain non-functions
+    // TODO Store in the CFGraph state
+
+    // println(s"Graph:\n ${g.outEdges}")
+    // println()
+    // println(s"Strongly Connected Components:\n $sccs")
+    // println()
+    CFGraph(g, funRetCs.toMap)
   }
 
   // -----------------------------------
   // Contification transformation
+
+  case class CFGraph(
+      graph: Graph[CNode],
+      funRetCs: Map[Name, Name],
+      // TODO strongly connected components
+      cSubst: Subst[Name] = emptySubst,
+      fEnv: Map[Name, (Fun, Name)] = Map()
+  ) {
+    def used(f: Name): Boolean = // FIXME
+      (graph.inEdges contains Cont(funRetCs(f)))
+    def contRewritable(f: Name): Boolean = {
+      val k = Cont(funRetCs(f))
+      graph.inEdges.get(k) match {
+        case Some(s) =>
+          (s.size == 1) &&
+            (s.head != Root) &&
+            (graph.outEdges(s.head) == Set(k))
+        case _ =>
+          false
+      }
+    }
+    def withCSubst(from: Name, to: Name): CFGraph =
+      copy(cSubst = cSubst + (from -> cSubst(to)))
+    def withFun(fun: Fun): CFGraph =
+      copy(fEnv = fEnv + (fun.name -> (fun, Symbol.fresh("j"))))
+    def withFuns(funs: Seq[Fun]): CFGraph =
+      copy(fEnv =
+        fEnv ++ (funs.map(_.name) zip funs.map((_, Symbol.fresh("j"))))
+      )
+    def getJ(f: Name): Name = fEnv(f)._2
+    def getContK(f: Name): Name = { // NOTE must be contRewritable?
+      val Cont(k) = graph.inEdges(Cont(funRetCs(f))).head
+      k
+    }
+  }
 
   def transform(tree: Tree)(implicit info: CFGraph): Tree = tree match {
     case LetP(name, prim, args, body) =>
@@ -175,27 +192,46 @@ object CPSContifier extends (Tree => Tree) {
       LetC(cnts, transform(body))
     case LetF(funs, body) =>
       // TODO partition into strongly connected components
-      val fs = funs.foldRight((funs.empty)) {
-        case (f @ Fun(name, retC, args, body), acc) =>
+      val (fs, ks) = funs.foldRight((funs.empty, funs.empty)) {
+        case (f @ Fun(name, retC, args, body), (accf, acck)) =>
           if (!info.used(name)) {
-            acc // remove dead functions
-          } else if (info.contRewritable(name)) {
+            (accf, acck) // remove dead functions
+          } else if (false && info.contRewritable(name)) {
             // Rewrite simply contifiable funs
             println(s"$name is contRewritable")
-            f +: acc
-          } else f +: acc
+            (accf, f +: acck)
+          } else (f +: accf, acck)
       }
-      LetF(fs, transform(body))
+      // build up the new state
+      val state = info.withFuns(ks)
+      LetF( // FIXME this naive rewrite doesn't push the k to minimal context D
+        fs,
+        ks.foldRight(transform(body)(state)) {
+          case (Fun(name, k0, args, body), inner) =>
+            val j = state.getJ(name)
+            val k = state.getContK(name)
+            LetC(
+              Seq(Cnt(j, args, transform(body)(state.withCSubst(k0, k)))),
+              inner
+            )
+        }
+      )
     case AppC(cnt, args) =>
-      AppC(cnt, args)
-    // NOTE a use of a contifiable function will always be
-    // an AppF, because if it's used as a value then it isn't
-    // contifiable. At the first use of a function, introduce
-    // the Cont definition and rewrite the terms inside.
+      AppC(info.cSubst(cnt), args)
+    case AppF(AtomN(f), retC, args) =>
+      info.fEnv.get(f) match {
+        case Some((_, k)) =>
+          AppC(k, args)
+        case None =>
+          AppF(AtomN(f), retC, args)
+      }
     case AppF(fun, retC, args) =>
       AppF(fun, retC, args)
+
+    // FORK
     case If(cond, args, thenC, elseC) =>
       If(cond, args, thenC, elseC)
+
     case Halt(arg) =>
       Halt(arg)
   }

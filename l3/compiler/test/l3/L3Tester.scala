@@ -59,6 +59,7 @@ object L3Tester {
 
   val backEnd4 = (
     CL3ToCPSTranslator
+      andThen CPSContifier
       andThen CPSOptimizerHigh
       andThen CPSValueRepresenter
       andThen CPSHoister
