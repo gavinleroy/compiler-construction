@@ -78,22 +78,61 @@
 ;;     (@byte-write 66)
 ;;     (@byte-write 63))
 
-(def dec (fun (x) (@- x 1)))
+;; (def dec (fun (x) (@- x 1)))
 ;; (def inc (fun (x) (@+ x 1)))
 
-(@byte-write 66)
+;; (@byte-write 66)
 
 ;; (@byte-write (dec 68))
 ;; (@byte-write (dec))
 
-(if (dec)
-    (@byte-write (dec 68))
-    (@byte-write 63))
+;; (if (dec)
+;;     (@byte-write (dec 68))
+;;     (@byte-write 63))
 
 ;; (letrec ((fact (fun (x) (if (@= 0 x) 1 (@* x (fact (dec x)))))))
 ;;   (@byte-write (@- (fact 5) 55)))
-;; (letrec ((even? (fun (x) (if (@= x 0) #t (odd?  (dec x)))))
-;;          (odd?  (fun (x) (if (@= x 0) #f (even? (dec x))))))
-;;   (if (even? 66)
+
+;; (def app (fun (f x) (f x)))
+
+;; (letrec ((even? (fun (x) (if (@= x 0) #t (odd?  (@- x 1)))))
+;;          (odd?  (fun (x) (if (@= x 0) #f (even? (@- x 1)))))
+;;          (not-even? (fun (x) (not (even? x)))))
+;;   (if (not-even? 67) ;; (app not-even? 67)
 ;;       (@byte-write 66)
 ;;       (@byte-write 63)))
+
+
+;; Create a maze that has walls everywhere
+;; (defrec completeMaze-acc
+;;   (fun (r c s acc)
+;;        (if (< r s)
+;;            (if (< c s)
+;;                (let* ((rc (cell r c s))
+;;                       (res1 (if (< c (- s 1))
+;;                                 (list-prepend (wall-make (cell r c s) (atE rc s)) acc)
+;;                                 acc))
+;;                       (res2 (if (< r (- s 1))
+;;                                 (list-prepend (wall-make (cell r c s) (atS rc s)) res1)
+;;                                 res1)))
+;;                  (completeMaze-acc r (+ c 1) s res2))
+;;                (completeMaze-acc (+ r 1) 0 s acc))
+;;            acc)))
+
+;; (def completeMaze
+;;      (fun (s)
+;;           (completeMaze-acc 0 0 s list-empty)))
+
+(defrec fac-acc
+  (fun (n acc)
+       (if (< n 2)
+           acc
+           (fac-acc (- n 1) (* n acc)))))
+
+(def fac
+     (fun (n)
+          (fac-acc n 1)))
+
+(if (= (fac 5) 120)
+    (@byte-write 66)
+    (@byte-write 63))

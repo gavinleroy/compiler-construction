@@ -41,6 +41,13 @@ package object l3 {
     if (improv.isEmpty) stable.head._1 else improv.last._2
   }
 
+  def mapAccumR[A, B, C](start: A, ts: Iterable[B])(f: (A, B) => (A, C)): (A, Iterable[C]) = {
+    ts.foldRight((start, Seq[C]())) { case (b, (state, cs)) =>
+      val (a, c) = f(state, b)
+      (a, c +: cs)
+    }
+  }
+
   private[l3] def fixedPoint[T](start: T)(f: T => T): T =
     fixedPoint(start, None)(f)
 

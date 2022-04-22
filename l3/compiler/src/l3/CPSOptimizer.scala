@@ -95,9 +95,7 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
   private def shrink(tree: Tree): Tree =
     shrink(tree, State(census(tree)))(
       x => x,
-      { _ =>
-        throw new Exception("Shrinking inline failed, this is a compiler bug.")
-      }
+      _ => throw new Exception("Shrinking inline failed, this is a compiler bug.")
     )
 
   private def shrink(tree: Tree, s: State)(implicit
@@ -198,7 +196,9 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
       shrink_seq(cnts) { shrunkCnts =>
         val censi = shrunkCnts map { k => census(k.body) }
         val (toInline: Seq[Cnt], oths: Seq[Cnt]) =
-          shrunkCnts.partition { k => ns.appliedOnce(k.name) }
+          shrunkCnts.partition { k =>
+            ns.appliedOnce(k.name) && !censi.exists { _.contains(k.name) }
+          }
         shrink(body, ns.withCnts(toInline))(
           b => continue(LetC(oths, b)),
           fail
