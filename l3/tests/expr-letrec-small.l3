@@ -1,74 +1,6 @@
 ;; ;; In Emacs, open this file in -*- Scheme -*- mode
 
 ;; ;; Test the "letrec" expression
-
-;; (def * (fun (x y) (@* x y)))
-;; (def + (fun (x y) (@+ x y)))
-;; (def - (fun (x y) (@- x y)))
-
-;; (def char-digit?
-;;      (let ((int-0 (@char->int '0'))
-;;            (int-9 (@char->int '9')))
-;;        (fun (c)
-;;             (let ((int-c (@char->int c)))
-;;               (and (@<= int-0 int-c) (@<= int-c int-9))))))
-
-;; (def char-digit->int
-;;      (let ((int-0 (@char->int '0')))
-;;        (fun (c)
-;;             (@- (@char->int c) int-0))))
-
-;; (def int->char-digit
-;;      (let ((int-0 (@char->int '0')))
-;;        (fun (i)
-;;             (@int->char (@+ i int-0)))))
-
-;; (def char-read
-;;      (let ((read-cont-byte (fun () (@and (@byte-read) #b00111111)))
-;;            (<< (fun (x y) (@shift-left x y)))
-;;            (b-and (fun (x y) (@and x y)))
-;;            (b-or@2 (fun (x y) (@or x y)))
-;;            (b-or@3 (fun (x y z) (@or (@or x y) z)))
-;;            (b-or@4 (fun (x y z t) (@or (@or x y) (@or z t))))
-;;            (= (fun (x y) (@= x y))))
-;;        (fun ()
-;;             (let ((b0 (@byte-read)))
-;;               (cond
-;;                ((= -1 b0)                            ;EOF
-;;                 #f)
-;;                ((= 0 (b-and #b10000000 b0))          ;1 byte
-;;                 (@int->char b0))
-;;                ((= #b11000000 (b-and #b11100000 b0)) ;2 bytes
-;;                 (let ((b1 (read-cont-byte)))
-;;                   (@int->char (b-or (<< (b-and #b11111 b0) 6)
-;;                                     b1))))
-;;                ((= #b11100000 (b-and #b11110000 b0)) ;3 bytes
-;;                 (let ((b1 (read-cont-byte))
-;;                       (b2 (read-cont-byte)))
-;;                   (@int->char (b-or (<< (b-and #b1111 b0) 12)
-;;                                     (<< b1 6)
-;;                                     b2))))
-;;                (#t                                   ;4 bytes
-;;                 (let ((b1 (read-cont-byte))
-;;                       (b2 (read-cont-byte))
-;;                       (b3 (read-cont-byte)))
-;;                   (@int->char (b-or (<< (b-and #b111 b0) 18)
-;;                                     (<< b1 12)
-;;                                     (<< b2 6)
-;;                                     b3)))))))))
-;; (def int-read
-;;      (letrec ((loop
-;;                (fun (acc-f acc)
-;;                     (let ((c (char-read)))
-;;                       (if (char-digit? c)
-;;                           (loop acc-f (acc-f (* acc 10) (char-digit->int c)))
-;;                           acc)))))
-;;        (fun ()
-;;             (let ((c (char-read)))
-;;               (cond ((@= c '-') (loop - 0))
-;;                     ((char-digit? c) (loop + (char-digit->int c)))
-;;                     (#t 0))))))
-
 ;; (def i 100)
 ;; (def i1 (int-read))
 
@@ -102,37 +34,39 @@
 ;;       (@byte-write 66)
 ;;       (@byte-write 63)))
 
+;; (defrec fac-acc
+;;   (fun (n acc)
+;;        (if (< n 2)
+;;            acc
+;;            (fac-acc (- n 1) (* n acc)))))
 
-;; Create a maze that has walls everywhere
-;; (defrec completeMaze-acc
-;;   (fun (r c s acc)
-;;        (if (< r s)
-;;            (if (< c s)
-;;                (let* ((rc (cell r c s))
-;;                       (res1 (if (< c (- s 1))
-;;                                 (list-prepend (wall-make (cell r c s) (atE rc s)) acc)
-;;                                 acc))
-;;                       (res2 (if (< r (- s 1))
-;;                                 (list-prepend (wall-make (cell r c s) (atS rc s)) res1)
-;;                                 res1)))
-;;                  (completeMaze-acc r (+ c 1) s res2))
-;;                (completeMaze-acc (+ r 1) 0 s acc))
-;;            acc)))
+;; (def fac
+;;      (fun (n)
+;;           (fac-acc n 1)))
 
-;; (def completeMaze
-;;      (fun (s)
-;;           (completeMaze-acc 0 0 s list-empty)))
+;; (if (= (fac 5) 120)
+;;     (@byte-write 66)
+;;     (@byte-write 63))
 
-(defrec fac-acc
-  (fun (n acc)
-       (if (< n 2)
-           acc
-           (fac-acc (- n 1) (* n acc)))))
+;; (def byte-write (fun (c) (@byte-write c)))
+;; (def compose
+;;      (fun (f g)
+;;           (fun (x) (f (g x)))))
+;; (def + (fun (x y) (@+ x y)))
+;; (def succ (fun (x) (+ x 1)))
+;; (def twice (fun (x) (+ x x)))
+;; (byte-write ((compose succ twice) 39))
+;; (byte-write ((compose succ succ) 73))
+;; (byte-write ((compose twice succ) 4))
 
-(def fac
-     (fun (n)
-          (fac-acc n 1)))
+(def useless
+     (fun (g x)
+          (@+ x 1)))
 
-(if (= (fac 5) 120)
-    (@byte-write 66)
-    (@byte-write 63))
+(def dead (fun (x) x))
+
+(useless dead 10) ;; => 11
+
+;; A lot of code ...
+
+(useless (@byte-write 33) 0) ;; => 1

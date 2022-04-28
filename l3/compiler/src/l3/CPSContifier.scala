@@ -246,6 +246,22 @@ object CPSContifier extends (Tree => Tree) {
   }
 
   def transform(treeP: Tree, info: CFGraph): Tree = {
+    /** Rewrite All
+     *
+     * NOTE This function is a hack solution that introduces needless
+     * tree traversals.
+     * The problem: as continuations get pushed further down the
+     * tree, the variables which are 'in scope' change (more specifically
+     * more are in scope). This introduces symbols which should be rewritten
+     * given the more detailed scoping rules, however, the tree component
+     * was rewritten with symbol substitutions at the higher level.
+     *
+     * This function takes the final state of the rewritinig rules
+     * and applies it to the entire tree again. This works as all symbols
+     * are unique and no 'accidental' substitutions will get made, but all
+     * symbols will get substituted with the full knowledge of their new
+     * scope.
+     */
     def rewriteAll(t: Tree)(implicit info: CFGraph): Tree = t match {
       case LetP(name, prim, args, body) =>
         LetP(name, prim, args, rewriteAll(body))
@@ -275,6 +291,7 @@ object CPSContifier extends (Tree => Tree) {
       case Halt(arg) => Halt(arg)
     }
 
+    // The transform inner-loop
     def loop(tree: Tree)(implicit info: CFGraph): (CFGraph, Tree) = {
       def ret(t: Tree, s: CFGraph = info): (CFGraph, Tree) = (s, t)
       tree match {
@@ -358,9 +375,9 @@ object CPSContifier extends (Tree => Tree) {
                   case Some(good) =>
                     rewriteAll(good)(innerState)
                   case None =>
-                    println(s"Failed on merging: $scc")
-                    println(s"Into: $acc")
-                    ???
+                    // println(s"Failed on merging: $scc")
+                    // println(s"Into: $acc")
+                    throw new Exception("[bug] a contifiable component couldn't be merged")
                 }
             },
             innerState
@@ -381,7 +398,7 @@ object CPSContifier extends (Tree => Tree) {
     loop(treeP)(info)._2
   }
 
-  /** pushCntDefinition
+  /** Push Continuation Definition
     *
     * Given a sequence of mutually recursive continuation definitions 'cnts',
     * push this definition as far down as possible in the 'tree' body. If none

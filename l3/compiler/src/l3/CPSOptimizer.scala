@@ -2,6 +2,14 @@ package l3
 
 import scala.collection.mutable.{ Map => MutableMap }
 
+/* NOTE to GRADER
+ *
+ * In addition to the optimizations in this file, I also implemented
+ * a contification pass which lives in the 'CPSContifier'. This pass
+ * also does things like constant propagation and DCE to make
+ * contification more effective.
+ * */
+
 abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
     val treeModule: T
 ) {
@@ -14,23 +22,40 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
   }
 
   private case class Count(applied: Int = 0, asValue: Int = 0)
+  private case class BlockUsage(
+      inApp: Int = 0,
+      inSet: Int = 0,
+      inGet: Int = 0
+  )
 
   def sameLen[T, U](formalArgs: Seq[T], actualArgs: Seq[U]): Boolean =
     formalArgs.length == actualArgs.length
 
   private case class State(
       census: Map[Name, Count],
+      blockUsage: Map[Name, BlockUsage] = Map.empty,
       aSubst: Subst[Atom] = emptySubst,
       cSubst: Subst[Name] = emptySubst,
       eInvEnv: Map[(ValuePrimitive, Seq[Atom]), Atom] = Map.empty,
       cEnv: Map[Name, Cnt] = Map.empty,
-      fEnv: Map[Name, Fun] = Map.empty
+      fEnv: Map[Name, Fun] = Map.empty,
+      bEnv: Set[Name] = Set.empty
   ) {
 
     def dead(s: Name): Boolean =
       !census.contains(s)
     def appliedOnce(s: Name): Boolean =
       census.get(s).contains(Count(applied = 1, asValue = 0))
+
+    def canRemoveBlock(b: Name): Boolean = {
+      blockUsage.get(b) match {
+        // NOTE this case should never happen
+        case None => true
+        case Some(bu) =>
+          bu.inApp == 0 &&
+            bu.inGet == 0
+      }
+    }
 
     def withASubst(from: Atom, to: Atom): State =
       copy(aSubst = aSubst + (from -> aSubst(to)))
@@ -54,8 +79,8 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
     def withFuns(funs: Seq[Fun]): State =
       copy(fEnv = fEnv ++ (funs.map(_.name) zip funs))
 
-    // def withBlock(name: Name, tag: Literal, size: Literal) =
-    //   copy(bEnv = bEnv + (name -> (tag, size)))
+    def withBlock(b: Name): State =
+      copy(bEnv = bEnv + b)
   }
 
   // Shrinking optimizations
@@ -71,8 +96,12 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
   //
   // [ ] additional optimizations if you wish, e.g. those related to blocks.
   // [ ] Eta-Reduction
-  // [ ] ...
+  // [-] Contification
   // ------------------------------
+  // What next ...
+  // [-] Reduce the number of BlockAlloc
+  // [-] Reduce the number of functions defined
+  // [ ] Reduce the number of arithmetic instructions (Add, Sub)
 
   /** ShrinkException
     *
@@ -92,11 +121,14 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
   sealed trait ShrinkException
   case class BadApp(fname: Name) extends ShrinkException
 
-  private def shrink(tree: Tree): Tree =
-    shrink(tree, State(census(tree)))(
+  private def shrink(tree: Tree): Tree = {
+    val c = census(tree)
+    val b = blockUsage(tree)
+    shrink(tree, State(c, b))(
       x => x,
-      _ => throw new Exception("Shrinking inline failed, this is a compiler bug.")
+      _ => throw new Exception("[bug] shrinking inline critical failure")
     )
+  }
 
   private def shrink(tree: Tree, s: State)(implicit
       continue: Tree => Tree,
@@ -138,57 +170,49 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
             b => continue(LetP(name, prim, args, b)),
             fail
           )
-        // IFF allocating a block, you can inline all retrievals of
-        // (1) it's size
-        // (2) it's tag
+        // If the block was identified as removable, get rid of the set.
+        case (p, Seq(AtomN(bname), _, _)) if p == blockSet && s.bEnv(bname) =>
+          shrink(body, s)
+        // The next use of BlockGet can have the value inlined
+        case (p, args @ Seq(b, n, v)) if p == blockSet =>
+          val ns = s.withExp(v, blockGet, Seq(b, n))
+          shrink(body, ns)(b => continue(LetP(name, p, args, b)), fail)
         case (blockAlloc, args @ Seq(sizeA))
             if blockAllocTag.isDefinedAt(blockAlloc) =>
-          val ns = s
-            .withExp(sizeA, blockLength, Seq(AtomN(name)))
-            .withExp(
-              AtomL(blockAllocTag(blockAlloc)),
-              blockTag,
-              Seq(AtomN(name))
-            )
-          shrink(body, ns)(b => continue(LetP(name, prim, args, b)), fail)
+          // Remove unused blocks
+          if (s.canRemoveBlock(name))
+            shrink(body, s.withBlock(name))
+          else {
+            // IFF allocating a block, you can inline all retrievals of
+            // (1) it's size
+            // (2) it's tag
+            val ns = s
+              .withExp(sizeA, blockLength, Seq(AtomN(name)))
+              .withExp(
+                AtomL(blockAllocTag(blockAlloc)),
+                blockTag,
+                Seq(AtomN(name))
+              )
+            shrink(body, ns)(b => continue(LetP(name, prim, args, b)), fail)
+          }
+
         case (p, args) =>
           shrink(body, s)(b => continue(LetP(name, prim, args, b)), fail)
       }
     }
     case LetC(Seq(), body) =>
       shrink(body, s)
-    case LetC(cntsPrev, body) =>
-      // Experimental Eta-Reduction
-      // FIXME Eta-Reduction does not work
-      // val etaRed = cntsPrev map {
-      //   case Cnt(nameC, argsC, AppC(nameA, argsA))
-      //       if argsC == (argsA map s.aSubst) =>
-      //     Some(nameC, nameA)
-      //   case _ =>
-      //     None
-      // }
-
-      // val ns = etaRed.flatten.foldLeft(s) { case (st, (from, to)) =>
-      //   st.withCSubst(from, to)
-      // }
-      // val cnts = cntsPrev
-      //   .zip(etaRed)
-      //   .filter { _._2.isEmpty }
-      //   .map { _._1 }
-
-      val ns = s
-      val cnts = cntsPrev
-
+    case LetC(cnts, body) =>
       def shrink_seq(from: Seq[Cnt], to: Seq[Cnt] = Seq())(implicit
           cont: Seq[Cnt] => Tree
       ): Tree = from match {
         case Seq() =>
           cont(to)
         case Cnt(name, args, body) +: tl =>
-          if (ns.dead(name))
+          if (s.dead(name))
             shrink_seq(tl, to)
           else
-            shrink(body, ns)(
+            shrink(body, s)(
               b => shrink_seq(tl, to :+ Cnt(name, args, b)),
               fail
             )
@@ -197,9 +221,9 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
         val censi = shrunkCnts map { k => census(k.body) }
         val (toInline: Seq[Cnt], oths: Seq[Cnt]) =
           shrunkCnts.partition { k =>
-            ns.appliedOnce(k.name) && !censi.exists { _.contains(k.name) }
+            s.appliedOnce(k.name) && !censi.exists { _.contains(k.name) }
           }
-        shrink(body, ns.withCnts(toInline))(
+        shrink(body, s.withCnts(toInline))(
           b => continue(LetC(oths, b)),
           fail
         )
@@ -289,6 +313,10 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
       val thenC = s.cSubst(thenCP)
       val elseC = s.cSubst(elseCP)
       args match {
+        case Seq(AtomL(x)) if cEvaluator.isDefinedAt((condPrim, Seq(x))) =>
+          if (cEvaluator((condPrim, Seq(x))))
+            continue(AppC(thenC, Seq()))
+          else continue(AppC(elseC, Seq()))
         case Seq(AtomL(x), AtomL(y))
             if cEvaluator.isDefinedAt((condPrim, Seq(x, y))) =>
           if (cEvaluator((condPrim, Seq(x, y))))
@@ -368,7 +396,10 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
             val zipped: Seq[(Cnt, Option[Cnt])] = cnts map {
               case Cnt(name, args, body) =>
                 val newK = Cnt(name, args, inlineT(body))
-                val dont = size(body) > cntLimit || census(body).contains(name)
+                val dont =
+                  size(
+                    body
+                  ) > cntLimit // || census(body).contains(name) // FIXME good idea?
                 (newK, if (dont) None else Some(newK))
             }
             val (iKs, toInline) = zipped.unzip
@@ -380,7 +411,10 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
             val zipped: Seq[(Fun, Option[Fun])] = funs map {
               case (Fun(name, retC, args, body)) =>
                 val newF = Fun(name, retC, args, inlineT(body))
-                val dont = size(body) > funLimit || census(body).contains(name)
+                val dont =
+                  size(
+                    body
+                  ) > funLimit // || census(body).contains(name) // FIXME good idea?
                 (newF, if (dont) None else Some(newF))
             }
             val (iFs, toInline) = zipped.unzip
@@ -477,6 +511,66 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
     census.toMap
   }
 
+  // FIXME this could be coupled with the cesnsus computation to
+  // reduce the number of traversals.
+  private def blockUsage(tree: Tree): Map[Name, BlockUsage] = {
+    val blocks = MutableMap[Name, BlockUsage]()
+    val rhs = MutableMap[Name, Tree]()
+
+    def useSet(atom: Atom): Unit =
+      atom.asName.foreach { b =>
+        blocks.get(b).foreach { curr =>
+          blocks(b) = curr.copy(inSet = curr.inSet + 1)
+        }
+      }
+
+    def useGet(atom: Atom): Unit =
+      atom.asName.foreach { b =>
+        blocks.get(b).foreach { curr =>
+          blocks(b) = curr.copy(inGet = curr.inGet + 1)
+        }
+      }
+
+    def useApp(atom: Atom): Unit =
+      atom.asName.foreach { b =>
+        blocks.get(b).foreach { curr =>
+          blocks(b) = curr.copy(inApp = curr.inApp + 1)
+        }
+        rhs.remove(b).foreach(blockUsage)
+      }
+
+    def blockUsage(tree: Tree): Unit = (tree: @unchecked) match {
+      case LetP(b, p, args, body) if blockAllocTag.isDefinedAt(p) =>
+        blocks(b) = BlockUsage(); args foreach useApp; blockUsage(body)
+      case LetP(_, p, b +: args, body) if p == blockSet =>
+        useSet(b); args foreach useApp; blockUsage(body)
+      case LetP(_, p, b +: args, body) if p == blockGet =>
+        useGet(b); args foreach useApp; blockUsage(body)
+      case LetP(_, _, args, body) =>
+        args foreach useApp; blockUsage(body)
+      case LetC(cnts, body) =>
+        rhs ++= (cnts map { c => (c.name, c.body) }); blockUsage(body)
+      case LetF(funs, body) =>
+        rhs ++= (funs map { f => (f.name, f.body) }); blockUsage(body)
+      case AppC(cnt, args) =>
+        args foreach useApp
+        rhs.remove(cnt).foreach(blockUsage)
+      case AppF(fun, retC, args) =>
+        args foreach useApp
+        fun.asName.foreach { b => rhs.remove(b).foreach(blockUsage) }
+        rhs.remove(retC).foreach(blockUsage)
+      case If(_, args, thenC, elseC) =>
+        args foreach useApp
+        rhs.remove(thenC).foreach(blockUsage)
+        rhs.remove(elseC).foreach(blockUsage)
+      case Halt(arg) =>
+        useApp(arg)
+    }
+
+    blockUsage(tree)
+    blocks.toMap
+  }
+
   private def size(tree: Tree): Int = (tree: @unchecked) match {
     case LetP(_, _, _, body) => size(body) + 1
     case LetC(cs, body)      => (cs map { c => size(c.body) }).sum + size(body)
@@ -490,6 +584,8 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
   protected val blockAllocTag: PartialFunction[ValuePrimitive, Literal]
   protected val blockTag: ValuePrimitive
   protected val blockLength: ValuePrimitive
+  protected val blockSet: ValuePrimitive
+  protected val blockGet: ValuePrimitive
 
   protected val identity: ValuePrimitive
   protected val truthy: Literal
@@ -539,6 +635,8 @@ object CPSOptimizerHigh
   }
   protected val blockTag: ValuePrimitive = BlockTag
   protected val blockLength: ValuePrimitive = BlockLength
+  protected val blockSet: ValuePrimitive = BlockSet
+  protected val blockGet: ValuePrimitive = BlockGet
 
   protected val identity: ValuePrimitive = Id
   protected val truthy: Literal = BooleanLit(true)
@@ -645,6 +743,8 @@ object CPSOptimizerLow
   }
   protected val blockTag: ValuePrimitive = BlockTag
   protected val blockLength: ValuePrimitive = BlockLength
+  protected val blockSet: ValuePrimitive = BlockSet
+  protected val blockGet: ValuePrimitive = BlockGet
 
   protected val identity: ValuePrimitive = Id
   protected val truthy: Literal = 0x1a
