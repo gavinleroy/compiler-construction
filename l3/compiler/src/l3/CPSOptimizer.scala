@@ -85,24 +85,6 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
 
   // Shrinking optimizations
 
-  // ------------ TODO ------------
-  // [-] dead code elimination (DCE),
-  // [-] common subexpression elimination (CSE),
-  // [-] constant propogation,
-  // [-] constant folding,
-  // [-] simplifications due to neutral/absorbing elements,
-  // [-] shrinking inlining,
-  // [-] general inlining, using the heuristic described below,
-  //
-  // [ ] additional optimizations if you wish, e.g. those related to blocks.
-  // [ ] Eta-Reduction
-  // [-] Contification
-  // ------------------------------
-  // What next ...
-  // [-] Reduce the number of BlockAlloc
-  // [-] Reduce the number of functions defined
-  // [ ] Reduce the number of arithmetic instructions (Add, Sub)
-
   /** ShrinkException
     *
     * There are times when an assumption failed during the shrinking process.
@@ -173,6 +155,8 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
         // If the block was identified as removable, get rid of the set.
         case (p, Seq(AtomN(bname), _, _)) if p == blockSet && s.bEnv(bname) =>
           shrink(body, s)
+        // TODO remove Subsequent BlocSet to the same slot before a get
+        //
         // The next use of BlockGet can have the value inlined
         case (p, args @ Seq(b, n, v)) if p == blockSet =>
           val ns = s.withExp(v, blockGet, Seq(b, n))
@@ -184,8 +168,7 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
             shrink(body, s.withBlock(name))
           else {
             // IFF allocating a block, you can inline all retrievals of
-            // (1) it's size
-            // (2) it's tag
+            // (1) it's size (2) it's tag
             val ns = s
               .withExp(sizeA, blockLength, Seq(AtomN(name)))
               .withExp(
@@ -195,13 +178,13 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
               )
             shrink(body, ns)(b => continue(LetP(name, prim, args, b)), fail)
           }
-
         case (p, args) =>
           shrink(body, s)(b => continue(LetP(name, prim, args, b)), fail)
       }
     }
-    case LetC(Seq(), body) =>
-      shrink(body, s)
+    // Remove empty Let expressions
+    case LetC(Seq(), body) => shrink(body, s)
+    case LetF(Seq(), body) => shrink(body, s)
     case LetC(cnts, body) =>
       def shrink_seq(from: Seq[Cnt], to: Seq[Cnt] = Seq())(implicit
           cont: Seq[Cnt] => Tree
@@ -228,8 +211,6 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
           fail
         )
       }
-    case LetF(Seq(), body) =>
-      shrink(body, s)
     case LetF(funs, body) =>
       def shrink_seq(from: Seq[Fun], to: Seq[Fun] = Seq())(implicit
           cont: Seq[Fun] => Tree
@@ -254,7 +235,8 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
           shrunkFuns.partition { f =>
             s.appliedOnce(f.name) && !censi.exists { _.contains(f.name) }
           }
-
+        // If any inline attemp fails, remove it's name from the
+        // inline list and shrink the tree again.
         def failK(mInline: Map[Name, Fun], mFuns: Map[Name, Fun])(
             e: ShrinkException
         ): Tree = e match {
@@ -383,23 +365,26 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
     }
 
     val fibonacci = Seq(1, 2, 3, 5, 8, 13)
+    val loopUnroll = Seq(1, 2, 3, 5, 8, 13)
 
     val trees = LazyList.iterate((0, tree), fibonacci.length) {
       case (i, tree) =>
         val funLimit = fibonacci(i)
+        val loopLimit = loopUnroll(i)
         val cntLimit = i
 
         def inlineT(tree: Tree)(implicit s: State): Tree = tree match {
           case LetP(name, prim, args, body) =>
             LetP(name, prim, args map s.aSubst, inlineT(body))
+          // NOTE inlining a recursive continuation jump is
+          // the same as loop unrolling.
           case LetC(cnts, body) =>
             val zipped: Seq[(Cnt, Option[Cnt])] = cnts map {
               case Cnt(name, args, body) =>
                 val newK = Cnt(name, args, inlineT(body))
-                val dont =
-                  size(
-                    body
-                  ) > cntLimit // || census(body).contains(name) // FIXME good idea?
+                val mySize = size(body)
+                val dont = (mySize > cntLimit) ||
+                  (mySize > loopLimit && census(body).contains(name))
                 (newK, if (dont) None else Some(newK))
             }
             val (iKs, toInline) = zipped.unzip
@@ -411,10 +396,9 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
             val zipped: Seq[(Fun, Option[Fun])] = funs map {
               case (Fun(name, retC, args, body)) =>
                 val newF = Fun(name, retC, args, inlineT(body))
-                val dont =
-                  size(
-                    body
-                  ) > funLimit // || census(body).contains(name) // FIXME good idea?
+                val mySize = size(body)
+                val dont = (mySize > funLimit) ||
+                  (mySize > loopLimit && census(body).contains(name))
                 (newF, if (dont) None else Some(newF))
             }
             val (iFs, toInline) = zipped.unzip
@@ -425,14 +409,11 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
             (s.cSubst(cnt), args map s.aSubst) match {
               case (k, args) if s.cEnv contains cnt =>
                 val cnt = s.cEnv(k)
-                val bdy =
-                  copyT(
-                    cnt.body,
-                    subst(cnt.args map { AtomN }, args),
-                    emptySubst
-                  )
-                bdy
-              // inlineT(bdy) // FIXME should this happen?
+                copyT(
+                  cnt.body,
+                  subst(cnt.args map { AtomN }, args),
+                  emptySubst
+                )
               case (cnt, args) =>
                 AppC(cnt, args)
             }

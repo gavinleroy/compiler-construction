@@ -361,8 +361,7 @@ object CPSContifier extends (Tree => Tree) {
           // FIXME the merging code is wildly inefficient.
 
           // ASSUMPTION: an SCC cannot be collapsed into more than
-          // one other SCC.
-          // If it were, they would not be disjoint SCCs
+          // one other SCC. If it were, they would not be disjoint SCCs
           val collapsedSccs: Set[Set[Cnt]] =
             sccsK.map { _.toSet }.toSet.minimize { collapse(_, _) }
           // Push the remaining continuation definitions into the LetF node
