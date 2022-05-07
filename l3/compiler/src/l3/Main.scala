@@ -14,11 +14,10 @@ object Main {
     val stats = new Statistics()
     val backEnd: Tree => TerminalPhaseResult = (
       CL3ToCPSTranslator
-        // andThen treePrinter("---------- Before Contification")
         andThen CPSContifier
-        // andThen treePrinter("---------- Before Optimization High")
+        // andThen treePrinter("---------- After Contification")
         andThen CPSOptimizerHigh
-        // andThen treePrinter("---------- Before value representation")
+        andThen treePrinter("---------- Before value representation")
         andThen CPSValueRepresenter
         andThen treeChecker
         andThen CPSHoister

@@ -1,0 +1,38 @@
+;; In Emacs, open this file in -*- Scheme -*- mode
+
+;; Test the @block-get and @block-set! primitives
+
+;; pretend this is a library function
+(def box (fun (x)
+              (let ((b (@block-alloc-0 1)))
+                (@block-set! b 0 x)
+                b)))
+(def unbox (fun (b) (@block-get b 0)))
+(def box-set! (fun (b v) (@block-set! b 0 v)))
+;; ------------------------------------
+
+(def inc! ;; int box -> unit
+     (fun (b)
+          (box-set! b (@+ (unbox b) 1))))
+
+(def next (let ((b (box -1)))
+            (fun ()
+                 (inc! b)
+                 (unbox b))))
+
+(@byte-write 65)
+(def iters 1000000)
+
+;; ref2 should be unboxed and inlined
+(def ref (box 0))
+(def ref2 (box iters))
+
+(rec loop ()
+     (if (not (@= (next) iters))
+         (begin (inc! ref)
+                (loop))))
+;; (inc! ref)
+(if (@= (unbox ref)
+        (unbox ref2))
+    (@byte-write 66)
+    (@byte-write 63))

@@ -59,14 +59,10 @@
 ;; (byte-write ((compose succ succ) 73))
 ;; (byte-write ((compose twice succ) 4))
 
-(def useless
-     (fun (g x)
-          (@+ x 1)))
+(def one (@byte-read))
+(def dec (fun (x) (@- x one)))
 
-(def dead (fun (x) x))
-
-(useless dead 10) ;; => 11
-
-;; A lot of code ...
-
-(useless (@byte-write 33) 0) ;; => 1
+(letrec ((f1 (fun (x) (if (@<= x 0) 0 (f3 (dec x)))))
+         (f2 (fun (x) (f1 x)))
+         (f3 (fun (x) (f2 x))))
+  (@byte-write (f1 100000)))

@@ -26,7 +26,14 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
       inApp: Int = 0,
       inSet: Int = 0,
       inGet: Int = 0
-  )
+  ) {
+    def +(that: BlockUsage): BlockUsage =
+      copy(
+        inApp = inApp + that.inApp,
+        inSet = inSet + that.inSet,
+        inGet = inGet + that.inGet
+      )
+  }
 
   def sameLen[T, U](formalArgs: Seq[T], actualArgs: Seq[U]): Boolean =
     formalArgs.length == actualArgs.length
@@ -36,9 +43,13 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
       blockUsage: Map[Name, BlockUsage] = Map.empty,
       aSubst: Subst[Atom] = emptySubst,
       cSubst: Subst[Name] = emptySubst,
+      // Expression Env
       eInvEnv: Map[(ValuePrimitive, Seq[Atom]), Atom] = Map.empty,
+      // Continuation Env
       cEnv: Map[Name, Cnt] = Map.empty,
+      // Function Env
       fEnv: Map[Name, Fun] = Map.empty,
+      // Block Env
       bEnv: Set[Name] = Set.empty
   ) {
 
@@ -81,11 +92,59 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
 
     def withBlock(b: Name): State =
       copy(bEnv = bEnv + b)
+    def namedBlock(b: Name): Boolean =
+      (blockUsage contains b)
+
+    def havocBlock(b: Name): State =
+      copy(eInvEnv = eInvEnv.filterNot {
+        case ((prim, Seq(AtomN(bname), _)), _) if prim == blockGet =>
+          b == bname
+        case _ => false
+      })
+    def havocBlocks(bs: Iterable[Name]): State =
+      bs.foldLeft(this) { _.havocBlock(_) }
+    /* NOTE havocing all blocks removes the opportunity for some optimizations.
+     * E.G.
+     * ```scheme
+     * (@byte-write 65)
+     * (def iters 100000)
+     *
+     * ;; ref2 should be unboxed and inlined
+     * (def ref2 (box iters))
+     *
+     * (def inc! ;; int box -> unit
+     *      (fun (b)
+     *           (box-set! b (@+ (unbox b) 1))))
+     *
+     * (def ref (box 0))
+     *
+     * (rec loop ((i iters))
+     *      (if (not (@= i 0))
+     *          (begin (inc! ref)
+     *                 (loop (@- i 1)))))
+     *
+     * (if (@= (unbox ref)
+     *         (unbox ref2))
+     *     (@byte-write 66)
+     *     (@byte-write 63))
+     * ```
+     * The box `ref2` could ideally be unboxed and the
+     * integer value inlined directly. However, by calling havocBlocks()
+     * at function/continuation boundaries, this will never happen. I
+     * ran out of time trying to implement a [correct] version that
+     * properly unboxes `ref2` without ruining the operations on `ref`.
+     */
+    def havocBlocks(): State =
+      copy(eInvEnv = eInvEnv.filterNot {
+        case ((prim, Seq(AtomN(bname), _)), _) if prim == blockGet =>
+          true
+        case _ => false
+      })
   }
 
   // Shrinking optimizations
 
-  /** ShrinkException
+  /** Shrink Exception
     *
     * There are times when an assumption failed during the shrinking process.
     * The motivating example is function inlining. If a function can be inlined,
@@ -104,6 +163,7 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
   case class BadApp(fname: Name) extends ShrinkException
 
   private def shrink(tree: Tree): Tree = {
+
     val c = census(tree)
     val b = blockUsage(tree)
     shrink(tree, State(c, b))(
@@ -141,6 +201,14 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
         case (p, Seq(x, y)) if x == y && sameArgReduce.isDefinedAt((p, x)) =>
           val value = sameArgReduce((p, x))
           shrink(body, s.withASubst(name, value))
+        case (p, args @ Seq(AtomN(bname), _))
+            if p == blockGet &&
+              (s.eInvEnv contains (p, args)) =>
+          shrink(
+            body,
+            s.withASubst(name, s.eInvEnv((p, args)))
+          )
+
         // IFF the prim/args pair was already seen, remove let and subst names
         case (p, args) if s.eInvEnv contains (p, args) =>
           shrink(
@@ -158,7 +226,7 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
         // TODO remove Subsequent BlocSet to the same slot before a get
         //
         // The next use of BlockGet can have the value inlined
-        case (p, args @ Seq(b, n, v)) if p == blockSet =>
+        case (p, args @ Seq(b @ AtomN(bname), n, v)) if p == blockSet =>
           val ns = s.withExp(v, blockGet, Seq(b, n))
           shrink(body, ns)(b => continue(LetP(name, p, args, b)), fail)
         case (blockAlloc, args @ Seq(sizeA))
@@ -186,16 +254,18 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
     case LetC(Seq(), body) => shrink(body, s)
     case LetF(Seq(), body) => shrink(body, s)
     case LetC(cnts, body) =>
+      val ns = s.havocBlocks()
+
       def shrink_seq(from: Seq[Cnt], to: Seq[Cnt] = Seq())(implicit
           cont: Seq[Cnt] => Tree
       ): Tree = from match {
         case Seq() =>
           cont(to)
         case Cnt(name, args, body) +: tl =>
-          if (s.dead(name))
+          if (ns.dead(name))
             shrink_seq(tl, to)
           else
-            shrink(body, s)(
+            shrink(body, ns)(
               b => shrink_seq(tl, to :+ Cnt(name, args, b)),
               fail
             )
@@ -204,24 +274,26 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
         val censi = shrunkCnts map { k => census(k.body) }
         val (toInline: Seq[Cnt], oths: Seq[Cnt]) =
           shrunkCnts.partition { k =>
-            s.appliedOnce(k.name) && !censi.exists { _.contains(k.name) }
+            ns.appliedOnce(k.name) && !censi.exists { _.contains(k.name) }
           }
-        shrink(body, s.withCnts(toInline))(
+        shrink(body, ns.withCnts(toInline))(
           b => continue(LetC(oths, b)),
           fail
         )
       }
     case LetF(funs, body) =>
+      val ns = s.havocBlocks()
+
       def shrink_seq(from: Seq[Fun], to: Seq[Fun] = Seq())(implicit
           cont: Seq[Fun] => Tree
       ): Tree = from match {
         case Seq() =>
           cont(to)
         case Fun(name, retC, args, body) +: tl =>
-          if (s.dead(name))
+          if (ns.dead(name))
             shrink_seq(tl, to)
           else
-            shrink(body, s)(
+            shrink(body, ns)(
               b => shrink_seq(tl, to :+ Fun(name, retC, args, b)),
               fail
             )
@@ -233,7 +305,7 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
           // it is (1) applied once and (2) isn't free in any
           // of the mutually recursive functions.
           shrunkFuns.partition { f =>
-            s.appliedOnce(f.name) && !censi.exists { _.contains(f.name) }
+            ns.appliedOnce(f.name) && !censi.exists { _.contains(f.name) }
           }
         // If any inline attemp fails, remove it's name from the
         // inline list and shrink the tree again.
@@ -244,7 +316,7 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
             val fun = mInline(fname)
             val newInlines = mInline - fname
             val newFuns = mFuns + (fname -> fun)
-            shrink(body, s.withFuns(newInlines.values.toSeq))(
+            shrink(body, ns.withFuns(newInlines.values.toSeq))(
               b => continue(LetF(newFuns.values.toSeq, b)),
               failK(newInlines, newFuns)
             )
@@ -256,7 +328,7 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
           (toInline map { f => (f.name, f) }).toMap
         val mFuns: Map[Name, Fun] = (oths map { f => (f.name, f) }).toMap
 
-        shrink(body, s.withFuns(mInline.values.toSeq))(
+        shrink(body, ns.withFuns(mInline.values.toSeq))(
           { b =>
             continue(
               if (mFuns.isEmpty)
@@ -365,7 +437,18 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
     }
 
     val fibonacci = Seq(1, 2, 3, 5, 8, 13)
-    val loopUnroll = Seq(1, 2, 3, 5, 8, 13)
+    val loopUnroll = Seq(1, 2, 4, 5, 6, 7)
+
+    /* NOTE if a continuation has a recursive call in tail
+     * position, inlining the call is equivalent to loop
+     * unrolling.
+     *
+     * Here, I've decided to allow continuations and functions
+     * to be inlined even if they are recursive, but only up to a
+     * certain point. With some testing, I've found that allowing
+     * functions to inline *slightly* at a higher rate than continuations
+     * provides pretty good performance without too huge of resulting trees.
+     * */
 
     val trees = LazyList.iterate((0, tree), fibonacci.length) {
       case (i, tree) =>
@@ -376,8 +459,6 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
         def inlineT(tree: Tree)(implicit s: State): Tree = tree match {
           case LetP(name, prim, args, body) =>
             LetP(name, prim, args map s.aSubst, inlineT(body))
-          // NOTE inlining a recursive continuation jump is
-          // the same as loop unrolling.
           case LetC(cnts, body) =>
             val zipped: Seq[(Cnt, Option[Cnt])] = cnts map {
               case Cnt(name, args, body) =>
@@ -389,9 +470,6 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
             }
             val (iKs, toInline) = zipped.unzip
             LetC(iKs, inlineT(body)(s.withCnts(toInline.flatten)))
-          // NOTE when we see a function/cnt, it should be inlined iff:
-          // - It is not recursive.
-          // - It's [body] size is less than (fun|cnt)Limit.
           case LetF(funs, body) =>
             val zipped: Seq[(Fun, Option[Fun])] = funs map {
               case (Fun(name, retC, args, body)) =>
@@ -493,36 +571,29 @@ abstract class CPSOptimizer[T <: CPSTreeModule { type Name = Symbol }](
   }
 
   // FIXME this could be coupled with the cesnsus computation to
-  // reduce the number of traversals.
+  // reduce the number of tree traversals.
   private def blockUsage(tree: Tree): Map[Name, BlockUsage] = {
-    val blocks = MutableMap[Name, BlockUsage]()
+    val blocks = MutableMap[Name, BlockUsage]().withDefault(_ => BlockUsage())
     val rhs = MutableMap[Name, Tree]()
-
     def useSet(atom: Atom): Unit =
       atom.asName.foreach { b =>
-        blocks.get(b).foreach { curr =>
-          blocks(b) = curr.copy(inSet = curr.inSet + 1)
-        }
+        val curr = blocks(b)
+        blocks(b) = curr.copy(inSet = curr.inSet + 1)
       }
-
     def useGet(atom: Atom): Unit =
       atom.asName.foreach { b =>
-        blocks.get(b).foreach { curr =>
-          blocks(b) = curr.copy(inGet = curr.inGet + 1)
-        }
+        val curr = blocks(b)
+        blocks(b) = curr.copy(inGet = curr.inGet + 1)
       }
-
     def useApp(atom: Atom): Unit =
       atom.asName.foreach { b =>
-        blocks.get(b).foreach { curr =>
-          blocks(b) = curr.copy(inApp = curr.inApp + 1)
-        }
+        val curr = blocks(b)
+        blocks(b) = curr.copy(inApp = curr.inApp + 1)
         rhs.remove(b).foreach(blockUsage)
       }
-
     def blockUsage(tree: Tree): Unit = (tree: @unchecked) match {
       case LetP(b, p, args, body) if blockAllocTag.isDefinedAt(p) =>
-        blocks(b) = BlockUsage(); args foreach useApp; blockUsage(body)
+        args foreach useApp; blockUsage(body)
       case LetP(_, p, b +: args, body) if p == blockSet =>
         useSet(b); args foreach useApp; blockUsage(body)
       case LetP(_, p, b +: args, body) if p == blockGet =>
