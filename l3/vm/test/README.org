@@ -1,0 +1,10 @@
+This directory contains VM tests that are meant to be run using [[https://github.com/simonmichael/shelltestrunner][shelltestrunner]].
+
+When running these tests, the VM shelltest macro must be defined, and point to the executable of the VM to test. This means that the C VM can be tested as follows (after having been built with ~make~):
+#+begin_src shell
+  $ shelltest -D VM=../c/bin/vm .
+#+end_src
+while the Rust VM can be tested as follows (after having been built with ~cargo build --release~):
+#+begin_src shell
+  $ shelltest -D VM=../rust/target/release/l3vm .
+#+end_src

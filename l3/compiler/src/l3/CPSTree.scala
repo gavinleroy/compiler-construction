@@ -64,3 +64,20 @@ object SymbolicCPSTreeModuleLow extends CPSTreeModule {
   type ValuePrimitive = CPSValuePrimitive
   type TestPrimitive = CPSTestPrimitive
 }
+
+/**
+  * Module for register-allocated CPS trees: names either represent
+  * ASM registers or ASM labels. (Since register names are often
+  * reused, names are no longer globally unique as previously).
+  */
+object RegisterCPSTreeModule extends CPSTreeModule {
+  sealed trait Name extends Product {
+    override def toString: String = productElement(0).toString
+  }
+  case class Reg(reg: ASMRegister) extends Name
+  case class Label(label: Symbol) extends Name
+  type Literal = Bits32
+
+  type ValuePrimitive = CPSValuePrimitive
+  type TestPrimitive = CPSTestPrimitive
+}

@@ -3,13 +3,14 @@ package l3
 import java.io.{ ByteArrayOutputStream, PrintStream }
 import java.nio.file.{ Paths }
 
-import scala.util.Using.{resource => using}
+import scala.util.Using.{ resource => using }
 
 import SymbolicCL3TreeModule.Tree
 
 object L3Tester {
-  def compile[T](backEnd: Tree => Either[String, T])
-             (inFileNames: Seq[String]): Either[String, T] = {
+  def compile[T](
+      backEnd: Tree => Either[String, T]
+  )(inFileNames: Seq[String]): Either[String, T] = {
     val basePath = Paths.get(".").toAbsolutePath.normalize
     Right(inFileNames)
       .flatMap(L3FileReader.readFilesExpandingModules(basePath, _))
@@ -18,12 +19,14 @@ object L3Tester {
       .flatMap(backEnd)
   }
 
-  def compileNoFail[T](backEnd: Tree => T)
-                   (inFileNames: Seq[String]): Either[String, T] =
+  def compileNoFail[T](backEnd: Tree => T)(
+      inFileNames: Seq[String]
+  ): Either[String, T] =
     compile(t => Right(backEnd(t)))(inFileNames)
 
-  def compileAndRun(backEnd: Tree => TerminalPhaseResult)
-                   (inFileNames: Seq[String]): Either[String, String] = {
+  def compileAndRun(
+      backEnd: Tree => TerminalPhaseResult
+  )(inFileNames: Seq[String]): Either[String, String] = {
     def outputCapturingBackend(t: Tree): Either[String, String] = {
       val outBS = new ByteArrayOutputStream()
       using(new PrintStream(outBS)) { outPS =>
@@ -65,5 +68,30 @@ object L3Tester {
       andThen CPSHoister
       andThen CPSOptimizerLow
       andThen CPSInterpreterLow
+  )
+
+  val backEnd5 = (
+    CL3ToCPSTranslator
+      andThen CPSValueRepresenter
+      andThen CPSHoister
+      andThen CPSConstantNamer
+      andThen CPSRegisterAllocator
+      andThen CPSToASMTranslator
+      andThen ASMLabelResolver
+      andThen ASMInterpreter
+  )
+
+  val backEnd6 = (
+    CL3ToCPSTranslator
+      andThen CPSContifier
+      andThen CPSOptimizerHigh
+      andThen CPSValueRepresenter
+      andThen CPSHoister
+      andThen CPSOptimizerLow
+      andThen CPSConstantNamer
+      andThen CPSRegisterAllocator
+      andThen CPSToASMTranslator
+      andThen ASMLabelResolver
+      andThen ASMInterpreter
   )
 }

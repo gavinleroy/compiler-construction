@@ -1,0 +1,61 @@
+c8000004 | 0000: FRAME(4)
+a8008d00 | 0004: LDLO(R0,141)
+30e10001 | 0008: LSR(R1,R0,C1)
+f8000101 | 000c: BWRI(R1)
+a8008301 | 0010: LDLO(R1,131)
+30e10101 | 0014: LSR(R1,R1,C1)
+f8000101 | 0018: BWRI(R1)
+6835ea01 | 001c: JNE(R1,C10,53)       [target address: 00f0]
+b800e201 | 0020: MOVE(R1,C2)
+a8000a01 | 0024: LDLO(R1,10)
+6831ea01 | 0028: JNE(R1,C10,49)       [target address: 00ec]
+a8008502 | 002c: LDLO(R2,133)
+30e10202 | 0030: LSR(R2,R2,C1)
+f8000102 | 0034: BWRI(R2)
+b8000201 | 0038: MOVE(R1,R2)
+a8001a01 | 003c: LDLO(R1,26)
+a8007f02 | 0040: LDLO(R2,127)
+6829ea01 | 0044: JNE(R1,C10,41)       [target address: 00e8]
+30e10203 | 0048: LSR(R3,R2,C1)
+f8000103 | 004c: BWRI(R3)
+b8000301 | 0050: MOVE(R1,R3)
+a8008701 | 0054: LDLO(R1,135)
+30e10101 | 0058: LSR(R1,R1,C1)
+f8000101 | 005c: BWRI(R1)
+6821ea01 | 0060: JNE(R1,C10,33)       [target address: 00e4]
+a8001a03 | 0064: LDLO(R3,26)
+681dea03 | 0068: JNE(R3,C10,29)       [target address: 00dc]
+30e10203 | 006c: LSR(R3,R2,C1)
+f8000103 | 0070: BWRI(R3)
+b8000301 | 0074: MOVE(R1,R3)
+a8008901 | 0078: LDLO(R1,137)
+6817ea01 | 007c: JNE(R1,C10,23)       [target address: 00d8]
+b8000201 | 0080: MOVE(R1,R2)
+30e10101 | 0084: LSR(R1,R1,C1)
+f8000101 | 0088: BWRI(R1)
+a8000a01 | 008c: LDLO(R1,10)
+6811ea01 | 0090: JNE(R1,C10,17)       [target address: 00d4]
+a8008b02 | 0094: LDLO(R2,139)
+b8000201 | 0098: MOVE(R1,R2)
+30e10101 | 009c: LSR(R1,R1,C1)
+f8000101 | 00a0: BWRI(R1)
+a8000a01 | 00a4: LDLO(R1,10)
+6809ea01 | 00a8: JNE(R1,C10,9)        [target address: 00cc]
+a8000a01 | 00ac: LDLO(R1,10)
+6805ea01 | 00b0: JNE(R1,C10,5)        [target address: 00c4]
+30e10000 | 00b4: LSR(R0,R0,C1)
+f8000100 | 00b8: BWRI(R0)
+30e1e100 | 00bc: LSR(R0,C1,C1)
+a0000000 | 00c0: HALT(R0)
+b8000100 | 00c4: MOVE(R0,R1)
+77fffffb | 00c8: JI(-5)               [target address: 00b4]
+b8000100 | 00cc: MOVE(R0,R1)
+77fffff9 | 00d0: JI(-7)               [target address: 00b4]
+77fffff2 | 00d4: JI(-14)              [target address: 009c]
+77ffffeb | 00d8: JI(-21)              [target address: 0084]
+b8000301 | 00dc: MOVE(R1,R3)
+77ffffe6 | 00e0: JI(-26)              [target address: 0078]
+77ffffe5 | 00e4: JI(-27)              [target address: 0078]
+77ffffdb | 00e8: JI(-37)              [target address: 0054]
+77ffffd4 | 00ec: JI(-44)              [target address: 003c]
+77ffffcd | 00f0: JI(-51)              [target address: 0024]

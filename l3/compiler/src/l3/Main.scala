@@ -11,20 +11,37 @@ import CPSTreeChecker._ // Implicits required for CPS tree checking
 
 object Main {
   def main(args: Array[String]): Unit = {
-    val stats = new Statistics()
     val backEnd: Tree => TerminalPhaseResult = (
+      // CL3Interpreter
       CL3ToCPSTranslator
+      // andThen treePrinter("---------- After translation to CPS")
         andThen CPSContifier
-        // andThen treePrinter("---------- After Contification")
+        // andThen treePrinter("---------- After contification")
         andThen CPSOptimizerHigh
-        andThen treePrinter("---------- Before value representation")
+        // andThen treePrinter("---------- After high optimization")
+        // andThen CPSInterpreterHigh
         andThen CPSValueRepresenter
-        andThen treeChecker
-        andThen CPSHoister
-        andThen CPSOptimizerLow
         // andThen treePrinter("---------- After value representation")
-        // FIXME remove
-        andThen (new CPSInterpreterLow(stats.log _))
+        andThen CPSHoister
+        // andThen treePrinter("---------- After hoisting")
+        andThen CPSOptimizerLow
+        // andThen treePrinter("---------- After low optimization")
+        // andThen CPSInterpreterLow
+        andThen CPSConstantNamer
+        // andThen treePrinter("---------- After constant naming")
+        andThen CPSRegisterAllocator
+        // andThen treePrinter("---------- After register allocation")
+        andThen CPSToASMTranslator
+        // andThen seqPrinter("---------- After translation to assembly")
+        // andThen ASMToCTranslator(Option(System.getProperty("l3.out-c-file"))
+        //                            .getOrElse("out.c"))
+        andThen ASMLabelResolver
+        // andThen seqPrinter("---------- After label resolution")
+        // andThen ASMInterpreter
+        andThen ASMFileWriter(
+          Option(System.getProperty("l3.out-asm-file"))
+            .getOrElse("out.l3a")
+        )
     )
 
     val basePath = Paths.get(".").toAbsolutePath
@@ -36,7 +53,6 @@ object Main {
       .flatMap(backEnd) match {
       case Right((retCode, maybeMsg)) =>
         maybeMsg foreach println
-        println(stats) // FIXME remove
         sys.exit(retCode)
       case Left(errMsg) =>
         println(s"Error: $errMsg")

@@ -52,4 +52,6 @@ object CPSTreeFormatter {
       extends CPSTreeFormatter(SymbolicCPSTreeModule)
   implicit object SymbolicCPSTreeLowFormatter
       extends CPSTreeFormatter(SymbolicCPSTreeModuleLow)
+  implicit object RegisterCPSTreeFormatter
+      extends CPSTreeFormatter(RegisterCPSTreeModule)
 }
