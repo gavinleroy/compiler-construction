@@ -5,19 +5,22 @@
  * ETH Zuerich
  * */
 use crate::{L3Value, LOG2_VALUE_BITS, LOG2_VALUE_BYTES};
+use either::{Either, Left, Right};
+use std::cmp;
 use std::collections::HashSet;
 use unfold::Unfold;
 
 const HEADER_SIZE: usize = 1;
 const TAG_NONE: L3Value = 0xFF;
 const LIST_END: L3Value = -1;
+const MIN_BLOCK_SIZE: L3Value = 1;
 
 /* NOTE by default std::dbg is not removed when
  * compiling in release mode. Annoying, but I get it.
  * This is a HACK which will turn dbg into the "identity macro"
  * in release mode but otherwise output to stderr.
  * */
-#[cfg(not(debug_assertions))]
+// #[cfg(not(debug_assertions))]
 macro_rules! dbg {
     ($val:expr) => {
         $val
@@ -51,8 +54,13 @@ pub struct Memory {
     content: Vec<L3Value>,
     // list_starts: Vec<usize>, // NOTE initialize with vec![0; 32]
     list_ix: usize,
+    // The start of the bitmap region.
     bitmap_ix: usize,
+    // The start of the heap, this will point to the first
+    // free list sentinel.
     heap_ix: usize,
+    // The start of actual free memory. This points to the first
+    // block after the free list sentinel heads.
     free_ix: usize,
 }
 
@@ -79,7 +87,6 @@ pub struct Memory {
  *
  * */
 
-#[inline(always)]
 fn div_up(a: usize, b: usize) -> usize {
     // We *know* that the hint is exact,
     // this is thus precisely the amount of
@@ -129,15 +136,17 @@ impl Memory {
         let remaining_size = self.content.len() - heap_start_index;
         let (bitmap_size, heap_size) = partition_by_ratio(remaining_size, 32);
 
-        dbg!(bitmap_size);
-        dbg!(heap_size);
-
         debug_assert_eq!(bitmap_size + heap_size, remaining_size);
         debug_assert!(bitmap_size >= heap_size / 32);
 
         self.heap_ix = heap_start_index + bitmap_size;
         self.bitmap_ix = heap_start_index;
-        self.mem_clear(heap_start_index, bitmap_size);
+
+        // FIXME HACK!
+        // self.mem_clear(heap_start_index, bitmap_size);
+        for i in &mut self.content[heap_start_index..(heap_start_index + bitmap_size)] {
+            *i = 0;
+        }
 
         // The free list will have a sentinal that starts at the beginning
         // of the heap. It will be unallocated memory, but not part of the
@@ -145,7 +154,7 @@ impl Memory {
 
         let list_start_ix = self.heap_ix + HEADER_SIZE;
         // set the start of the list
-        self.list_ix = dbg!(list_start_ix);
+        self.list_ix = list_start_ix;
         // set the size of the sentinel list head
         self.set_block_header(list_start_ix, TAG_NONE, HEADER_SIZE);
 
@@ -163,9 +172,15 @@ impl Memory {
         let unallocated_block_ix = list_start_ix + 2 * HEADER_SIZE;
         let unallocated_block_size = heap_size - 3 * HEADER_SIZE;
 
-        self[list_start_ix] = dbg!(ix_to_addr(unallocated_block_ix));
-        self.set_block_header(unallocated_block_ix, TAG_NONE, dbg!(unallocated_block_size));
+        self.free_ix = unallocated_block_ix;
+        self[list_start_ix] = ix_to_addr(unallocated_block_ix);
+        self.set_block_header(unallocated_block_ix, TAG_NONE, unallocated_block_size);
         self[unallocated_block_ix] = LIST_END;
+
+        log::info!("Bitmap memory IX {}", self.bitmap_ix);
+        log::info!("Heap memory IX {}", self.heap_ix);
+        log::info!("Free List IX {}", self.list_ix);
+        log::info!("First Heap IX {}", self.free_ix);
 
         debug_assert!(self.validate_memory());
     }
@@ -175,18 +190,29 @@ impl Memory {
         debug_assert!(0 <= size);
         debug_assert!(self.validate_memory());
 
-        // FIXME don't call this all the time
-        // self.gc(root);
+        // NOTE we cannot allocote a block of size 0,
+        // when it gets freed, it would not have enough
+        // space to put a free list node.
+        let size = cmp::max(size, MIN_BLOCK_SIZE);
 
-        match self.find_memory(self.list_ix, size) {
+        let mut found_memory = self.find_memory(self.list_ix, size as usize);
+
+        if found_memory.is_none() {
+            log::info!("GC! couldn't find block size {}", size);
+            self.gc(root); // FIXME a smarter way to call this
+            found_memory = self.find_memory(self.list_ix, size as usize);
+        }
+
+        match found_memory {
             None => panic!("out of memory"),
-            Some((prev, block)) => {
-                let actual_size = self.split_block(block, size as usize);
+            Some(block) => {
+                self.mem_clear(block);
                 self.mark_bitmap_at(block);
-                self.remove_from_free_list(prev, block);
-                self.mem_clear(block, actual_size);
-                self.set_block_header(block, tag, actual_size);
+                self.set_block_header_tag(block, tag);
 
+                log::info!("Allocating {} bytes at {}", size, block);
+                debug_assert!(self.valid_index(block));
+                debug_assert!(block + (size as usize) <= self.content.len());
                 debug_assert!(self.validate_memory());
 
                 block
@@ -195,23 +221,24 @@ impl Memory {
     }
 
     pub fn copy(&mut self, block: usize, root: usize) -> usize {
-        debug_assert!(self.validate_memory());
         let size = self.block_size(block);
         let copy = self.allocate(self.block_tag(block), size, root);
         for i in 0..(size as usize) {
             self[copy + i] = self[block + i]
         }
-        debug_assert!(self.validate_memory());
         copy
     }
 
+    // `free` is called with a parent block frame.
+    // Meaning you could call gc on it as the root XXX.
     pub fn free(&mut self, block: usize) {
         debug_assert!(self.validate_memory());
 
-        dbg!(block); // TODO
-        let sz = self.block_size(block);
-        self.set_block_header(block, TAG_NONE, sz as usize);
-        self.add_to_free_list(self.list_ix, block);
+        // TODO FIXME
+        // let was_marked = self.unmark_bitmap_at(block);
+        // debug_assert!(was_marked);
+        // self.set_block_header_tag(block, TAG_NONE);
+        // self.add_to_free_list(self.list_ix, block);
 
         debug_assert!(self.validate_memory());
     }
@@ -231,20 +258,26 @@ impl Memory {
     // ---------------------------------------------------------------
 
     fn gc(&mut self, root: usize) {
+        debug_assert!(self.validate_memory());
+
         // TODO mark all the objects that are reachable from `root`
         self.mark(root);
         // TODO sweep the heap and reclaim blocks
         self.sweep();
+
+        debug_assert!(self.validate_memory());
     }
 
     fn mark(&mut self, root: usize) {
         let block_size = self.block_size(root) as usize;
         // Collect the indices that went from marked -> unmarked
+        // NOTE there's no need to keep tracked of "who's been visited"
+        // because when a block gets unmarked, it won't ever be added again.
         let marked_ixs: Vec<usize> = (root..(root + block_size))
             .filter(|&ix| {
                 valid_address(self[ix]) && {
                     let ix = addr_to_ix(self[ix]);
-                    self.unmark_bitmap_at(ix)
+                    self.valid_index(ix) && self.unmark_bitmap_at(ix)
                 }
             })
             .collect();
@@ -252,7 +285,71 @@ impl Memory {
     }
 
     fn sweep(&mut self) {
-        // TODO forall heap blocks that are stil high construct the list with them
+        debug_assert!(self.list_ix < self.free_ix);
+
+        // The start of available memory to allocate.
+        let mut block = self.free_ix;
+        let end_ix = self.content.len();
+
+        // Left(usize) : the free memory beforehand with potential space in-between.
+        // Right(usize) : the free memory beforehand was in the previous block.
+        let list_ix = self.list_ix;
+        self[list_ix] = LIST_END; // Reset the free list first
+        let mut previous_free: Either<usize, usize> = Left(self.list_ix);
+
+        while block < end_ix {
+            let block_tag = self.block_tag(block);
+            let block_size = self.block_size(block) as usize;
+
+            debug_assert!(0 < block_size);
+
+            // FIXME some of the things in the inner matches are
+            // redundent or unnecessary.
+            match (block_tag, previous_free) {
+                (TAG_NONE, Right(last_free_ix)) => {
+                    // coalesce the blocks
+                    self.mem_clear(block);
+                    self.coalesce_blocks(last_free_ix, block);
+                }
+
+                // Add the block to the list
+                (TAG_NONE, Left(last_free_ix)) => {
+                    self.mem_clear(block);
+                    self.add_to_free_list(last_free_ix, block);
+                    previous_free = Right(block);
+                }
+
+                (tag, Left(last_free_ix)) if self.bitmap_at(block) => {
+                    self.unmark_bitmap_at(block);
+                    self.set_block_header_tag(block, TAG_NONE);
+                    self.mem_clear(block);
+
+                    self.add_to_free_list(last_free_ix, block);
+                    previous_free = Right(block);
+                }
+
+                (tag, Right(last_free_ix)) if self.bitmap_at(block) => {
+                    self.unmark_bitmap_at(block);
+                    self.set_block_header_tag(block, TAG_NONE);
+                    self.mem_clear(block);
+
+                    // coalesce the blocks
+                    self.coalesce_blocks(last_free_ix, block);
+                }
+
+                // Block is not getting freed, Mark the bitmap to set it as alive.
+                (tag, Right(last_free_ix)) => {
+                    self.mark_bitmap_at(block);
+                    previous_free = Left(last_free_ix);
+                }
+
+                (_, _) => self.mark_bitmap_at(block),
+            };
+
+            // Move forward to the next block
+            block += (block_size as usize) + HEADER_SIZE;
+        }
+
         // TODO blocks not tagged TAG_NONE are "live" and should have the bit in the
         // bitmap set back to 1.
         // NOTE you can reconstruct the list from scratch which allows for
@@ -266,37 +363,42 @@ impl Memory {
         //     && the previous block is free, coalesce.
         // OTH set bitmap idx and continue (this case disallows
         //     the next block from being coalesced with prev).
-        ()
+    }
+
+    fn coalesce_blocks(&mut self, block: usize, next: usize) {
+        debug_assert!(block < next);
+
+        let block_size = self.block_size(block) as usize;
+        let next_size = self.block_size(next) as usize;
+
+        let block_tag = self.block_tag(block);
+        let next_tag = self.block_tag(next);
+
+        debug_assert_eq!(block_tag, TAG_NONE);
+        debug_assert_eq!(next_tag, TAG_NONE);
+        debug_assert_eq!(block + block_size + HEADER_SIZE, next);
+
+        self.set_block_header_size(block, block_size + next_size + HEADER_SIZE);
     }
 
     /* Find Possible Memory
      *
-     * NOTE as the free list is singly linked, the direct address
-     * to use cannot be returned. Take for example the following list:
-     *
-     * O -> O -> O -> O -> _
-     *      ^    ^
-     *      |    - memory to use
-     *      - returned value
-     *
-     * The previous value is used, so that when the actual memory
-     * is removed from the free list, the pointer can be moved forward.
-     *
-     * The returned memory might also be split, thus a pointer to that memory
-     * is needed.
+     * Returns the block index to the allocated memory. NOTE this
+     * memory is already removed from the free list and marked.
      * */
-    fn find_memory(&self, curr_ix: usize, min_size: L3Value) -> Option<(usize, usize)> {
-        dbg!(curr_ix);
-
+    fn find_memory(&mut self, curr_ix: usize, min_size: usize) -> Option<usize> {
         let next_ix = self.get_list_next(curr_ix)?;
-        dbg!(next_ix);
-        let next_size = self.block_size(next_ix);
+        let next_size = self.block_size(next_ix) as usize;
 
         debug_assert_eq!(self.block_tag(curr_ix), TAG_NONE);
         debug_assert_eq!(self.block_tag(next_ix), TAG_NONE);
 
-        if next_size >= min_size {
-            Some((curr_ix, next_ix))
+        // FIXME this is a HACK!
+        if next_size == min_size || next_size > min_size + 2 * HEADER_SIZE {
+            self.split_block(next_ix, min_size); // FIXME automatically could be bad.
+            self.remove_from_free_list(curr_ix, next_ix);
+
+            Some(next_ix)
         } else {
             self.find_memory(next_ix, min_size)
         }
@@ -306,7 +408,7 @@ impl Memory {
         if self[ix] == LIST_END {
             None
         } else {
-            dbg!(ix);
+            log::debug!("list next {} -> {}", ix, addr_to_ix(self[ix]));
             Some(dbg!(addr_to_ix(self[ix])))
         }
     }
@@ -324,50 +426,56 @@ impl Memory {
         self[prev] = ix_to_addr(next);
     }
 
-    fn mem_clear(&mut self, start: usize, size: usize) {
+    fn mem_clear(&mut self, block_start: usize) {
+        debug_assert!(!self.bitmap_at(block_start));
+        debug_assert_eq!(self.block_tag(block_start), TAG_NONE);
+
+        let size = self.block_size(block_start) as usize;
         (0..size).for_each(|off| {
-            self[start + off] = 0; // FIXME
+            self[block_start + off] = 0; // FIXME
         });
     }
 
-    /* Split BLock
+    /** Split BLock
      *
      * Try to split a block into two smaller blocks, the first of which
      * cannot be any smaller than `min_size`.
      * The block pointer to by `block_ix` needs to be a free block.
      * */
-    fn split_block(&mut self, block_ix: usize, min_size: usize) -> usize {
+    fn split_block(&mut self, block_ix: usize, min_size: usize) {
         let block_size = self.block_size(block_ix) as usize;
 
+        debug_assert!(0 < min_size);
         debug_assert_eq!(self.block_tag(block_ix), TAG_NONE);
+
         debug_assert!(min_size <= block_size);
 
-        let rem_size = block_size - min_size;
+        if min_size == block_size {
+            return;
+        }
+
+        let rem_size = block_size - min_size - HEADER_SIZE;
 
         // If the remaining memory is large enough to be useful
         // then we should split it and then set memory accordingly.
+        //
         // FIXME pick a better heuristic for choosing to split or not.
         if rem_size >= 2 * HEADER_SIZE {
             let next_block_ix = block_ix + min_size + HEADER_SIZE;
             // setup the header for the next block
+            self.set_block_header_size(block_ix, min_size);
             self.set_block_header(next_block_ix, TAG_NONE, rem_size);
-            self.set_block_header(block_ix, TAG_NONE, min_size);
-            self[next_block_ix] = self[block_ix];
-            self[block_ix] = ix_to_addr(next_block_ix);
 
-            debug_assert!(self.validate_memory());
+            // FIXME REMOVE
+            self.mem_clear(next_block_ix);
 
-            min_size
-        } else {
-            block_size
+            self.add_to_free_list(block_ix, next_block_ix);
         }
     }
 
-    // FIXME the below functions could all be
-    // collapsed into a simpler one, e.g. only the
-    // thing at the end changes.
+    fn ix_to_bitmap_addr(&self, block: usize) -> (usize, usize) {
+        debug_assert!(self.heap_ix <= block);
 
-    fn bitmap_at(&self, block: usize) -> bool {
         let addr = block - self.heap_ix;
         // compute offset into the bitmap
         let bitmap_off = addr >> LOG2_VALUE_BITS;
@@ -378,57 +486,44 @@ impl Memory {
         debug_assert!(block_off < 32);
         debug_assert!(self.bitmap_ix + bitmap_off < self.heap_ix);
 
-        dbg!(addr);
-        dbg!(bitmap_off);
-        dbg!(block_off);
-
-        // set bit to be high
         let ix = self.bitmap_ix + bitmap_off;
+
+        (ix, block_off)
+    }
+
+    fn set_block_header_tag(&mut self, block: usize, tag: L3Value) {
+        let size = self.block_size(block) as usize;
+        self.set_block_header(block, tag, size);
+    }
+
+    fn set_block_header_size(&mut self, block: usize, size: usize) {
+        let tag = self.block_tag(block);
+        self.set_block_header(block, tag, size);
+    }
+
+    fn bitmap_at(&self, block: usize) -> bool {
+        let (ix, block_off) = self.ix_to_bitmap_addr(block);
         ((self[ix] >> block_off) & 0x1) == 0x1
     }
 
     fn mark_bitmap_at(&mut self, block: usize) {
-        let addr = block - self.heap_ix;
-        // compute offset into the bitmap
-        let bitmap_off = addr >> LOG2_VALUE_BITS;
-        // compute offset into the bitmap block
-        let block_off = addr & 0x1F;
-
-        debug_assert!(self.heap_ix <= block && block < self.content.len());
-        debug_assert!(block_off < 32);
-        debug_assert!(self.bitmap_ix + bitmap_off < self.heap_ix);
-
-        dbg!(addr);
-        dbg!(bitmap_off);
-        dbg!(block_off);
-
-        // set bit to be high
-        let ix = self.bitmap_ix + bitmap_off;
+        let (ix, block_off) = self.ix_to_bitmap_addr(block);
+        // Set bit to be high
         let unmarked = self[ix];
         self[ix] = unmarked | (1 << block_off);
     }
 
     fn unmark_bitmap_at(&mut self, block: usize) -> bool {
-        let addr = block - self.heap_ix;
-        // compute offset into the bitmap
-        let bitmap_off = addr >> 5;
-        // compute offset into the bitmap block
-        let block_off = addr & 0x1F;
-        // set bit to be low
-
-        debug_assert!(self.heap_ix <= block && block < self.content.len());
-        debug_assert!(block_off < 32);
-        debug_assert!(self.bitmap_ix + bitmap_off < self.heap_ix);
-
-        dbg!(addr);
-        dbg!(bitmap_off);
-        dbg!(block_off);
-
-        let ix = self.bitmap_ix + bitmap_off;
+        let (ix, block_off) = self.ix_to_bitmap_addr(block);
         let marked = self[ix];
-        self[ix] = marked & (0xFFFF ^ (1 << block_off));
+        let mask = usize::MAX ^ (1 << block_off);
+        // Set bit to be low
+        self[ix] = ((marked as usize) & mask) as L3Value;
+        marked != self[ix]
+    }
 
-        dbg!(marked) != dbg!(self[ix])
+    fn valid_index(&self, ix: usize) -> bool {
+        self.heap_ix <= ix && ix <= self.content.len()
     }
 
     /* WARNING only call this function from within a debug_assert!
@@ -445,45 +540,59 @@ impl Memory {
         // Validate that the free list is not recursive,
         // all blocks are marked with TAG_NONE,
 
-        let free_list_ixs: Vec<usize> = Unfold::new(
+        #[cfg(not(debug_assertions))]
+        panic!("validate_memory invoked");
+
+        debug_assert_eq!(self.block_size(self.list_ix), 1);
+
+        // self.heap_ix points to the heap boundary,
+        // going one header past should start a block.
+        let mut ix = self.heap_ix + HEADER_SIZE;
+        let mut free_blocks = 0;
+        let mut block_num = 0;
+        let content_len = self.content.len();
+
+        while ix < content_len {
+            block_num += 1;
+
+            let block_tag = self.block_tag(ix);
+            let block_size = self.block_size(ix) as usize;
+
+            if block_tag == TAG_NONE {
+                free_blocks += 1;
+                debug_assert!(!self.bitmap_at(ix));
+                debug_assert!(self[ix] == LIST_END || valid_address(self[ix]));
+            } else {
+                debug_assert!(self.bitmap_at(ix));
+            }
+            ix += block_size + HEADER_SIZE;
+        }
+
+        log::debug!("Block Count {} Free Count {}\n", block_num, free_blocks);
+
+        debug_assert_eq!(ix - HEADER_SIZE, content_len);
+
+        let mut free_list_ixs: Vec<usize> = Unfold::new(
             |ix| ix.and_then(|ixo| self.get_list_next(ixo)),
             Some(self.list_ix),
         )
         .take_while(Option::is_some)
-        .take(self.content.len()) // Limit space to the entire memory if list is recurisve
+        .take(free_blocks + 1) // Limit space to the entire memory if list is recurisve
         .map(Option::unwrap)
         .collect();
 
-        free_list_ixs.iter().for_each(|&ix| {
-            debug_assert_eq!(self.block_tag(ix), TAG_NONE);
-        });
+        debug_assert_eq!(free_list_ixs.len(), free_blocks);
 
         free_list_ixs.last().into_iter().for_each(|&last_ix| {
             debug_assert_eq!(self[last_ix], LIST_END);
         });
 
-        // self.heap_ix points to the heap boundary,
-        // going one header past should start a block.
-        let mut free_locs: HashSet<_> = HashSet::new();
-        let mut ix = self.heap_ix + HEADER_SIZE;
-        free_list_ixs.into_iter().for_each(|ix| {
-            free_locs.insert(ix);
+        free_list_ixs.pop(); // Remove last element
+
+        free_list_ixs.iter().for_each(|&ix| {
+            debug_assert_eq!(self.block_tag(ix), TAG_NONE);
+            debug_assert!(valid_address(self[ix]));
         });
-
-        let content_len = self.content.len();
-        while ix < content_len {
-            dbg!(ix);
-            let block_tag = self.block_tag(ix);
-            let block_size = self.block_size(ix) as usize;
-
-            if block_tag == TAG_NONE {
-                debug_assert!(free_locs.contains(&ix));
-                debug_assert!(!self.bitmap_at(ix));
-            } else {
-                debug_assert!(dbg!(self.bitmap_at(ix)));
-            }
-            ix += block_size + HEADER_SIZE;
-        }
 
         true
     }
@@ -536,6 +645,29 @@ mod tests {
     }
 
     #[test]
+    fn partition_heap_02() {
+        let mem = create_heap(100);
+        assert_eq!(mem.bitmap_ix, 0);
+        assert_eq!(mem.heap_ix, 4);
+
+        let (ix, bitoff) = mem.ix_to_bitmap_addr(14);
+        assert_eq!(ix, 0);
+        assert_eq!(bitoff, 10);
+
+        let (ix, bitoff) = mem.ix_to_bitmap_addr(36);
+        assert_eq!(ix, 1);
+        assert_eq!(bitoff, 0);
+
+        let (ix, bitoff) = mem.ix_to_bitmap_addr(37);
+        assert_eq!(ix, 1);
+        assert_eq!(bitoff, 1);
+
+        let (ix, bitoff) = mem.ix_to_bitmap_addr(99);
+        assert_eq!(ix, 3);
+        assert_eq!(bitoff, 0);
+    }
+
+    #[test]
     fn mark_addr() {
         let mut mem = create_heap(100);
         mem.mark_bitmap_at(5);
@@ -555,7 +687,7 @@ mod tests {
         }
 
         for &ix in ixs.iter() {
-            debug_assert!(mem.unmark_bitmap_at(ix));
+            assert!(mem.unmark_bitmap_at(ix));
         }
 
         for &loc in mem.content[1..4].iter() {

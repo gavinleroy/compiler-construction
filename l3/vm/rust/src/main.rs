@@ -91,6 +91,9 @@ fn actual_main() -> Result<i32, String> {
 }
 
 fn main() {
+    #[cfg(debug_assertions)]
+    env_logger::init();
+
     match actual_main() {
         Ok(exit_code) => process::exit(exit_code),
         Err(e) => {

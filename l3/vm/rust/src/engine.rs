@@ -96,6 +96,7 @@ impl Engine {
     }
 
     fn rb(&self, instr: L3Value) -> L3Value {
+        log::debug!("accessing {}", self.regs + extract_u(instr, 8, 8) as usize);
         self.mem[self.regs + extract_u(instr, 8, 8) as usize]
     }
 
@@ -306,6 +307,7 @@ impl Engine {
                     pc += 1;
                 }
                 opcode::BGET => {
+                    log::debug!("@block-get {:#x} {}", inst, self.rb(inst));
                     let block_ix = addr_to_ix(self.rb(inst));
                     let index = self.rc(inst) as usize;
                     self.set_ra(inst, self.mem[block_ix + index]);
