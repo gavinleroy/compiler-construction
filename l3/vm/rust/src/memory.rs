@@ -239,11 +239,15 @@ impl Memory {
     pub fn free(&mut self, block: usize) {
         debug_assert!(self.validate_memory());
 
+        debug_assert!(self.valid_index(block));
+
+        log::debug!("FREE {}", block);
+
         // TODO FIXME
-        // let was_marked = self.unmark_bitmap_at(block);
-        // debug_assert!(was_marked);
-        // self.set_block_header_tag(block, TAG_NONE);
-        // self.add_to_free_list(self.list_ix, block);
+        let was_marked = self.unmark_bitmap_at(block);
+        debug_assert!(was_marked);
+        self.set_block_header_tag(block, TAG_NONE);
+        self.add_to_free_list(self.list_ix, block);
 
         debug_assert!(self.validate_memory());
     }
@@ -306,10 +310,6 @@ impl Memory {
             let block_tag = self.block_tag(block);
             let block_size = self.block_size(block) as usize;
 
-            debug_assert!(0 < block_size);
-
-            // FIXME some of the things in the inner matches are
-            // redundent or unnecessary.
             match (block_tag, previous_free) {
                 (TAG_NONE, Right(last_free_ix)) => {
                     // coalesce the blocks
@@ -409,6 +409,8 @@ impl Memory {
         }
     }
 
+    // TODO FIXME change this to be a lazy list iterator
+    // that yields the block index.
     fn get_list_next(&self, ix: usize) -> Option<usize> {
         if self[ix] == LIST_END {
             None
@@ -423,6 +425,8 @@ impl Memory {
         self[prev] = next;
     }
 
+    // TODO FIXME change to
+    // (cons_free_list <new elem> <old list>)
     fn add_to_free_list(&mut self, prev: usize, next: usize) {
         debug_assert_eq!(self.block_tag(prev), TAG_NONE);
         debug_assert_eq!(self.block_tag(next), TAG_NONE);
@@ -527,6 +531,11 @@ impl Memory {
         marked != self[ix]
     }
 
+    fn next_block_ix(&self, ix: usize) -> usize {
+        let block_size = self.block_size(ix) as usize;
+        ix + block_size + HEADER_SIZE
+    }
+
     fn valid_index(&self, ix: usize) -> bool {
         self.heap_ix <= ix && ix <= self.content.len()
     }
@@ -570,7 +579,7 @@ impl Memory {
             } else {
                 debug_assert!(self.bitmap_at(ix));
             }
-            ix += block_size + HEADER_SIZE;
+            ix = self.next_block_ix(ix);
         }
 
         log::debug!("Block Count {} Free Count {}\n", block_num, free_blocks);
