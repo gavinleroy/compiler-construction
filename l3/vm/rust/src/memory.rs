@@ -53,7 +53,7 @@ fn valid_address(addr: L3Value) -> bool {
 pub struct Memory {
     content: Vec<L3Value>,
     // list_starts: Vec<usize>, // NOTE initialize with vec![0; 32]
-    list_ix: usize,
+    list_addr: L3Value,
     // The start of the bitmap region.
     bitmap_ix: usize,
     // The start of the heap, this will point to the first
@@ -123,7 +123,7 @@ impl Memory {
     pub fn new(word_size: usize) -> Memory {
         Memory {
             content: vec![0; word_size],
-            list_ix: 0,
+            list_addr: LIST_END,
             bitmap_ix: 0,
             heap_ix: 0,
             free_ix: 0,
@@ -154,7 +154,9 @@ impl Memory {
 
         let list_start_ix = self.heap_ix + HEADER_SIZE;
         // set the start of the list
-        self.list_ix = list_start_ix;
+
+        self.consq(list_start_ix);
+
         // set the size of the sentinel list head
         self.set_block_header(list_start_ix, TAG_NONE, HEADER_SIZE);
 
@@ -179,7 +181,7 @@ impl Memory {
 
         log::info!("Bitmap memory IX {}", self.bitmap_ix);
         log::info!("Heap memory IX {}", self.heap_ix);
-        log::info!("Free List IX {}", self.list_ix);
+        log::info!("Free List IX {}", self.list_addr);
         log::info!("First Heap IX {}", self.free_ix);
 
         debug_assert!(self.validate_memory());
@@ -195,12 +197,15 @@ impl Memory {
         // space to put a free list node.
         let size = cmp::max(size, MIN_BLOCK_SIZE);
 
-        let mut found_memory = self.find_memory(self.list_ix, size as usize);
+        // FIXME create a free list iterator and use a find for the iterator.
+        let mut found_memory = todo!(); // self.find_memory(self.list_ix, size as usize);
 
         if found_memory.is_none() {
             log::info!("GC! couldn't find block size {}", size);
             self.gc(root); // FIXME a smarter way to call this
-            found_memory = self.find_memory(self.list_ix, size as usize);
+
+            // FIXME create a free list iterator and use a find for the iterator.
+            found_memory = todo!(); // self.find_memory(self.list_ix, size as usize);
         }
 
         match found_memory {
@@ -285,7 +290,7 @@ impl Memory {
     }
 
     fn sweep(&mut self) {
-        debug_assert!(self.list_ix < self.free_ix);
+        // debug_assert!(self.list_ix < self.free_ix);
 
         // The start of available memory to allocate.
         let mut block = self.free_ix;
@@ -595,6 +600,37 @@ impl Memory {
         });
 
         true
+    }
+
+    /** GC Lists
+     *
+     * A GC List is represented by an L3Value that is either
+     * LIST_END: (nil)
+     * Or a non-nil value representing an address that points to
+     * an index of a block.
+     * */
+
+    /** Cons
+     *
+     * Semantically similar to (cons! <elem> <list>) in Scheme
+     * */
+    fn consq(&mut self, elem_ix: usize) {
+        let list_addr = self.list_addr;
+        let new_list_addr = ix_to_addr(elem_ix);
+        self[elem_ix] = list_addr;
+        self.list_addr = new_list_addr;
+    }
+
+    fn car(list: L3Value) -> Option<usize> {
+        todo!();
+    }
+
+    fn cdrq(list: &mut L3Value) {
+        todo!();
+    }
+
+    fn havocq(&mut self) {
+        self.list_addr = LIST_END;
     }
 }
 
