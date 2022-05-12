@@ -6,7 +6,6 @@
  * */
 use crate::{L3Value, LOG2_VALUE_BITS, LOG2_VALUE_BYTES, TAG_REGISTER_FRAME};
 use std::cmp;
-use std::collections::HashSet;
 use unfold::unfold;
 
 const HEADER_SIZE: usize = 1;
@@ -227,7 +226,6 @@ impl Memory {
 
         log::debug!("FREE {}", block);
 
-        // TODO FIXME when and why is free called ??? NOTE XXX
         let was_marked = self.unmark_bitmap_at(block);
         self.set_block_header_tag(block, TAG_NONE);
 
@@ -255,20 +253,11 @@ impl Memory {
     fn gc(&mut self, root: usize) {
         debug_assert!(self.validate_memory());
 
-        // TODO mark all the objects that are reachable from `root`
+        // mark all the objects that are reachable from `root`
         self.mark(root);
-        // let free_bytes_before = self.free_ix_count();
 
-        // HACK simulate marking by zeroing the bitmap.
-        // This means not objects will be reclaimed, but blocks
-        // could be coalesced.
-        // self.zero_memory(self.bitmap_ix, self.heap_ix);
-
-        // TODO sweep the heap and reclaim blocks
+        // sweep the heap and reclaim blocks
         self.sweep();
-
-        // let free_bytes_after = self.free_ix_count();
-        // debug_assert_eq!(free_bytes_before, free_bytes_after);
 
         debug_assert!(self.validate_memory());
     }
@@ -276,10 +265,8 @@ impl Memory {
     fn mark(&mut self, root: usize) {
         debug_assert_eq!(self.block_tag(root), TAG_REGISTER_FRAME);
 
-        let mut seen: HashSet<usize> = HashSet::default();
         let mut work = vec![];
 
-        seen.insert(root);
         work.push(root);
 
         while 0 < work.len() {
@@ -288,26 +275,16 @@ impl Memory {
             log::debug!("GC Mark at {}", block);
 
             let block_size = self.block_size(block) as usize;
-            let marked_ixs: Vec<usize> = (block..(block + block_size))
-                .filter_map(|ix| {
-                    if valid_address(self[ix]) && {
-                        let ix = addr_to_ix(self[ix]);
-                        (0 < ix
-                            && ix < self.content.len()
-                            && (!self.valid_index(ix) && self.block_tag(ix) == TAG_REGISTER_FRAME))
-                            || (self.valid_index(ix) && self.unmark_bitmap_at(ix))
-                    } {
-                        Some(addr_to_ix(self[ix]))
-                    } else {
-                        None
+            (block..(block + block_size)).for_each(|ix| {
+                if valid_address(self[ix]) {
+                    let ix = addr_to_ix(self[ix]);
+                    if (0 < ix
+                        && ix < self.content.len()
+                        && (!self.valid_index(ix) && self.block_tag(ix) == TAG_REGISTER_FRAME))
+                        || (self.valid_index(ix) && self.unmark_bitmap_at(ix))
+                    {
+                        work.push(ix);
                     }
-                })
-                .collect();
-
-            marked_ixs.iter().for_each(|&ix| {
-                if !seen.contains(&ix) {
-                    seen.insert(ix);
-                    work.push(ix);
                 }
             });
         }
@@ -616,24 +593,6 @@ impl Memory {
         self.free_list = new_list_addr;
     }
 
-    /** Get the first element of the free list.
-     * */
-    fn car(&self) -> Option<usize> {
-        if self.free_list == LIST_END {
-            None
-        } else {
-            Some(addr_to_ix(self.free_list))
-        }
-    }
-
-    /** Mutably remove the first element of the list.
-     * */
-    fn cdrq(&mut self) {
-        debug_assert_ne!(self.free_list, LIST_END);
-        let ix = addr_to_ix(self.free_list);
-        self.free_list = self[ix];
-    }
-
     /** Clear the Free List
      * */
     fn clearq(&mut self) {
@@ -658,22 +617,6 @@ impl Memory {
         debug_assert_eq!(self.block_tag(next), TAG_NONE);
         debug_assert!(!self.bitmap_at(prev));
         debug_assert!(!self.bitmap_at(next));
-    }
-
-    fn remove_from_free_list(&mut self, prev: usize, to_remove: usize) {
-        debug_assert_eq!(self.block_tag(prev), TAG_NONE);
-        debug_assert_eq!(self.block_tag(to_remove), TAG_NONE);
-        debug_assert!(!self.bitmap_at(prev));
-        debug_assert!(!self.bitmap_at(to_remove));
-        debug_assert_eq!(addr_to_ix(self[prev]), to_remove);
-
-        self[prev] = self[to_remove];
-
-        debug_assert_ne!(addr_to_ix(self[prev]), to_remove);
-        debug_assert_eq!(self.block_tag(prev), TAG_NONE);
-        debug_assert_eq!(self.block_tag(to_remove), TAG_NONE);
-        debug_assert!(!self.bitmap_at(prev));
-        debug_assert!(!self.bitmap_at(to_remove));
     }
 
     fn free_list_iter(&self) -> Vec<usize> {
@@ -754,9 +697,6 @@ impl Memory {
         debug_assert_eq!(ix - HEADER_SIZE, content_len);
 
         let mut free_list_ixs = self.free_list_iter();
-
-        // log::debug!("free lists trav {:?}", free_list_tmp);
-        // log::debug!("free lists iter {:?}", free_list_ixs);
 
         debug_assert_eq!(free_list_ixs.len(), free_list_tmp.len());
         debug_assert_eq!(self.free_ix_count(), free_total);
