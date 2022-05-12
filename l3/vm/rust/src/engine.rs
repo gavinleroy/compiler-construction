@@ -64,6 +64,7 @@ impl Engine {
     fn emit_top_frames(&mut self) {
         for i in 0..=1 {
             self.free_boundary += 1;
+            log::info!("Frame Block {} at {}", i, self.free_boundary);
             self.top_frames[i] = self.free_boundary;
             self.free_boundary += 2 + 256 - 32;
             for r in 0..32 {
@@ -141,6 +142,11 @@ impl Engine {
             self.top_frame_index = 1 - self.top_frame_index;
             self.regs = self.curr_frame() + 2;
         } else {
+            log::debug!(
+                "Parent frame in heap {} copying to {}",
+                parent_frame,
+                curr_ix
+            );
             let parent_size = self.mem.block_size(parent_frame) as usize;
             for i in 0..=parent_size {
                 // TODO optimize
@@ -163,42 +169,52 @@ impl Engine {
 
             match opcode(inst) {
                 opcode::ADD => {
+                    log::trace!("ADD");
                     self.arith(inst, |x, y| x.wrapping_add(y));
                     pc += 1;
                 }
                 opcode::SUB => {
+                    log::trace!("SUB");
                     self.arith(inst, |x, y| x.wrapping_sub(y));
                     pc += 1;
                 }
                 opcode::MUL => {
+                    log::trace!("MUL");
                     self.arith(inst, |x, y| x.wrapping_mul(y));
                     pc += 1;
                 }
                 opcode::DIV => {
+                    log::trace!("DIV");
                     self.arith(inst, |x, y| x.wrapping_div(y));
                     pc += 1;
                 }
                 opcode::MOD => {
+                    log::trace!("MOD");
                     self.arith(inst, |x, y| x.wrapping_rem(y));
                     pc += 1;
                 }
                 opcode::LSL => {
+                    log::trace!("LSL");
                     self.arith(inst, |x, y| x.wrapping_shl(y as u32));
                     pc += 1;
                 }
                 opcode::LSR => {
+                    log::trace!("LSR");
                     self.arith(inst, |x, y| x.wrapping_shr(y as u32));
                     pc += 1;
                 }
                 opcode::AND => {
+                    log::trace!("AND");
                     self.arith(inst, |x, y| x & y);
                     pc += 1;
                 }
                 opcode::OR => {
+                    log::trace!("OR");
                     self.arith(inst, |x, y| x | y);
                     pc += 1;
                 }
                 opcode::XOR => {
+                    log::trace!("XOR");
                     self.arith(inst, |x, y| x ^ y);
                     pc += 1;
                 }
@@ -208,6 +224,7 @@ impl Engine {
                 opcode::JNE => pc = self.cond_pc(pc, inst, |x, y| x != y),
                 opcode::JI => pc = offset_pc(pc, extract_s(inst, 0, 27)),
                 opcode::CALL_NI => {
+                    log::trace!("CALL_NI");
                     pc = self.call(
                         addr_to_ix(self.ra(inst)),
                         ix_to_addr(pc + 1),
@@ -215,6 +232,7 @@ impl Engine {
                     )
                 }
                 opcode::CALL_ND => {
+                    log::trace!("CALL_ND");
                     pc = self.call(
                         offset_pc(pc, extract_s(inst, 0, 27)),
                         ix_to_addr(pc + 1),
@@ -222,6 +240,7 @@ impl Engine {
                     )
                 }
                 opcode::CALL_TI => {
+                    log::trace!("CALL_TI");
                     let curr = self.curr_frame();
                     pc = self.call(
                         addr_to_ix(self.ra(inst)),
@@ -230,6 +249,7 @@ impl Engine {
                     )
                 }
                 opcode::CALL_TD => {
+                    log::trace!("CALL_TD");
                     let curr = self.curr_frame();
                     pc = self.call(
                         offset_pc(pc, extract_s(inst, 0, 27)),
@@ -238,26 +258,32 @@ impl Engine {
                     )
                 }
                 opcode::RET => {
+                    log::trace!("RET");
                     pc = self.ret(self.ra(inst));
                 }
                 opcode::HALT => {
+                    log::trace!("HALT");
                     return self.ra(inst);
                 }
                 opcode::LDLO => {
+                    log::trace!("LDLO");
                     self.set_ra(inst, extract_s(inst, 8, 19));
                     pc += 1;
                 }
                 opcode::LDHI => {
+                    log::trace!("LDHI");
                     let hi16 = extract_u(inst, 8, 16) << 16;
                     let lo16 = self.ra(inst) & 0xFFFF;
                     self.set_ra(inst, hi16 | lo16);
                     pc += 1;
                 }
                 opcode::MOVE => {
+                    log::trace!("MOVE");
                     self.set_ra(inst, self.rb(inst));
                     pc += 1;
                 }
                 opcode::ARGS => {
+                    log::trace!("ARGS");
                     let curr = self.curr_frame();
                     let next = self.other_frame();
                     if self.mem[curr + 1] == ix_to_addr(next) {
@@ -278,10 +304,17 @@ impl Engine {
                     self.set_frame_size(next, i);
                 }
                 opcode::FRAME => {
+                    log::trace!("FRAME");
                     let size = extract_u(inst, 0, 8);
                     let curr = self.curr_frame();
                     let curr_size = self.mem.block_size(curr) - 2;
                     if curr_size < size {
+                        log::debug!(
+                            "self.regs ({}) + {} -> {}",
+                            self.regs,
+                            curr_size,
+                            size as usize
+                        );
                         for i in (curr_size as usize)..(size as usize) {
                             self.mem[self.regs + i] = 0 // TODO optimize
                         }
@@ -290,6 +323,7 @@ impl Engine {
                     pc += 1;
                 }
                 opcode::BALO => {
+                    log::trace!("BALO");
                     let tag = extract_u(inst, 16, 8);
                     let size = self.rb(inst);
                     let block_ix = self.mem.allocate(tag, size, self.curr_frame());
@@ -297,29 +331,33 @@ impl Engine {
                     pc += 1;
                 }
                 opcode::BSIZ => {
+                    log::trace!("BSIZ");
                     let block_ix = addr_to_ix(self.rb(inst));
                     self.set_ra(inst, self.mem.block_size(block_ix));
                     pc += 1;
                 }
                 opcode::BTAG => {
+                    log::trace!("BTAG");
                     let block_ix = addr_to_ix(self.rb(inst));
                     self.set_ra(inst, self.mem.block_tag(block_ix));
                     pc += 1;
                 }
                 opcode::BGET => {
-                    log::debug!("@block-get {:#x} {}", inst, self.rb(inst));
+                    log::trace!("BGET");
                     let block_ix = addr_to_ix(self.rb(inst));
                     let index = self.rc(inst) as usize;
                     self.set_ra(inst, self.mem[block_ix + index]);
                     pc += 1;
                 }
                 opcode::BSET => {
+                    log::trace!("BSET");
                     let block_ix = addr_to_ix(self.rb(inst));
                     let index = self.rc(inst) as usize;
                     self.mem[block_ix + index] = self.ra(inst);
                     pc += 1;
                 }
                 opcode::IO => {
+                    log::trace!("IO");
                     use std::io::{Read, Write};
 
                     match extract_u(inst, 8, 8) {
