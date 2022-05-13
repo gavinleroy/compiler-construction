@@ -3,6 +3,8 @@ mod memory;
 
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+#[cfg(feature = "benchmark")]
+use std::time::Instant;
 use std::{env, process};
 
 use crate::engine::Engine;
@@ -94,7 +96,21 @@ fn main() {
     #[cfg(debug_assertions)]
     env_logger::init();
 
-    match actual_main() {
+    #[cfg(feature = "benchmark")]
+    let now = Instant::now();
+
+    let ret = actual_main();
+
+    #[cfg(feature = "benchmark")]
+    {
+        let duration = now.elapsed();
+        println!(
+            "\ntime: {} secs",
+            duration.as_secs_f64() + duration.subsec_nanos() as f64 * 1e-9
+        );
+    }
+
+    match ret {
         Ok(exit_code) => process::exit(exit_code),
         Err(e) => {
             eprintln!("Error: {}", e);
