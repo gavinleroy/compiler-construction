@@ -3,7 +3,7 @@ mod memory;
 
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-#[cfg(feature = "benchmark")]
+#[cfg(feature = "mytest")]
 use std::time::Instant;
 use std::{env, process};
 
@@ -96,12 +96,12 @@ fn main() {
     #[cfg(debug_assertions)]
     env_logger::init();
 
-    #[cfg(feature = "benchmark")]
+    #[cfg(feature = "mytest")]
     let now = Instant::now();
 
     let ret = actual_main();
 
-    #[cfg(feature = "benchmark")]
+    #[cfg(feature = "mytest")]
     {
         let duration = now.elapsed();
         println!(

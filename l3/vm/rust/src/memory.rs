@@ -182,11 +182,11 @@ impl Memory {
 
         if found_memory.is_none() {
             log::info!("GC with root {} min_size {}", root, min_size);
-            self.gc(root); // FIXME is there a smarter way to call this?
-                           // TODO optimize. Potentially you could find a block of memory
-                           // while doing the garbage collection.
-                           // TODO use a compacting algorithm to reduce external fragmentation
-                           // if a block is still not found after GCing.
+            self.gc(root, false); // FIXME is there a smarter way to call this?
+                                  // TODO optimize. Potentially you could find a block of memory
+                                  // while doing the garbage collection.
+                                  // TODO use a compacting algorithm to reduce external fragmentation
+                                  // if a block is still not found after GCing.
             found_memory = self.find_memory(min_size);
         }
 
@@ -264,12 +264,11 @@ impl Memory {
     // ---------------------------------------------------------------
     // Internal utilities
 
-    fn gc(&mut self, root: usize) {
+    fn gc(&mut self, root: usize, _compact_heap: bool) {
         debug_assert!(self.validate_memory());
 
         // mark all the objects that are reachable from `root`
         self.mark(root);
-
         // sweep the heap and reclaim blocks
         self.sweep();
 
@@ -558,7 +557,7 @@ impl Memory {
             debug_assert_eq!(self.block_tag(_block_start), TAG_NONE);
 
             let size = self.block_size(_block_start) as usize;
-            self.zero_memory(block_start, _block_start + size);
+            self.zero_memory(_block_start, _block_start + size);
 
             debug_assert_eq!(self.block_size(_block_start) as usize, size);
             debug_assert_eq!(self.block_tag(_block_start), TAG_NONE);
@@ -812,110 +811,5 @@ impl IndexMut<usize> for Memory {
 
 #[cfg(test)]
 mod tests {
-
-    use super::*;
-
-    fn create_heap(size: usize) -> Memory {
-        let mut mem = Memory {
-            content: vec![0; size],
-            free_list: LIST_END,
-            bitmap_ix: 0,
-            heap_ix: 0,
-        };
-        mem.set_heap_start(0);
-        mem
-    }
-
-    #[test]
-    fn partition_heap_00() {
-        let mem = create_heap(100);
-        assert_eq!(mem.bitmap_ix, 0);
-        assert_eq!(mem.heap_ix, 4);
-    }
-
-    #[test]
-    fn partition_heap_01() {
-        let mem = create_heap(327);
-        assert_eq!(mem.bitmap_ix, 0);
-        assert_eq!(mem.heap_ix, 10);
-    }
-
-    #[test]
-    fn partition_heap_02() {
-        let mem = create_heap(100);
-        assert_eq!(mem.bitmap_ix, 0);
-        assert_eq!(mem.heap_ix, 4);
-
-        let (ix, bitoff) = mem.ix_to_bitmap_addr(14);
-        assert_eq!(ix, 0);
-        assert_eq!(bitoff, 10);
-
-        let (ix, bitoff) = mem.ix_to_bitmap_addr(36);
-        assert_eq!(ix, 1);
-        assert_eq!(bitoff, 0);
-
-        let (ix, bitoff) = mem.ix_to_bitmap_addr(37);
-        assert_eq!(ix, 1);
-        assert_eq!(bitoff, 1);
-
-        let (ix, bitoff) = mem.ix_to_bitmap_addr(99);
-        assert_eq!(ix, 2);
-        assert_eq!(bitoff, 31);
-    }
-
-    #[test]
-    fn mark_addr() {
-        let mut mem = create_heap(100);
-        mem.mark_bitmap_at(5);
-        assert_eq!(mem[0], 0x2);
-        for &loc in mem.content[1..4].iter() {
-            assert_eq!(loc, 0);
-        }
-    }
-
-    #[test]
-    fn mark_unmark_addr() {
-        let mut mem = create_heap(100);
-        let ixs: Vec<usize> = vec![18, 31, 32, 33, 76, 99];
-
-        for &ix in ixs.iter() {
-            mem.mark_bitmap_at(ix);
-        }
-
-        for &ix in ixs.iter() {
-            assert!(mem.unmark_bitmap_at(ix));
-        }
-
-        for &loc in mem.content[1..4].iter() {
-            assert_eq!(loc, 0);
-        }
-    }
-
-    #[test]
-    fn consq_00() {
-        // NOTE you can't use create_heap because it calls set_heap_addr
-        // which will insert things into the free list.
-        let mut mem = Memory {
-            content: vec![0; 100],
-            free_list: LIST_END,
-            bitmap_ix: 0,
-            heap_ix: 0,
-        };
-        let mut ixs: Vec<usize> = vec![18, 31, 32, 33, 76, 99];
-        for &ix in ixs.iter() {
-            mem.consq(ix);
-            let hd = mem.car();
-            assert_eq!(hd, Some(ix));
-        }
-
-        let free_list = mem.free_list_iter();
-
-        assert_eq!(ixs.len(), free_list.len());
-
-        ixs.reverse();
-
-        for (&f, s) in ixs.iter().zip(free_list) {
-            assert_eq!(f, s);
-        }
-    }
+    // TODO the old tests are no longer usable now that they system is together.
 }
