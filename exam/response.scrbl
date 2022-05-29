@@ -103,14 +103,12 @@
 @(define payload (number->string payload-d))
 @(define tag (number->string tag-d))
 
-@; FIXME spacing
-
 I will be following the specification of the IEEE 754-2019 standard@~cite[ieee-754].
 As seen in @(figure-ref "fig:bits"), the contents of a single double precision floating-point number has a 1-bit sign (S),
  an 11-bit biased exponent (E), and a 52-bit trailing significand (T) @~cite[(in-bib ieee-754 ", §3.4")].
 A NaN value is indicated by setting all bits of E to one and can represent a @italic{quiet NaN}
 or @italic{signaling NaN}. For the purposes of NaN tagging in L@subscript{3} we will
-always assume quiet NaNs and thus the first (most significant) bit  of T needs to be set to 1.
+always assume quiet NaNs and thus the highest bit  of T needs to be set to 1.
 @(figure-here "fig:bits"
               "An example of the layout of a 64-bit floating-point."
               bits-label)
@@ -121,13 +119,12 @@ tagged NaN payload. For a tagged NaN we have @payload bits, which is
 more than enough to represent all other L@subscript{3} values.
 
 Following the example of x86-64, we will use only the lower 48 bits of our 64 bit address
-leaving @tag bits for us to encode the type stored in the actual payload. With these @tag
+leaving the @tag bits at indices [48:50] for us to encode the type stored in the actual payload. With these @tag
 bits we could encode our types as demonstrated in @(figure-ref "fig:enc").
 Observe that a type tag for NaN is explicetly encoded because we also need to
 allow NaNs, as well as the other two @italic{special values}: [+/-]∞. However, no
-explicit handling is needed for the infinities as they are represented by having all bits of T set to 0.
-This differentiates them from tagged NaNs because the quiet bit will not be set.
-
+explicit handling is needed for the infinities as they are represented by having all bits of T
+@-~- including the quiet bit @-~- set to 0.
 @(figure "fig:enc"
          "Possible encoding of 3-bit type tags."
          (centered
@@ -143,13 +140,13 @@ This differentiates them from tagged NaNs because the quiet bit will not be set.
                              (list "Boolean False" "101")
                              (list "Unit"          "110")))))
 
-For the sake of normality, I will assume that integers become 32 bits (instead of 31)
-even though, theoretically, they could be 48 bits. As before, checking for a word's type
-can be done with a simple bitmask and comparison and all other functionality should remain
-the same, especially because all floating-point operations will have their own primitives.
+For the sake of normality, I will assume 32-bit integers (instead of 31)
+even though, theoretically, they could have 48 bits. As before, checking for a word's type,
+or extracting the value, can be done with a simple bitmask@.__ Due to the introduction of primitive
+floating-point operations, all other functionality will remain the same.
 As a final example, if you wanted to check if a given word is an integer, you would mask the
-most significant 16 bits with the mask @code{#b0111111111111001}, and if the result is the same
-then the word is in fact an integer.
+most significant 16 bits with the mask @code{#b0111111111111001}, and to extract the integer
+value you can simply use the lower 32 bits of the word.
 
 @; --------------------------------------------------------------------
 @; Bits image drawing :)
