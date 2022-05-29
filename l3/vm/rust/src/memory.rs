@@ -26,6 +26,7 @@ const MIN_BLOCK_SIZE: usize = 1;
 const MIN_SPLIT_SIZE: usize = MIN_BLOCK_SIZE + HEADER_SIZE;
 const NUM_FREE_LISTS: usize = 32;
 const FL_OTH: usize = 0;
+const MAX_BLOCK_SIZE: usize = 5851224;
 
 fn ix_to_addr(index: usize) -> L3Value {
     (index << LOG2_VALUE_BYTES) as L3Value
@@ -149,18 +150,42 @@ impl Memory {
         debug_assert_eq!(bitmap_size + heap_size, remaining_size);
         debug_assert!(bitmap_size >= heap_size / 32);
 
+        log::debug!("Max block size {} i32 max {}", MAX_BLOCK_SIZE, i32::MAX);
+
         self.heap_ix = heap_start_index + bitmap_size;
         self.bitmap_ix = heap_start_index;
         self.zero_memory(heap_start_index, self.content.len());
 
         // Set up the first unallocated block of memory
-        let unallocated_block_ix = self.heap_ix + HEADER_SIZE;
-        let unallocated_block_size = (self.content.len() - self.heap_ix) - HEADER_SIZE;
+        let mut unallocated_block_ix = self.heap_ix + HEADER_SIZE;
+        let mut unallocated_block_size = self.content.len() - unallocated_block_ix;
 
-        self.set_block_header(unallocated_block_ix, TAG_NONE, unallocated_block_size);
+        // The block header can only store blocks of a certain size. If the first
+        // block is going to exceed that, then we need to chunk it up into manageable
+        // pieces.
+        while unallocated_block_ix < self.content.len() && unallocated_block_size > MAX_BLOCK_SIZE {
+            self.set_block_header(unallocated_block_ix, TAG_NONE, MAX_BLOCK_SIZE);
+            log::debug!("initial block size {}", MAX_BLOCK_SIZE);
 
-        // set the start of the list
-        self.consq(unallocated_block_ix);
+            debug_assert_eq!(
+                MAX_BLOCK_SIZE,
+                self.block_size(unallocated_block_ix) as usize
+            );
+            self.consq(unallocated_block_ix);
+            unallocated_block_ix += MAX_BLOCK_SIZE + HEADER_SIZE;
+            unallocated_block_size = self.content.len() - unallocated_block_ix;
+        }
+
+        // After chunking initial memory the remaining block might be 0 in the unlucky case.
+        if unallocated_block_ix < self.content.len() && unallocated_block_size > MIN_BLOCK_SIZE {
+            self.set_block_header(unallocated_block_ix, TAG_NONE, unallocated_block_size);
+            log::debug!("initial block size {}", unallocated_block_size);
+            debug_assert_eq!(
+                unallocated_block_size,
+                self.block_size(unallocated_block_ix) as usize
+            );
+            self.consq(unallocated_block_ix);
+        }
 
         log::info!("Bitmap memory IX {}", self.bitmap_ix);
         log::info!("Heap memory IX {}", self.heap_ix);
@@ -351,7 +376,11 @@ impl Memory {
                     self.block_clear(block);
 
                     // coalesce the blocks
-                    self.coalesce_blocks(last_free_ix, block);
+                    // NOTE if they can't be coalesced (due to maximum size)
+                    // then we need to push the block anyways.
+                    if !self.coalesce_blocks(last_free_ix, block) {
+                        previous_free = Some(block);
+                    }
                 }
 
                 // NOTE blocks still tagged in the bitmap are *unreachable*
@@ -523,7 +552,7 @@ impl Memory {
     /// the 'prev' block is always at the beginning of a free
     /// list. This means that once it is updated it needs to be moved
     /// to the appropriate bucket.
-    fn coalesce_blocks(&mut self, prev: usize, next: usize) {
+    fn coalesce_blocks(&mut self, prev: usize, next: usize) -> bool {
         debug_assert!(prev < next);
         debug_assert!({
             (0..NUM_FREE_LISTS)
@@ -532,6 +561,10 @@ impl Memory {
 
         let prev_size = self.block_size(prev) as usize;
         let next_size = self.block_size(next) as usize;
+
+        if prev_size + next_size > MAX_BLOCK_SIZE {
+            return false;
+        }
 
         self.cdrq(prev_size); // Remove from current list
 
@@ -547,6 +580,8 @@ impl Memory {
         self.set_block_header_size(prev, coalesced_size);
 
         self.consq(prev); // add back to the list
+
+        return true;
     }
 
     /// Clear the address `block_start`
@@ -680,8 +715,9 @@ impl Memory {
                 None => None,
                 Some(LIST_END) => None,
                 Some(addr) => {
-                    // log::debug!("here {}", addr);
+                    log::debug!("here {}", addr);
                     debug_assert_ne!(addr, LIST_END);
+                    log::debug!("ix {}", addr_to_ix(addr));
                     Some(self[addr_to_ix(addr)])
                 }
             },
@@ -749,7 +785,7 @@ impl Memory {
                 } else {
                     debug_assert!(self.bitmap_at(ix));
                 }
-                ix = block_size + HEADER_SIZE;
+                ix = ix + block_size + HEADER_SIZE;
             }
 
             log::debug!(
