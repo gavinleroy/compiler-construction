@@ -4,17 +4,6 @@
  * Gavin Gray, 05.2022
  * ETH Zuerich
  * */
-// TODO checklist
-//
-// The performance is *ok* but who wants to stop there.
-// [ ] profile the runtime and find hot zones
-//
-// Additionally, the heuristic for being able to split a block is
-// currently very weak.
-// [ ] play around with additionaly heuristics
-//
-// [ ] implement a compaction algorithm for when
-//      external fragmentation is so bad (due to bad heuristic).
 use crate::{L3Value, LOG2_VALUE_BITS, LOG2_VALUE_BYTES, TAG_REGISTER_FRAME};
 use std::cmp;
 use unfold::unfold;
@@ -58,6 +47,20 @@ fn should_split(total: usize, first: usize) -> bool {
     debug_assert!(total >= first);
     (total == first) || (total - first >= 5 * MIN_SPLIT_SIZE)
 }
+
+/**
+ * TODO if I have extra time.
+ *
+ * Looking at some of the generated ASM, the bounds checking for
+ * indexing into the `content` vector is not removed.
+ * This wouldn't be a huge performance boost but you could use a
+ * raw allocated [u8] (provided by std::alloc::System) to work on
+ * the bytes directly. This would look much more like the C version
+ * of the VM and a larger use of `unsafe` code would probably be
+ * needed.
+ * I'm interested to know if any speedup could be achieved by it though
+ * *head scratch*.
+ */
 
 /// L3 VM Program Memory
 pub struct Memory {
@@ -207,11 +210,11 @@ impl Memory {
 
         if found_memory.is_none() {
             log::info!("GC with root {} min_size {}", root, min_size);
-            self.gc(root, false); // FIXME is there a smarter way to call this?
-                                  // TODO optimize. Potentially you could find a block of memory
+            self.gc(root, false); // TODO optimize. Potentially you could find a block of memory
                                   // while doing the garbage collection.
                                   // TODO use a compacting algorithm to reduce external fragmentation
-                                  // if a block is still not found after GCing.
+                                  // if a block is still not found after GCing but enough memory
+                                  // exists to construct one.
             found_memory = self.find_memory(min_size);
         }
 
@@ -312,6 +315,16 @@ impl Memory {
 
         work.push(root);
 
+        // Handle explicitely the case when the parent
+        // frame is on the stack and not heap. This is
+        // cleaner (and safer) than the previous logic.
+        if valid_address(self[root + 1]) {
+            let pf_ix = addr_to_ix(self[root + 1]);
+            if self.block_tag(pf_ix) == TAG_REGISTER_FRAME {
+                work.push(pf_ix);
+            }
+        }
+
         while 0 < work.len() {
             let block = work.pop().unwrap();
 
@@ -321,11 +334,7 @@ impl Memory {
             (block..(block + block_size)).for_each(|ix| {
                 if valid_address(self[ix]) {
                     let ix = addr_to_ix(self[ix]);
-                    if (0 < ix
-                        && ix < self.content.len()
-                        && (!self.valid_index(ix) && self.block_tag(ix) == TAG_REGISTER_FRAME))
-                        || (self.valid_index(ix) && self.unmark_bitmap_at(ix))
-                    {
+                    if self.valid_index(ix) && self.unmark_bitmap_at(ix) {
                         work.push(ix);
                     }
                 }
@@ -685,9 +694,8 @@ impl Memory {
 
     /// Remove the first element from the free list with block `size`.
     fn cdrq(&mut self, size: usize) {
-        debug_assert!(size < NUM_FREE_LISTS);
-        debug_assert!(self.free_lists[size] != LIST_END);
         let ixs = fl_ix(size);
+        debug_assert!(self.free_lists[ixs] != LIST_END);
         let ix = addr_to_ix(self.free_lists[ixs]);
         self.free_lists[ixs] = self[ix];
     }

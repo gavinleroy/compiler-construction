@@ -14,5 +14,9 @@ env_logger = "0.9.0"
 mytest = []
 
 [profile.release]
-debug = 1
-
+debug = 0
+debug-assertions = false
+overflow-checks = false
+lto = "thin"
+panic = "abort"
+opt-level = 3
